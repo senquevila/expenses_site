@@ -11,6 +11,7 @@ https://docs.djangoproject.com/en/4.0/ref/settings/
 """
 
 from os import environ
+from dotenv import load_dotenv
 from pathlib import Path
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
@@ -127,6 +128,7 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 
 # Web Scraping
+load_dotenv()
 SCRAPING_URL = environ.get("SCRAPING_URL", "")
 SCRAPING_TAG_ID = environ.get("SCRAPING_TAG_ID", "")
 SCRAPING_TOKEN_SPLIT = environ.get("SCRAPING_TOKEN_SPLIT", "")
