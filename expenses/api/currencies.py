@@ -35,7 +35,7 @@ class CreateDollarConvertionView(APIView):
     def _get_exchange(self) -> float:
         req = Request(settings.SCRAPING_URL, headers={'User-Agent': 'Mozilla/5.0'})
         page = urlopen(req)
-        soup = BeautifulSoup(page)
+        soup = BeautifulSoup(page, "html.parser")
         result = soup.find(id=settings.SCRAPING_TAG_ID)
         result_text = result.text.strip()
         tokens = result_text.split(settings.SCRAPING_TOKEN_SPLIT)
