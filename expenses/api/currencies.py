@@ -28,17 +28,22 @@ class CreateDollarConvertionView(APIView):
             currency_convert = CurrencyConvertion()
             currency_convert.currency = get_object_or_404(Currency, alpha3="USD")
             currency_convert.date = datetime.datetime.today()
-            currency_convert.exchange = self._get_exchange()
+            try:
+                currency_convert.exchange = self._get_exchange()
+            except Exception as e:
+                return Response(
+                    data={"message": "Problem capturing exchange"},
+                    status=status.HTTP_424_FAILED_DEPENDENCY,
+                )
             currency_convert.save()
         return Response(status=status.HTTP_200_OK)
 
     def _get_exchange(self) -> float:
-        req = Request(settings.SCRAPING_URL, headers={'User-Agent': 'Mozilla/5.0'})
+        req = Request(settings.SCRAPING_URL, headers={"User-Agent": "Mozilla/5.0"})
         page = urlopen(req)
         soup = BeautifulSoup(page, "html.parser")
         result = soup.find(id=settings.SCRAPING_TAG_ID)
         result_text = result.text.strip()
         tokens = result_text.split(settings.SCRAPING_TOKEN_SPLIT)
-        value_str = tokens[-1].strip().replace("L", "")
-        value = float(value_str)
+        value = float(tokens[-1].strip().replace("L", ""))
         return value
