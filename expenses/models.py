@@ -27,7 +27,7 @@ class Currency(models.Model):
         return self.name
 
 
-class CurrencyConvertion(models.Model):
+class CurrencyConvert(models.Model):
     currency = models.ForeignKey(Currency, on_delete=models.DO_NOTHING)
     exchange = models.DecimalField(max_digits=13, decimal_places=4)
     date = models.DateField()
@@ -37,7 +37,7 @@ class CurrencyConvertion(models.Model):
         verbose_name_plural = 'Conversiones de monedas'
 
     def __str__(self) -> str:
-        return f"{self.date} / {self.currency}"
+        return f"{self.date} > {self.currency}"
 
 
 class Account(models.Model):

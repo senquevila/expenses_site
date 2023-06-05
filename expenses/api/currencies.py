@@ -12,13 +12,13 @@ from rest_framework.response import Response
 from rest_framework.views import APIView
 
 # models import
-from expenses.models import CurrencyConvertion, Currency
-from expenses.serializers import CurrencyConvertionSerializer
+from expenses.models import CurrencyConvert, Currency
+from expenses.serializers import CurrencyConvertSerializer
 
 
 class CurrencyConvertionViewSet(viewsets.ModelViewSet):
-    queryset = CurrencyConvertion.objects.all()
-    serializer_class = CurrencyConvertionSerializer
+    queryset = CurrencyConvert.objects.all()
+    serializer_class = CurrencyConvertSerializer
 
 
 class CreateDollarConvertionView(APIView):

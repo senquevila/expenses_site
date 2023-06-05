@@ -3,7 +3,7 @@ from django.contrib import admin
 from expenses.models import (
     Account,
     Currency,
-    CurrencyConvertion,
+    CurrencyConvert,
     Period,
     Expense,
 )
@@ -19,8 +19,8 @@ class CurrencyAdmin(admin.ModelAdmin):
     pass
 
 
-@admin.register(CurrencyConvertion)
-class CurrencyConvertionAdmin(admin.ModelAdmin):
+@admin.register(CurrencyConvert)
+class CurrencyConvertAdmin(admin.ModelAdmin):
     pass
 
 
