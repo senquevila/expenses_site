@@ -8,8 +8,8 @@ class Period(models.Model):
     year = models.IntegerField()
 
     class Meta:
-        verbose_name = 'Periodo'
-        verbose_name_plural = 'Periodos'
+        verbose_name = "Periodo"
+        verbose_name_plural = "Periodos"
 
     def __str__(self) -> str:
         return f"{self.year}-{self.month:02}"
@@ -20,8 +20,8 @@ class Currency(models.Model):
     alpha3 = models.CharField(max_length=3, blank=True, null=True)
 
     class Meta:
-        verbose_name = 'Moneda'
-        verbose_name_plural = 'Monedas'
+        verbose_name = "Moneda"
+        verbose_name_plural = "Monedas"
 
     def __str__(self) -> str:
         return self.name
@@ -33,8 +33,8 @@ class CurrencyConvert(models.Model):
     date = models.DateField()
 
     class Meta:
-        verbose_name = 'Conversion de moneda'
-        verbose_name_plural = 'Conversiones de monedas'
+        verbose_name = "Conversion de moneda"
+        verbose_name_plural = "Conversiones de monedas"
 
     def __str__(self) -> str:
         return f"{self.date} > {self.currency}"
@@ -44,18 +44,16 @@ class Account(models.Model):
     DEBE = -1
     HABER = 1
     SIGN_TYPE = (
-        (DEBE, 'Debe (-)'),
-        (HABER, 'Haber (+)'),
+        (DEBE, "Debe (-)"),
+        (HABER, "Haber (+)"),
     )
     name = models.CharField(max_length=100)
-    parent = models.ForeignKey(
-        "self", null=True, blank=True, on_delete=models.CASCADE
-    )
+    parent = models.ForeignKey("self", null=True, blank=True, on_delete=models.CASCADE)
     sign = models.IntegerField(choices=SIGN_TYPE)
 
     class Meta:
-        verbose_name = 'Cuenta'
-        verbose_name_plural = 'Cuentas'
+        verbose_name = "Cuenta"
+        verbose_name_plural = "Cuentas"
 
     def __str__(self) -> str:
         if not self.parent:
@@ -74,15 +72,17 @@ class Accountable(CreationModificationDateMixin):
         abstract = True
 
     def __str__(self) -> str:
-        return f"{self.period} => {self.account}: {self.currency.alpha3} {self.amount:.2f}"
+        return (
+            f"{self.period} => {self.account}: {self.currency.alpha3} {self.amount:.2f}"
+        )
 
 
 class Expense(Accountable):
     description = models.CharField(max_length=255, blank=True, null=True)
 
     class Meta:
-        verbose_name = 'Gasto'
-        verbose_name_plural = 'Gastos'
+        verbose_name = "Gasto"
+        verbose_name_plural = "Gastos"
 
     def __str__(self) -> str:
         return super().__str__()

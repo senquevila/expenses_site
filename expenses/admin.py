@@ -11,7 +11,7 @@ from expenses.models import (
 
 @admin.register(Period)
 class PeriodAdmin(admin.ModelAdmin):
-    ordering = ['-year', '-month']
+    ordering = ["-year", "-month"]
 
 
 @admin.register(Currency)
@@ -26,7 +26,7 @@ class CurrencyConvertAdmin(admin.ModelAdmin):
 
 @admin.register(Account)
 class AccountAdmin(admin.ModelAdmin):
-    ordering = ['name']
+    ordering = ["name"]
 
 
 @admin.register(Expense)
