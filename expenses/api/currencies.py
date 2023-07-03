@@ -3,7 +3,6 @@ import datetime
 from bs4 import BeautifulSoup
 from urllib.request import Request, urlopen
 
-
 # django drf imports
 from django.conf import settings
 from django.shortcuts import get_object_or_404
@@ -16,16 +15,16 @@ from expenses.models import CurrencyConvert, Currency
 from expenses.serializers import CurrencyConvertSerializer
 
 
-class CurrencyConvertionViewSet(viewsets.ModelViewSet):
+class CurrencyConvertViewSet(viewsets.ModelViewSet):
     queryset = CurrencyConvert.objects.all()
     serializer_class = CurrencyConvertSerializer
 
 
 class CreateDollarConvertionView(APIView):
     def post(self, request, *args, **kwargs):
-        data = CurrencyConvertion.objects.filter(date=datetime.datetime.today())
+        data = CurrencyConvert.objects.filter(date=datetime.datetime.today())
         if not data.exists():
-            currency_convert = CurrencyConvertion()
+            currency_convert = CurrencyConvert()
             currency_convert.currency = get_object_or_404(Currency, alpha3="USD")
             currency_convert.date = datetime.datetime.today()
             try:
