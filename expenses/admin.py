@@ -31,4 +31,27 @@ class AccountAdmin(admin.ModelAdmin):
 
 @admin.register(Expense)
 class ExpenseAdmin(admin.ModelAdmin):
-    pass
+    list_display = (
+        "period",
+        "description",
+        "currency",
+        "amount",
+        "account_name",
+    )
+    list_filter = (
+        "period",
+        "account",
+    )
+    ordering = (
+        "-period",
+        "-created",
+    )
+    search_fields = (
+        "description__startswith",
+        "amount",
+    )
+
+    def account_name(self, obj):
+        return obj.account.name
+
+    account_name.short_description = "Account Name"
