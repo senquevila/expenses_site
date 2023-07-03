@@ -9,7 +9,7 @@ from expenses import api as api_views
 
 
 router = DefaultRouter()
-router.register(r"expenses", api_views.ExpenseViewSet, basename='expenses')
+router.register(r"expenses", api_views.ExpenseViewSet, basename="expenses")
 urlpatterns = router.urls
 
 urlpatterns = [
@@ -24,6 +24,8 @@ urlpatterns = [
         name="create-dollar-convert",
     ),
     path(
-        "expenses/", api_views.ExpenseViewSet.as_view({"get": "list"}), name="expenses"
+        "expense/<int:period>/summary/",
+        api_views.ExpenseSummaryListView.as_view(),
+        name="expense-summary-list",
     ),
 ]
