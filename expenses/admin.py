@@ -37,14 +37,14 @@ class ExpenseAdmin(admin.ModelAdmin):
         "currency",
         "amount",
         "account_name",
-        "emited",
+        "payment_date",
     )
     list_filter = (
         "period",
         "account",
     )
     ordering = (
-        "-emited",
+        "-payment_date",
         "-created",
     )
     search_fields = (

@@ -1,6 +1,5 @@
 from django.db import models
 from django.utils import timezone
-
 from expenses.mixins import CreationModificationDateMixin
 
 
@@ -83,7 +82,7 @@ class Accountable(CreationModificationDateMixin):
 
 class Expense(Accountable):
     description = models.CharField(max_length=255, blank=True, null=True)
-    emited = models.DateField(default=timezone.now().date(), blank=True, null=True)
+    payment_date = models.DateField(default=timezone.now, blank=True, null=True)
 
     class Meta:
         verbose_name = "Gasto"
