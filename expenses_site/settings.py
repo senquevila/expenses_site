@@ -41,6 +41,7 @@ INSTALLED_APPS = [
     "django.contrib.staticfiles",
     "expenses",
     "rest_framework",
+    "corsheaders",
 ]
 
 MIDDLEWARE = [
@@ -51,6 +52,7 @@ MIDDLEWARE = [
     "django.contrib.auth.middleware.AuthenticationMiddleware",
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
+    'corsheaders.middleware.CorsMiddleware',
 ]
 
 ROOT_URLCONF = "expenses_site.urls"
@@ -133,7 +135,11 @@ SCRAPING_URL = environ.get("SCRAPING_URL", "")
 SCRAPING_TAG_ID = environ.get("SCRAPING_TAG_ID", "")
 SCRAPING_TOKEN_SPLIT = environ.get("SCRAPING_TOKEN_SPLIT", "")
 
+# CORS
+CORS_ALLOW_ALL_ORIGINS = True
+CORS_ALLOWED_ORIGINS = ["http://127.0.0.1:8000", "http://127.0.0.1:3000"]
+
 # Default Values
 DEFAULT_CURRENCY = "HNL"
 DEFAULT_ACCOUNT = "Gasto"
-DEFAULT_DATE_FORMAT = "%d/%m/%Y"
+DEFAULT_DATE_FORMAT = "%d/%m/%y"

@@ -1,19 +1,16 @@
 import csv
 import io
+from datetime import datetime
 
 from django.conf import settings
 from django.forms import ValidationError
-from django.shortcuts import render, redirect
-from django.urls import reverse
+from django.shortcuts import render
 from django.utils import timezone
 from django.views import View
 from django.views.generic import FormView, ListView
-from rest_framework import status
-from rest_framework.response import Response
 
 from expenses.forms import ExpenseFileUploadForm
 from expenses.models import Account, Currency, Expense
-from expenses.utils import transform_string_to_date
 
 
 class HomeView(View):
@@ -74,7 +71,7 @@ class UploadExpenseView(FormView):
             if not currency.exists():
                 currency = default_currency
 
-            payment_date = transform_string_to_date(row[0])
+            payment_date = datetime.strptime(row[0], settings.DEFAULT_DATE_FORMAT).date()
             if not payment_date:
                 payment_date = timezone.now().date()
 

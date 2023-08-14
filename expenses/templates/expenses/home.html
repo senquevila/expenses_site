@@ -5,5 +5,74 @@ Expenses
 {% endblock %}
 
 {% block content %}
-<h1>Expenses App</h1>
+    <h1>Most recent expenses</h1>
+    <h2>Total: 0</h2>
+    <canvas id="myChart"></canvas>
+    <table id="json-table" border="1" class="table table-striped">
+        <thead>
+            <tr>
+                <th>Period</th>
+                <th>Account</th>
+                <th>Total Amount</th>
+            </tr>
+        </thead>
+        <tbody id="table-body"></tbody>
+    </table>
+
+    <script>
+        // URL of the API endpoint
+        var apiUrl = 'http://localhost:3000/api/expense/2/summary/';
+
+        var title2 = document.getElementsByTagName('h2');
+
+        // Get the table body element
+        var tableBody = document.getElementById("table-body");
+
+        // Fetch JSON data from the API
+        fetch(apiUrl)
+            .then(response => response.json())
+            .then(data => {
+                title2[0].innerHTML = data.total
+                // Iterate through each content item and add a row to the table
+                data.content.forEach(item => {
+                    var row = tableBody.insertRow();
+                    var periodCell = row.insertCell(0);
+                    var accountCell = row.insertCell(1);
+                    var totalAmountCell = row.insertCell(2);
+
+                    periodCell.innerHTML = item.period;
+                    accountCell.innerHTML = item.account;
+                    totalAmountCell.innerHTML = item.total_amount;
+                });
+
+
+                // Extract labels and data from JSON
+                const labels = data.content.map(item => item.account);
+                const values = data.content.map(item => item.total_amount);
+
+                // Create the chart
+                const ctx = document.getElementById('myChart').getContext('2d');
+                const myChart = new Chart(ctx, {
+                    type: 'bar',
+                    data: {
+                        labels: labels,
+                        datasets: [{
+                            label: 'Total Amount',
+                            data: values,
+                            backgroundColor: 'rgba(75, 192, 192, 0.2)',
+                            borderColor: 'rgba(75, 192, 192, 1)',
+                            borderWidth: 1
+                        }]
+                    },
+                    options: {
+                        scales: {
+                            y: {
+                                beginAtZero: true
+                            }
+                        }
+                    }
+                });
+            })
+            .catch(error => console.error('Error fetching data:', error));
+    </script>
 {% endblock %}
