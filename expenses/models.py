@@ -73,9 +73,14 @@ class Accountable(CreationModificationDateMixin):
 
     def __str__(self) -> str:
         return (
-            f"{self.period} => {self.account}: {self.currency.alpha3} {self.amount:.2f}"
+            f"{self.period} => {self.account}: {self.currency.alpha3} {self.amount}"
         )
 
+    @property
+    def amount_str(self):
+        return f"{self.currency.alpha3} {self.amount}"
+
+    @property
     def get_local_value(self) -> float:
         return self.amount * self.account.sign
 

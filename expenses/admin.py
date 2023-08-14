@@ -42,6 +42,7 @@ class ExpenseAdmin(admin.ModelAdmin):
     list_filter = (
         "period",
         "account",
+        "created",
     )
     ordering = (
         "-payment_date",

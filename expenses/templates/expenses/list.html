@@ -1,0 +1,25 @@
+{% extends 'base.html' %}
+
+{% block title %}
+Expense List
+{% endblock %}
+
+{% block content %}
+<h1>Expense List</h1>
+<table class="table table-striped">
+    <tr>
+        <th>Account</th>
+        <th class="text-end">Amount</th>
+        <th>Description</th>
+        <th>Payment date</th>
+    </tr>
+    {% for expense in expenses %}
+    <tr>
+        <td>{{ expense.account.name }}</td>
+        <td class="text-end" scope="col">{{ expense.amount_str }}</td>
+        <td>{{ expense.description }}</td>
+        <td>{{ expense.payment_date }}</td>
+    </tr>
+    {% endfor %}
+</table>
+{% endblock %}

@@ -132,3 +132,8 @@ load_dotenv()
 SCRAPING_URL = environ.get("SCRAPING_URL", "")
 SCRAPING_TAG_ID = environ.get("SCRAPING_TAG_ID", "")
 SCRAPING_TOKEN_SPLIT = environ.get("SCRAPING_TOKEN_SPLIT", "")
+
+# Default Values
+DEFAULT_CURRENCY = "HNL"
+DEFAULT_ACCOUNT = "Gasto"
+DEFAULT_DATE_FORMAT = "%d/%m/%Y"

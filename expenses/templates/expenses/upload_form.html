@@ -1,0 +1,28 @@
+{% extends 'base.html' %}
+
+{% block title %}
+File expense upload
+{% endblock %}
+
+{% block content %}
+<h1>File upload</h1>
+<p>The columns of the CSV file are:</p>
+<pre class="bg-light text-dark">Payment date, description, amount(with currency), account</pre>
+<hr>
+<form method="post" enctype="multipart/form-data">
+    {% csrf_token %}
+    <div class="mb-3 row">
+        <label for="staticEmail" class="col-sm-2 col-form-label">Period:</label>
+        <div class="col-sm-10">
+            {{ form.period }}
+        </div>
+        </div>
+        <div class="mb-3 row">
+            <label for="inputPassword" class="col-sm-2 col-form-label">File:</label>
+            <div class="col-sm-10">
+                {{ form.file }}
+            </div>
+        </div>
+    <button type="submit" class="btn btn-primary mb-3">Enviar</button>
+</form>
+{% endblock %}
