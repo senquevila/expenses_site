@@ -12,23 +12,34 @@ from django.urls import include
 router = DefaultRouter()
 router.register(r"expenses", api_views.ExpenseViewSet, basename="expenses")
 router.register(r"accounts", api_views.AccountViewSet, basename="accounts")
-router.register(r"currency_converts", api_views.CurrencyConvertViewSet, basename="currency_converts")
+router.register(
+    r"currency_converts", api_views.CurrencyConvertViewSet, basename="currency_converts"
+)
 
 urlpatterns = [
     path("", include(router.urls)),
+    # period
+    path(
+        "period/close/<int:pk>/",
+        api_views.PeriodCloseView.as_view(),
+        name="period-close",
+    ),
+    # currencies
     path(
         "currency/create_usd_exchange/",
         api_views.CreateDollarConvertionView.as_view(),
         name="create-dollar-convert",
     ),
-    path(
-        "expense/<int:period>/summary/",
-        api_views.ExpenseSummaryListView.as_view(),
-        name="expense-summary-list",
-    ),
+    # account
     path(
         "account/swap/",
         api_views.SwapAccountView.as_view(),
         name="account-swap",
+    ),
+    # expense
+    path(
+        "expense/<int:period>/summary/",
+        api_views.ExpenseSummaryListView.as_view(),
+        name="expense-summary-list",
     ),
 ]

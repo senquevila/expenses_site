@@ -31,6 +31,18 @@
     </div>
   </nav>
 
+  <!-- show errors menu -->
+  {% if messages %}
+  <div class="messages">
+    {% for message in messages %}
+    <div class="alert {% if message.tags == 'error' %}alert-danger{% endif %}">
+      {{ message }}
+    </div>
+    {% endfor %}
+  </div>
+  {% endif %}
+
+
   {% block content %}
   {% endblock %}
 </div>

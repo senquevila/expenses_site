@@ -1,27 +1,29 @@
 import csv
 import io
-from datetime import datetime
+from typing import Any
 
 from django.conf import settings
+from django.db.models.query import QuerySet
 from django.forms import ValidationError
-from django.shortcuts import render
+from django.shortcuts import redirect, render
 from django.utils import timezone
 from django.views import View
 from django.views.generic import FormView, ListView
 
 from expenses.forms import ExpenseFileUploadForm
-from expenses.models import Account, Currency, Expense
+from expenses.models import Account, Currency, Expense, Period
+from expenses.utils import str_to_date
 
 
 class HomeView(View):
     def get(self, request, *args, **kwargs):
-        return render(request=request, template_name="expenses/home.html")
+        return redirect("period-list")
 
 
 class UploadExpenseView(FormView):
     template_name = "expenses/upload_form.html"
     form_class = ExpenseFileUploadForm
-    success_url = "/expenses/"
+    success_url = "/"
 
     def form_invalid(self, form):
         context = {'form': form}
@@ -34,7 +36,7 @@ class UploadExpenseView(FormView):
         print("DEFAULT_CURRENCY:", settings.DEFAULT_CURRENCY)
         print("DEFAULT_ACCOUNT:", settings.DEFAULT_ACCOUNT)
 
-        decoded_file = io.TextIOWrapper(file, encoding="utf-8", newline="")
+        decoded_file = io.TextIOWrapper(file, encoding="utf-8-sig", newline="")
         csv_reader = csv.reader(decoded_file)
 
         default_currency = Currency.objects.filter(alpha3=settings.DEFAULT_CURRENCY)
@@ -71,7 +73,7 @@ class UploadExpenseView(FormView):
             if not currency.exists():
                 currency = default_currency
 
-            payment_date = datetime.strptime(row[0], settings.DEFAULT_DATE_FORMAT).date()
+            payment_date = str_to_date(row[0])
             if not payment_date:
                 payment_date = timezone.now().date()
 
@@ -91,8 +93,24 @@ class UploadExpenseView(FormView):
         return [str(item).strip() for item in row]
 
 
+class PeriodListView(ListView):
+    model = Period
+    template_name = "periods/list.html"
+    context_object_name = "periods"
+    ordering = ["-year", "-month"]
+
+
 class ExpenseListView(ListView):
     model = Expense
     template_name = "expenses/list.html"
     context_object_name = "expenses"
-    ordering = ["-created"]
+
+    def get_queryset(self):
+        period = self.kwargs.get("period_id")
+
+        print("-"*20, period)
+
+        # Filter expenses by the specified period
+        queryset = Expense.objects.filter(period=period).order_by("-payment_date", "-created")
+
+        return queryset

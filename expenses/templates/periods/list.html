@@ -1,0 +1,33 @@
+{% extends 'base.html' %}
+
+{% block title %}
+Expense List
+{% endblock %}
+
+{% block content %}
+<h1>Period List</h1>
+<table class="table table-striped">
+    <tr>
+        <th>Period</th>
+        <th>Total</th>
+        <th>Closed</th>
+    </tr>
+    {% for period in periods %}
+    <tr>
+        <td>
+            <a href="{% url 'expense-list' period_id=period.pk %}">
+            {{ period.year }}-{{ period.month|stringformat:"02d" }}
+            </a>
+        </td>
+        <td>{{ period.total }}</td>
+        <td>
+            {% if not period.closed %}
+            <a href="{% url 'period-close' pk=period.pk %}">{{ period.closed|yesno:"Closed, Open" }}</a>
+            {% else %}
+            {{ period.closed|yesno:"Closed, Open" }}
+            {% endif %}
+        </td>
+    </tr>
+    {% endfor %}
+</table>
+{% endblock %}

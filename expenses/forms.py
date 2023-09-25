@@ -6,7 +6,7 @@ from expenses.models import Period, Expense
 
 class ExpenseFileUploadForm(forms.Form):
     period = forms.ModelChoiceField(
-        queryset=Period.objects.all().order_by("-pk"),
+        queryset=Period.objects.filter(closed=False).order_by("-pk"),
         empty_label=None,
         help_text="Seleccione el periodo",
     )

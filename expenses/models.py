@@ -6,6 +6,8 @@ from expenses.mixins import CreationModificationDateMixin
 class Period(models.Model):
     month = models.IntegerField()
     year = models.IntegerField()
+    closed = models.BooleanField(default=False)
+    total = models.DecimalField(max_digits=13, decimal_places=2, default=0)
 
     class Meta:
         verbose_name = "Periodo"
@@ -29,7 +31,7 @@ class Currency(models.Model):
 
 class CurrencyConvert(models.Model):
     currency = models.ForeignKey(Currency, on_delete=models.DO_NOTHING)
-    exchange = models.DecimalField(max_digits=13, decimal_places=4)
+    exchange = models.DecimalField(max_digits=10, decimal_places=4)
     date = models.DateField()
 
     class Meta:

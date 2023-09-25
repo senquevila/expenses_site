@@ -7,7 +7,12 @@ from expenses import views
 
 urlpatterns = [
     path(
-        "",
+        "periods/",
+        views.PeriodListView.as_view(),
+        name="period-list",
+    ),
+    path(
+        "list/period/<int:period_id>",
         views.ExpenseListView.as_view(),
         name="expense-list",
     ),

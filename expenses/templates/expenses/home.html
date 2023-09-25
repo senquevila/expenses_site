@@ -7,7 +7,9 @@ Expenses
 {% block content %}
     <h1>Most recent expenses</h1>
     <h2>Total: 0</h2>
-    <canvas id="myChart"></canvas>
+    <div style="width: 40%; margin: auto;">
+        <canvas id="myChart" style="height: 100px;"></canvas>
+    </div>
     <table id="json-table" border="1" class="table table-striped">
         <thead>
             <tr>
@@ -27,6 +29,25 @@ Expenses
 
         // Get the table body element
         var tableBody = document.getElementById("table-body");
+
+        const colors = [
+            'rgba(255, 99, 132, 0.5)',
+            'rgba(54, 162, 235, 0.5)',
+            'rgba(255, 206, 86, 0.5)',
+            'rgba(75, 192, 192, 0.5)',
+            'rgba(153, 102, 255, 0.5)',
+            'rgba(255, 159, 64, 0.5)',
+            'rgba(255, 99, 132, 0.5)',
+            'rgba(54, 162, 235, 0.5)',
+            'rgba(255, 206, 86, 0.5)',
+            'rgba(75, 192, 192, 0.5)',
+            'rgba(153, 102, 255, 0.5)',
+            'rgba(255, 159, 64, 0.5)',
+            'rgba(255, 99, 132, 0.5)',
+            'rgba(54, 162, 235, 0.5)',
+            'rgba(255, 206, 86, 0.5)',
+        ];
+
 
         // Fetch JSON data from the API
         fetch(apiUrl)
@@ -53,14 +74,14 @@ Expenses
                 // Create the chart
                 const ctx = document.getElementById('myChart').getContext('2d');
                 const myChart = new Chart(ctx, {
-                    type: 'bar',
+                    type: 'pie',
                     data: {
                         labels: labels,
                         datasets: [{
                             label: 'Total Amount',
                             data: values,
-                            backgroundColor: 'rgba(75, 192, 192, 0.2)',
-                            borderColor: 'rgba(75, 192, 192, 1)',
+                            backgroundColor: colors,
+                            borderColor: 'rgba(0, 0, 0, 0.5)',
                             borderWidth: 1
                         }]
                     },
@@ -68,6 +89,16 @@ Expenses
                         scales: {
                             y: {
                                 beginAtZero: true
+                            }
+                        },
+                        tooltips: {
+                            callbacks: {
+                                label: function (tooltipItem, data) {
+                                    let label = data.labels[tooltipItem.index] || '';
+                                    let value = data.datasets[0].data[tooltipItem.index];
+                                    let percentage = ((value / data.datasets[0].data.reduce((a, b) => a + b, 0)) * 100).toFixed(2);
+                                    return label + ': ' + value + ' (' + percentage + '%)';
+                                }
                             }
                         }
                     }
