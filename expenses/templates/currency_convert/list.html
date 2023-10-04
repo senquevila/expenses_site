@@ -1,0 +1,23 @@
+{% extends 'base.html' %}
+
+{% block title %}
+Currency Convertion List
+{% endblock %}
+
+{% block content %}
+<h1>Currency Convertion List</h1>
+<table class="table table-striped">
+    <tr>
+        <th>Currency</th>
+        <th>Exchange</th>
+        <th>Date</th>
+    </tr>
+    {% for item in currency_converts %}
+    <tr>
+        <td>{{ item.currency }}</td>
+        <td>{{ item.exchange }}</td>
+        <td>{{ item.date }}</td>
+    </tr>
+    {% endfor %}
+</table>
+{% endblock %}

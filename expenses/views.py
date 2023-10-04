@@ -11,7 +11,7 @@ from django.views import View
 from django.views.generic import FormView, ListView
 
 from expenses.forms import ExpenseFileUploadForm
-from expenses.models import Account, Currency, Expense, Period
+from expenses.models import Account, Currency, CurrencyConvert, Expense, Period
 from expenses.utils import str_to_date
 
 
@@ -23,7 +23,7 @@ class HomeView(View):
 class UploadExpenseView(FormView):
     template_name = "expenses/upload_form.html"
     form_class = ExpenseFileUploadForm
-    success_url = "/"
+    success_url = "/home/"
 
     def form_invalid(self, form):
         context = {'form': form}
@@ -106,11 +106,23 @@ class ExpenseListView(ListView):
     context_object_name = "expenses"
 
     def get_queryset(self):
-        period = self.kwargs.get("period_id")
-
-        print("-"*20, period)
+        period = self.kwargs.get("period")
 
         # Filter expenses by the specified period
         queryset = Expense.objects.filter(period=period).order_by("-payment_date", "-created")
 
         return queryset
+
+
+class AccountListView(ListView):
+    model = Account
+    template_name = "accounts/list.html"
+    context_object_name = "accounts"
+    ordering = ["name"]
+
+
+class CurrencyConvertListView(ListView):
+    model = CurrencyConvert
+    template_name = "currency_convert/list.html"
+    context_object_name = "currency_converts"
+    ordering = ["-date"]

@@ -18,8 +18,7 @@ from django.urls import path, include
 from expenses.views import HomeView
 
 urlpatterns = [
-    path("", HomeView.as_view(), name="home"),
     path("admin/", admin.site.urls),
     path("api/", include("expenses.api.urls")),
-    path("expenses/", include("expenses.urls")),
+    path("", include("expenses.urls")),
 ]
