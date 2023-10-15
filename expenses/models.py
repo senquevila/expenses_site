@@ -32,7 +32,7 @@ class Currency(models.Model):
 class CurrencyConvert(models.Model):
     currency = models.ForeignKey(Currency, on_delete=models.DO_NOTHING)
     exchange = models.DecimalField(max_digits=10, decimal_places=4)
-    date = models.DateField()
+    date = models.DateField(auto_now_add=True)
 
     class Meta:
         verbose_name = "Conversion de moneda"
