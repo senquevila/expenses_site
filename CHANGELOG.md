@@ -4,6 +4,7 @@
 ### New
 - Create `local_amount` field on Expense model.
 - Create `populate_local_amount` command.
+- Create `refresh_period_total` command.
 
 ### Change
 - Create usd convertion when upload expenses.
