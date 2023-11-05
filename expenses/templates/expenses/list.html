@@ -5,7 +5,7 @@ Expense List
 {% endblock %}
 
 {% block content %}
-<h1>Expense List</h1>
+<h1>Expense List ({{ total_count }})</h1>
 <table class="table table-striped">
     <tr>
         <th>Account</th>
@@ -16,7 +16,7 @@ Expense List
     {% for expense in expenses %}
     <tr>
         <td>{{ expense.account.name }}</td>
-        <td class="text-end" scope="col">{{ expense.amount_str }}</td>
+        <td class="text-end {% if expense.account.sign == 1 %}text-bg-success{% else %}text-bg-danger{% endif %}" scope="col">{{ expense.amount_str }}</td>
         <td>{{ expense.description }}</td>
         <td>{{ expense.payment_date }}</td>
     </tr>

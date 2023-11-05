@@ -13,7 +13,7 @@ class ExpenseFileUploadForm(forms.Form):
     file = forms.FileField(
         label="Archivo",
         help_text="Seleccione un archivo CSV para cargar",
-        validators=[FileExtensionValidator(allowed_extensions=['csv'])]
+        validators=[FileExtensionValidator(allowed_extensions=["csv"])],
     )
 
     class Meta:

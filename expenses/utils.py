@@ -23,6 +23,6 @@ def str_to_date(str_date) -> datetime.date:
             return datetime.strptime(str_date, format).date()
         except ValueError:
             print("Invalid date format")
-            #pass
+            # pass
 
     raise ValueError("Invalid date")

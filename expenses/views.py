@@ -26,7 +26,7 @@ class UploadExpenseView(FormView):
     success_url = "/home/"
 
     def form_invalid(self, form):
-        context = {'form': form}
+        context = {"form": form}
         return self.render_to_response(context=context)
 
     def form_valid(self, form):
@@ -109,9 +109,19 @@ class ExpenseListView(ListView):
         period = self.kwargs.get("period")
 
         # Filter expenses by the specified period
-        queryset = Expense.objects.filter(period=period).order_by("-payment_date", "-created")
+        queryset = Expense.objects.filter(period=period).order_by(
+            "-payment_date", "-created"
+        )
 
         return queryset
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+
+        total_count = self.get_queryset().count()
+        context["total_count"] = total_count
+
+        return context
 
 
 class AccountListView(ListView):

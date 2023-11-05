@@ -58,10 +58,11 @@ class Account(models.Model):
         verbose_name_plural = "Cuentas"
 
     def __str__(self) -> str:
+        _sign = "-" if self.sign == -1 else "+"
         if not self.parent:
-            return f"{self.name} [{str(self.sign)}]"
+            return f"{self.name} [{_sign}]"
         else:
-            return f"{self.parent} > {self.name} [{str(self.sign)}]"
+            return f"{self.name} ({self.parent.name}) [{_sign}]"
 
 
 class Accountable(CreationModificationDateMixin):
@@ -74,9 +75,7 @@ class Accountable(CreationModificationDateMixin):
         abstract = True
 
     def __str__(self) -> str:
-        return (
-            f"{self.period} => {self.account}: {self.currency.alpha3} {self.amount}"
-        )
+        return f"{self.period} => {self.account}: {self.currency.alpha3} {self.amount}"
 
     @property
     def amount_str(self):

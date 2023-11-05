@@ -30,10 +30,12 @@ class CreateDollarConvertionView(APIView):
                     status=status.HTTP_424_FAILED_DEPENDENCY,
                 )
 
-            serializer = CurrencyConvertSerializer(data={
-                "currency": Currency.objects.filter(alpha3="USD").first().pk,
-                "exchange": exchange,
-            })
+            serializer = CurrencyConvertSerializer(
+                data={
+                    "currency": Currency.objects.filter(alpha3="USD").first().pk,
+                    "exchange": exchange,
+                }
+            )
             serializer.is_valid(raise_exception=True)
             serializer.save()
             return Response(serializer.data, status=status.HTTP_201_CREATED)
