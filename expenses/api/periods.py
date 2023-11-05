@@ -20,4 +20,4 @@ class PeriodCloseView(APIView):
 
     def _get_total(self, period: Period) -> float:
         expenses = Expense.objects.filter(period=period)
-        return sum(expense.get_local_value for expense in expenses)
+        return sum(expense.local_amount for expense in expenses)

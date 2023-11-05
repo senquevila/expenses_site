@@ -1,11 +1,12 @@
 import csv
+from datetime import date
 import io
-from typing import Any
+import requests
 
 from django.conf import settings
-from django.db.models.query import QuerySet
 from django.forms import ValidationError
-from django.shortcuts import redirect, render
+from django.shortcuts import redirect
+from django.urls import reverse
 from django.utils import timezone
 from django.views import View
 from django.views.generic import FormView, ListView
@@ -33,8 +34,10 @@ class UploadExpenseView(FormView):
         period = form.cleaned_data["period"]
         file = form.cleaned_data["file"]
 
-        print("DEFAULT_CURRENCY:", settings.DEFAULT_CURRENCY)
-        print("DEFAULT_ACCOUNT:", settings.DEFAULT_ACCOUNT)
+        if not CurrencyConvert.objects.filter(
+            date=date.today(), currency__alpha3="USD"
+        ).exists():
+            self._post_convert_dollars(self.request)
 
         decoded_file = io.TextIOWrapper(file, encoding="utf-8-sig", newline="")
         csv_reader = csv.reader(decoded_file)
@@ -51,8 +54,6 @@ class UploadExpenseView(FormView):
         for row in csv_reader:
             lines += 1
             row = self._clear_row(row)
-            print(row)
-
             account = Account.objects.filter(name=row[3])
 
             if not account.exists():
@@ -66,7 +67,7 @@ class UploadExpenseView(FormView):
 
             try:
                 code_currency = money[1]
-            except (IndexError) as e:
+            except IndexError as e:
                 code_currency = None
 
             currency = Currency.objects.filter(alpha3=code_currency)
@@ -85,12 +86,23 @@ class UploadExpenseView(FormView):
                 currency=currency.first(),
                 amount=amount,
             )
+            expense.local_amount = expense.get_local_amount
             expense.save()
 
         return super().form_valid(form)
 
     def _clear_row(self, row: list):
         return [str(item).strip() for item in row]
+
+    def _post_convert_dollars(self):
+        url = self.request.build_absolute_uri(reverse("create-dollar-convert"))
+        response = requests.post(url, headers={"Content-Type": "application/json"})
+
+        # Check the status of the response
+        if response.status_code == 200:
+            print("POST request sent successfully")
+        else:
+            print("Failed to send POST request")
 
 
 class PeriodListView(ListView):

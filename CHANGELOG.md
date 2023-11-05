@@ -1,5 +1,13 @@
 # Changelog
 
+## 2023-11-04
+### New
+- Create `local_amount` field on Expense model.
+- Create `populate_local_amount` command.
+
+### Change
+- Create usd convertion when upload expenses.
+
 ## 2023-10-15
 ### Change
 - Return the convertion object when it is created.

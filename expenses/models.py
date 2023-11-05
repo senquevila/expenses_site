@@ -1,4 +1,8 @@
+from decimal import Decimal
+from datetime import timedelta
 from django.db import models
+from django.db.models import F
+from django.db.models.functions import Abs
 from django.utils import timezone
 from expenses.mixins import CreationModificationDateMixin
 
@@ -82,13 +86,14 @@ class Accountable(CreationModificationDateMixin):
         return f"{self.currency.alpha3} {self.amount}"
 
     @property
-    def get_local_value(self) -> float:
+    def get_signed_value(self) -> float:
         return self.amount * self.account.sign
 
 
 class Expense(Accountable):
     description = models.CharField(max_length=255, blank=True, null=True)
     payment_date = models.DateField(default=timezone.now, blank=True, null=True)
+    local_amount = models.DecimalField(max_digits=13, decimal_places=2, default=0)
 
     class Meta:
         verbose_name = "Gasto"
@@ -96,3 +101,18 @@ class Expense(Accountable):
 
     def __str__(self) -> str:
         return super().__str__()
+
+    @property
+    def get_local_amount(self) -> Decimal:
+        data = (
+            CurrencyConvert.objects.filter(
+                currency=self.currency,
+                date__lte=self.payment_date + timedelta(days=30),
+                date__gte=self.payment_date - timedelta(days=30),
+            )
+            .annotate(date_difference=Abs(F("date") - self.payment_date))
+            .order_by("date_difference")
+            .values("exchange")[:1]
+        )
+        exchange = data[0]["exchange"] if data else Decimal(1)
+        return self.amount * self.account.sign * exchange
