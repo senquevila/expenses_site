@@ -1,5 +1,12 @@
 # Changelog
 
+## 2023-12-31
+### New
+- Filter to omit closed period in the expenses uploads.
+
+### Change
+- Removed period from upload expenses. This field will be calculated from the payment date.
+
 ## 2023-11-04
 ### New
 - Create `local_amount` field on Expense model.
