@@ -114,5 +114,5 @@ class Expense(Accountable):
             .order_by("date_difference")
             .values("exchange")[:1]
         )
-        exchange = data[0]["exchange"] if data else Decimal(1)
-        return self.amount * self.account.sign * exchange
+        exchange = data[0]["exchange"] if data else 1
+        return Decimal(self.amount) * Decimal(self.account.sign) * Decimal(exchange)

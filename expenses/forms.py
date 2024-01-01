@@ -5,11 +5,6 @@ from expenses.models import Period, Expense
 
 
 class ExpenseFileUploadForm(forms.Form):
-    period = forms.ModelChoiceField(
-        queryset=Period.objects.filter(closed=False).order_by("-pk"),
-        empty_label=None,
-        help_text="Seleccione el periodo",
-    )
     file = forms.FileField(
         label="Archivo",
         help_text="Seleccione un archivo CSV para cargar",
