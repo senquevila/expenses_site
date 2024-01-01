@@ -22,7 +22,7 @@ class HomeView(View):
 
 
 class UploadExpenseView(FormView):
-    template_name = "expenses/upload_form.html"
+    template_name = "expenses/upload.html"
     form_class = ExpenseFileUploadForm
     success_url = "/home/"
 
