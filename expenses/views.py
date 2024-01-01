@@ -31,7 +31,6 @@ class UploadExpenseView(FormView):
         return self.render_to_response(context=context)
 
     def form_valid(self, form):
-        period = form.cleaned_data["period"]
         file = form.cleaned_data["file"]
 
         if not CurrencyConvert.objects.filter(
@@ -53,6 +52,7 @@ class UploadExpenseView(FormView):
         lines = 0
         for row in csv_reader:
             lines += 1
+            print(f"Line: {lines}")
             row = self._clear_row(row)
             account = Account.objects.filter(name=row[3])
 
@@ -63,6 +63,7 @@ class UploadExpenseView(FormView):
             try:
                 amount = float(money[0].replace(",", ""))
             except (IndexError, ValueError) as e:
+                print("Error: amount not found")
                 continue
 
             try:
@@ -72,9 +73,20 @@ class UploadExpenseView(FormView):
 
             currency = Currency.objects.filter(alpha3=code_currency)
             if not currency.exists():
+                print("Warning: using default currency")
                 currency = default_currency
 
             payment_date = str_to_date(row[0])
+            try:
+                period = Period.objects.get(year=payment_date.year, month=payment_date.month)
+            except Period.DoesNotExist:
+                print("Warning: Period does not exists")
+                continue
+
+            if period.closed:
+                print("Warning: Period closed")
+                continue
+
             if not payment_date:
                 payment_date = timezone.now().date()
 
@@ -88,6 +100,7 @@ class UploadExpenseView(FormView):
             )
             expense.local_amount = expense.get_local_amount
             expense.save()
+            print("Expense saved!!")
 
         return super().form_valid(form)
 
@@ -118,10 +131,10 @@ class ExpenseListView(ListView):
     context_object_name = "expenses"
 
     def get_queryset(self):
-        period = self.kwargs.get("period")
+        self.period_id = self.kwargs.get("period")
 
         # Filter expenses by the specified period
-        queryset = Expense.objects.filter(period=period).order_by(
+        queryset = Expense.objects.filter(period=self.period_id).order_by(
             "-payment_date", "-created"
         )
 
@@ -129,10 +142,10 @@ class ExpenseListView(ListView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-
         total_count = self.get_queryset().count()
+        period = Period.objects.get(pk=self.period_id)
         context["total_count"] = total_count
-
+        context["period"] = str(period)
         return context
 
 
