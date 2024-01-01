@@ -13,7 +13,7 @@ urlpatterns = [
         name="period-list",
     ),
     path(
-        "expenses/period/<int:period>",
+        "periods/<int:period>",
         views.ExpenseListView.as_view(),
         name="expense-list",
     ),
