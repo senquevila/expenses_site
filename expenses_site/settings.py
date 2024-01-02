@@ -39,9 +39,11 @@ INSTALLED_APPS = [
     "django.contrib.sessions",
     "django.contrib.messages",
     "django.contrib.staticfiles",
+    "django.contrib.humanize",
     "expenses",
     "rest_framework",
     "corsheaders",
+    "debug_toolbar",
 ]
 
 MIDDLEWARE = [
@@ -53,6 +55,7 @@ MIDDLEWARE = [
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
     "corsheaders.middleware.CorsMiddleware",
+    "debug_toolbar.middleware.DebugToolbarMiddleware",
 ]
 
 ROOT_URLCONF = "expenses_site.urls"
@@ -146,3 +149,7 @@ CORS_ALLOWED_ORIGINS = ["http://127.0.0.1:8000", "http://127.0.0.1:3000"]
 DEFAULT_CURRENCY = "HNL"
 DEFAULT_ACCOUNT = "Gasto"
 DEFAULT_DATE_FORMAT = "%d/%m/%y"
+
+INTERNAL_IPS = [
+    "127.0.0.1",
+]
