@@ -5,20 +5,13 @@ import requests
 
 from django.conf import settings
 from django.forms import ValidationError
-from django.shortcuts import redirect
 from django.urls import reverse
 from django.utils import timezone
-from django.views import View
 from django.views.generic import FormView, ListView
 
 from expenses.forms import ExpenseFileUploadForm
 from expenses.models import Account, Currency, CurrencyConvert, Expense, Period
 from expenses.utils import str_to_date
-
-
-class HomeView(View):
-    def get(self, request, *args, **kwargs):
-        return redirect("period-list")
 
 
 class UploadExpenseView(FormView):
@@ -118,13 +111,6 @@ class UploadExpenseView(FormView):
             print("Failed to send POST request")
 
 
-class PeriodListView(ListView):
-    model = Period
-    template_name = "periods/list.html"
-    context_object_name = "periods"
-    ordering = ["-year", "-month"]
-
-
 class ExpenseListView(ListView):
     model = Expense
     template_name = "expenses/list.html"
@@ -142,22 +128,6 @@ class ExpenseListView(ListView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        total_count = self.get_queryset().count()
         period = Period.objects.get(pk=self.period_id)
-        context["total_count"] = total_count
         context["period"] = str(period)
         return context
-
-
-class AccountListView(ListView):
-    model = Account
-    template_name = "accounts/list.html"
-    context_object_name = "accounts"
-    ordering = ["name"]
-
-
-class CurrencyConvertListView(ListView):
-    model = CurrencyConvert
-    template_name = "currency_convert/list.html"
-    context_object_name = "currency_converts"
-    ordering = ["-date"]
