@@ -1,33 +1,36 @@
 {% extends 'base.html' %}
+{% load humanize %}
 
 {% block title %}
 Expense List
 {% endblock %}
 
 {% block content %}
-<h1>Period List</h1>
-<table class="table table-striped">
-    <tr>
-        <th>Period</th>
-        <th>Total</th>
-        <th>Closed</th>
-    </tr>
-    {% for period in periods %}
-    <tr>
-        <td>
-            <a href="{% url 'expense-list' period=period.pk %}">
-            {{ period.year }}-{{ period.month|stringformat:"02d" }}
-            </a>
-        </td>
-        <td>{{ period.total }}</td>
-        <td>
-            {% if not period.closed %}
-            <a href="{% url 'period-close' pk=period.pk %}">{{ period.closed|yesno:"Closed, Open" }}</a>
-            {% else %}
-            {{ period.closed|yesno:"Closed, Open" }}
-            {% endif %}
-        </td>
-    </tr>
-    {% endfor %}
-</table>
+<div class="col-md-6">
+    <h1>Period List</h1>
+    <table class="table table-striped">
+        <tr>
+            <th>Period</th>
+            <th class="text-end">Total</th>
+            <th>Closed</th>
+        </tr>
+        {% for period in periods %}
+        <tr>
+            <td>
+                <a href="{% url 'expense-list' period=period.pk %}">
+                {{ period.year }}-{{ period.month|stringformat:"02d" }}
+                </a>
+            </td>
+            <td class="text-end {% if period.total >= 0 %}text-bg-success{% else %}text-bg-danger{% endif %}" scope="col">{{ period.total|intcomma }}</td>
+            <td>
+                {% if not period.closed %}
+                <a href="{% url 'period-close' pk=period.pk %}">{{ period.closed|yesno:"Closed, Open" }}</a>
+                {% else %}
+                {{ period.closed|yesno:"Closed, Open" }}
+                {% endif %}
+            </td>
+        </tr>
+        {% endfor %}
+    </table>
+</div>
 {% endblock %}
