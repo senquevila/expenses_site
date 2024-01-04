@@ -1,5 +1,9 @@
 # Changelog
 
+## 2024-01-01
+### New
+- Add Bank and BankAccount models.
+
 ## 2023-12-31
 ### New
 - Filter to omit closed period in the expenses uploads.

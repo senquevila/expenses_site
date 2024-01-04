@@ -116,3 +116,11 @@ class Expense(Accountable):
         )
         exchange = data[0]["exchange"] if data else 1
         return Decimal(self.amount) * Decimal(self.account.sign) * Decimal(exchange)
+
+
+class Bank(models.Model):
+    name = models.CharField(max_length=100)
+
+class BankAccount(models.Model):
+    code = models.CharField(max_length=50)
+    bank = models.ForeignKey(Bank, on_delete=models.CASCADE)
