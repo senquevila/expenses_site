@@ -1,43 +1,34 @@
 # Changelog
 
-## 2024-01-01
-### New
-- Add Bank and BankAccount models.
+## 2024-01-04
+- Added open periods endpoint.
+- Added link to use CDN font from bootstrap.
+- Changed the Changelog format. Using the verbs: Added, Changed and Removed
 
-### Remove
-- Remove not used API endpoints.
+## 2024-01-01
+- Added Bank and BankAccount models.
+- Removed not used API endpoints.
 
 ## 2023-12-31
-### New
-- Filter to omit closed period in the expenses uploads.
-
-### Remove
+- Changed Filter to omit closed period in the expenses uploads.
 - Removed period from upload expenses. This field will be calculated from the payment date.
 
 ## 2023-11-04
-### New
-- Create `local_amount` field on Expense model.
-- Create `populate_local_amount` command.
-- Create `refresh_period_total` command.
-
-### Change
-- Create usd convertion when upload expenses.
+- Added `local_amount` field on Expense model.
+- Added `populate_local_amount` command.
+- Added `refresh_period_total` command.
+- Added usd convertion when upload expenses.
 
 ## 2023-10-15
-### Change
-- Return the convertion object when it is created.
-- Make an script to call the convertion endpoint.
+- Added convertion object when it is created.
+- Added script to call the convertion endpoint.
 
 ## 2023-10-03
-### New
-- [Site] Account list.
-- [Site] Currency convert list.
-
-### Remove
-- [Site] home.html
+- Added Account list.
+- Added Currency convert list.
+- Added home.html
 
 ## 2023-09-24
-### New
-- Close a period.
-- HTML templates for list periods and expenses.
-- HTML templates for uploading expenses CSV files.
+- Added period closing.
+- Added HTML templates for list periods and expenses.
+- Added HTML templates for uploading expenses CSV files.
