@@ -17,7 +17,7 @@ Expense List
         {% for period in periods %}
         <tr>
             <td>
-                <a href="{% url 'expense-list' period=period.pk %}">
+                <a href="{% url 'period-expense-group' period=period.pk %}">
                 {{ period.year }}-{{ period.month|stringformat:"02d" }}
                 </a>
             </td>
