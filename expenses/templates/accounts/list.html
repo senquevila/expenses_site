@@ -5,21 +5,23 @@ Account List
 {% endblock %}
 
 {% block content %}
-<h1>Account List</h1>
-<table class="table table-striped">
-    <tr>
-        <th>Account</th>
-        <th>Sign</th>
-    </tr>
-    {% for account in accounts %}
-    <tr>
-        {% if account.parent %}
-        <td>{{ account.parent.name }} > {{ account.name }}</td>
-        {% else %}
-        <td>{{ account.name }}</td>
-        {% endif %}
-        <td>{{ account.sign }}</td>
-    </tr>
-    {% endfor %}
-</table>
+<div class="col-md-6">
+    <h1>Account List</h1>
+    <table class="table table-striped">
+        <tr>
+            <th>Account</th>
+            <th>Sign</th>
+        </tr>
+        {% for account in accounts %}
+        <tr>
+            {% if account.parent %}
+            <td>{{ account.parent.name }} > {{ account.name }}</td>
+            {% else %}
+            <td>{{ account.name }}</td>
+            {% endif %}
+            <td>{{ account.sign }}</td>
+        </tr>
+        {% endfor %}
+    </table>
+</div>
 {% endblock %}
