@@ -3,6 +3,7 @@ from datetime import date
 import io
 import requests
 
+from django.db.models import Q, Sum
 from django.conf import settings
 from django.forms import ValidationError
 from django.urls import reverse
@@ -11,7 +12,10 @@ from django.views.generic import FormView, ListView
 
 from expenses.forms import ExpenseFileUploadForm
 from expenses.models import Account, Currency, CurrencyConvert, Expense, Period
-from expenses.utils import str_to_date
+from expenses.utils import str_to_date, get_total_local_amount
+
+
+
 
 
 class UploadExpenseView(FormView):
@@ -71,7 +75,9 @@ class UploadExpenseView(FormView):
 
             payment_date = str_to_date(row[0])
             try:
-                period = Period.objects.get(year=payment_date.year, month=payment_date.month)
+                period = Period.objects.get(
+                    year=payment_date.year, month=payment_date.month
+                )
             except Period.DoesNotExist:
                 print("Warning: Period does not exists")
                 continue
@@ -111,17 +117,22 @@ class UploadExpenseView(FormView):
             print("Failed to send POST request")
 
 
-class ExpenseListView(ListView):
+class ExpenseGroupListView(ListView):
     model = Expense
-    template_name = "expenses/list.html"
+    template_name = "expenses/group.html"
     context_object_name = "expenses"
 
     def get_queryset(self):
         self.period_id = self.kwargs.get("period")
+        self.account_id = self.kwargs.get("account")
 
         # Filter expenses by the specified period
-        queryset = Expense.objects.filter(period=self.period_id).order_by(
-            "-payment_date", "-created"
+        queryset = (
+            Expense.objects.filter(period=self.period_id)
+            .values("account")
+            .annotate(total=Sum("local_amount"))
+            .values("account__name", "account__id", "total")
+            .order_by("total")
         )
 
         return queryset
@@ -130,4 +141,32 @@ class ExpenseListView(ListView):
         context = super().get_context_data(**kwargs)
         period = Period.objects.get(pk=self.period_id)
         context["period"] = str(period)
+        context["period_id"] = period.id
+        context["total"] = get_total_local_amount(Q(period=period))
+        return context
+
+
+class ExpenseListView(ListView):
+    model = Expense
+    template_name = "expenses/list.html"
+    context_object_name = "expenses"
+
+    def get_queryset(self):
+        self.period_id = self.kwargs.get("period")
+        self.account_id = self.kwargs.get("account")
+
+        # Filter expenses by the specified period
+        queryset = Expense.objects.filter(
+            period=self.period_id, account=self.account_id
+        ).order_by("local_amount")
+
+        return queryset
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        period = Period.objects.get(pk=self.period_id)
+        account = Account.objects.get(pk=self.account_id)
+        context["period"] = str(period)
+        context["account"] = account.name
+        context["total"] = get_total_local_amount(Q(period=period, account=account))
         return context

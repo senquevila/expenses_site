@@ -1,5 +1,7 @@
+from decimal import Decimal
+
 from datetime import datetime
-from django.db.models import F
+from django.db.models import F, Sum
 from django.db.models.functions import Abs
 
 from expenses.models import Expense, CurrencyConvert
@@ -24,3 +26,10 @@ def str_to_date(str_date) -> datetime.date:
             pass
 
     raise ValueError("Invalid date")
+
+
+def get_total_local_amount(filtered) -> Decimal:
+    queryset = Expense.objects.filter(filtered).aggregate(
+        total=Sum("local_amount")
+    )
+    return queryset["total"] or 0
