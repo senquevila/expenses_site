@@ -30,3 +30,14 @@ class PeriodCloseView(APIView):
     def _get_total(self, period: Period) -> float:
         expenses = Expense.objects.filter(period=period)
         return sum(expense.local_amount for expense in expenses)
+
+class PeriodOpenView(APIView):
+    def get(self, request, pk:int=None):
+        try:
+            period = Period.objects.get(pk=pk, closed=True)
+            period.closed = False
+            period.total = 0
+            period.save()
+        except Period.DoesNotExist:
+            messages.error(request=request, message="Period is already open or not exists")
+        return redirect("period-list")

@@ -12,7 +12,8 @@ Expense List
         <tr>
             <th>Period</th>
             <th class="text-end">Total</th>
-            <th>Closed</th>
+            <th class="text-center">Closed</th>
+            <th class="text-center">Action</th>
         </tr>
         {% for period in periods %}
         <tr>
@@ -22,13 +23,17 @@ Expense List
                 </a>
             </td>
             <td class="text-end {% if period.total >= 0 %}text-bg-success{% else %}text-bg-danger{% endif %}" scope="col">{{ period.total|intcomma }}</td>
-            <td>
-                {% if not period.closed %}
-                <a href="{% url 'period-close' pk=period.pk %}">{{ period.closed|yesno:"Closed, Open" }}</a>
-                {% else %}
-                {{ period.closed|yesno:"Closed, Open" }}
-                {% endif %}
+            {% if period.closed %}
+            <td class="bi bi-door-closed-fill text-center"></td>
+            <td class="text-center">
+                <a href="{% url 'period-open' pk=period.pk %}">Open</a>
             </td>
+            {% else %}
+            <td class="bi bi-door-open text-center"></td>
+            <td class="text-center">
+                <a href="{% url 'period-close' pk=period.pk %}">Close</a>
+            </td>
+            {% endif %}
         </tr>
         {% endfor %}
     </table>

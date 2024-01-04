@@ -18,6 +18,11 @@ urlpatterns = [
         name="period-close",
     ),
     path(
+        "period_open/<int:pk>",
+        views.PeriodOpenView.as_view(),
+        name="period-open",
+    ),
+    path(
         "expenses/<int:period>/<int:account>",
         views.ExpenseListView.as_view(),
         name="expense-list",
