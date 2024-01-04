@@ -23,39 +23,6 @@ class AccountViewSet(viewsets.ModelViewSet):
     serializer_class = AccountSerializer
 
 
-class ExpenseSummaryListView(APIView):
-    def get(self, request, *args, **kwargs):
-        _period = get_object_or_404(Period, pk=kwargs.get("period"))
-
-        expenses = (
-            Expense.objects.filter(period=_period)
-            .annotate(total_amount=Sum("amount"))
-            .only("period", "account")
-            .order_by("account__name")
-        )
-
-        # transform data
-        data = {"total": 0, "content": []}
-        content = {}
-        for expense in expenses:
-            value = round(get_real_amount(expense), 2)
-            data["total"] += value
-            if expense.account.name not in content:
-                content[expense.account.name] = {
-                    "period": str(expense.period),
-                    "account": expense.account.name,
-                    "total_amount": value,
-                }
-            else:
-                content[expense.account.name]["total_amount"] = (
-                    content[expense.account.name].get("total_amount", 0) + value
-                )
-
-        data["content"] = list(content.values())
-
-        return Response(data=data, status=status.HTTP_200_OK)
-
-
 class SwapAccountView(APIView):
     def post(self, request, *args, **kwargs):
         account_origin = get_object_or_404(

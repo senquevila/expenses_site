@@ -18,12 +18,6 @@ router.register(
 
 urlpatterns = [
     path("", include(router.urls)),
-    # period
-    path(
-        "period/close/<int:pk>/",
-        api_views.PeriodCloseView.as_view(),
-        name="period-close",
-    ),
     # currencies
     path(
         "currency/create_usd_exchange/",
@@ -35,11 +29,5 @@ urlpatterns = [
         "account/swap/",
         api_views.SwapAccountView.as_view(),
         name="account-swap",
-    ),
-    # expense
-    path(
-        "expense/<int:period>/summary/",
-        api_views.ExpenseSummaryListView.as_view(),
-        name="expense-summary-list",
     ),
 ]
