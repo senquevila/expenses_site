@@ -3,13 +3,15 @@
 ## 2024-01-01
 ### New
 - Add Bank and BankAccount models.
+
+### Remove
 - Remove not used API endpoints.
 
 ## 2023-12-31
 ### New
 - Filter to omit closed period in the expenses uploads.
 
-### Change
+### Remove
 - Removed period from upload expenses. This field will be calculated from the payment date.
 
 ## 2023-11-04
