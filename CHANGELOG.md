@@ -3,6 +3,7 @@
 ## 2024-01-01
 ### New
 - Add Bank and BankAccount models.
+- Remove not used API endpoints.
 
 ## 2023-12-31
 ### New
