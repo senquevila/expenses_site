@@ -13,9 +13,19 @@ urlpatterns = [
         name="period-list",
     ),
     path(
-        "periods/<int:period>",
+        "period_close/<int:pk>/",
+        views.PeriodCloseView.as_view(),
+        name="period-close",
+    ),
+    path(
+        "expenses/<int:period>/<int:account>",
         views.ExpenseListView.as_view(),
         name="expense-list",
+    ),
+    path(
+        "periods/<int:period>",
+        views.ExpenseGroupListView.as_view(),
+        name="period-expense-group",
     ),
     path(
         "expenses/upload/",
