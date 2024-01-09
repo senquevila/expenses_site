@@ -2,8 +2,7 @@ from django.contrib import admin
 
 from expenses.models import (
     Account,
-    Bank,
-    BankAccount,
+    AccountAsociation,
     Currency,
     CurrencyConvert,
     Period,
@@ -29,16 +28,6 @@ class CurrencyConvertAdmin(admin.ModelAdmin):
 @admin.register(Account)
 class AccountAdmin(admin.ModelAdmin):
     ordering = ["name"]
-
-
-@admin.register(Bank)
-class BankAdmin(admin.ModelAdmin):
-    pass
-
-
-@admin.register(BankAccount)
-class BankAccountAdmin(admin.ModelAdmin):
-    pass
 
 
 @admin.register(Expense)
@@ -69,3 +58,8 @@ class ExpenseAdmin(admin.ModelAdmin):
         return obj.account.name
 
     account_name.short_description = "Account Name"
+
+
+@admin.register(AccountAsociation)
+class AccountAsociationAdmin(admin.ModelAdmin):
+    pass

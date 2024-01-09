@@ -118,34 +118,13 @@ class Expense(Accountable):
         return Decimal(self.amount) * Decimal(self.account.sign) * Decimal(exchange)
 
 
-class Bank(models.Model):
-    name = models.CharField(max_length=100)
+class AccountAsociation(models.Model):
+    account = models.ForeignKey(Account, on_delete=models.CASCADE)
+    token = models.CharField(max_length=100)
 
     class Meta:
-        verbose_name = "Banco"
-        verbose_name_plural = "Bancos"
+        verbose_name = "Asociacion de cuenta"
+        verbose_name_plural = "Asociaciones de cuentas"
 
-    def __str__(self):
-        return self.name
-
-
-class BankAccount(models.Model):
-    CREDIT = "CREDIT"
-    DEBIT = "DEBIT"
-    ACCOUNT_TYPE = (
-        (CREDIT, "Credito"),
-        (DEBIT, "Debito"),
-    )
-    code = models.CharField(max_length=50)
-    bank = models.ForeignKey(Bank, on_delete=models.CASCADE)
-    account_type = models.CharField(
-        max_length=10, choices=ACCOUNT_TYPE, default=DEBIT
-    )
-    description = models.CharField(max_length=40, blank=True, null=True)
-
-    class Meta:
-        verbose_name = "Cuenta de banco"
-        verbose_name_plural = "Cuentas de banco"
-
-    def __str__(self):
-        return f"{self.bank.name} - {self.description}"
+    def __str__(self) -> str:
+        return f"{self.account.name} -> {self.token}"
