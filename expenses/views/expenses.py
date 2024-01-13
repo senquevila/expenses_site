@@ -1,7 +1,7 @@
 import csv
-from datetime import date
 import io
 import requests
+from datetime import date
 
 from django.db.models import Q, Sum
 from django.conf import settings
@@ -11,11 +11,19 @@ from django.utils import timezone
 from django.views.generic import FormView, ListView
 
 from expenses.forms import ExpenseFileUploadForm
-from expenses.models import Account, Currency, CurrencyConvert, Expense, Period
-from expenses.utils import str_to_date, get_total_local_amount
-
-
-
+from expenses.models import (
+    Account,
+    Currency,
+    CurrencyConvert,
+    Expense,
+    Period,
+)
+from expenses.serializers import ExpenseSerializer
+from expenses.utils import (
+    change_account_from_assoc,
+    get_total_local_amount,
+    str_to_date,
+)
 
 
 class UploadExpenseView(FormView):
@@ -38,23 +46,31 @@ class UploadExpenseView(FormView):
         decoded_file = io.TextIOWrapper(file, encoding="utf-8-sig", newline="")
         csv_reader = csv.reader(decoded_file)
 
-        default_currency = Currency.objects.filter(alpha3=settings.DEFAULT_CURRENCY)
-        if not default_currency.exists():
+        try:
+            default_currency = Currency.objects.get(alpha3=settings.DEFAULT_CURRENCY)
+        except Currency.DoesNotExist:
             raise ValidationError("Default currency not found")
 
-        default_account = Account.objects.filter(name=settings.DEFAULT_ACCOUNT)
-        if not default_account.exists():
+        try:
+            default_account = Account.objects.get(name=settings.DEFAULT_ACCOUNT)
+        except Account.DoesNotExist:
             raise ValidationError("Default account not found")
 
         lines = 0
         for row in csv_reader:
             lines += 1
-            print(f"Line: {lines}")
+            print(f"Line: {lines} - {row}")
             row = self._clear_row(row)
-            account = Account.objects.filter(name=row[3])
+            q_account = Account.objects.filter(name=row[3])
 
-            if not account.exists():
+            if q_account.exists():
+                account = q_account.first()
+            else:
+                account = self._assoc_accounts(row[2])
+
+            if not account:
                 account = default_account
+                print("Default account")
 
             money = row[2].split(" ")
             try:
@@ -72,6 +88,8 @@ class UploadExpenseView(FormView):
             if not currency.exists():
                 print("Warning: using default currency")
                 currency = default_currency
+            else:
+                currency = currency.first()
 
             payment_date = str_to_date(row[0])
             try:
@@ -79,28 +97,36 @@ class UploadExpenseView(FormView):
                     year=payment_date.year, month=payment_date.month
                 )
             except Period.DoesNotExist:
-                print("Warning: Period does not exists")
+                print("Error: Period does not exists")
                 continue
 
             if period.closed:
-                print("Warning: Period closed")
+                print("Error: Period is closed")
                 continue
 
             if not payment_date:
                 payment_date = timezone.now().date()
 
-            expense = Expense(
-                payment_date=payment_date,
-                description=row[1],
-                period=period,
-                account=account.first(),
-                currency=currency.first(),
-                amount=amount,
-            )
-            expense.local_amount = expense.get_local_amount
-            expense.save()
-            print("Expense saved!!")
+            data = {
+                "payment_date": payment_date,
+                "description": row[1],
+                "period": period.pk,
+                "account": account.pk,
+                "currency": currency.pk,
+                "amount": amount,
+            }
 
+            serializer = ExpenseSerializer(data=data)
+            if serializer.is_valid():
+                expense = serializer.save()
+                expense.local_amount = expense.get_local_amount
+                expense.save()
+                print("Expense saved!!")
+            else:
+                print(serializer.errors)
+
+        changes = change_account_from_assoc()
+        print(changes)
         return super().form_valid(form)
 
     def _clear_row(self, row: list):
@@ -114,7 +140,7 @@ class UploadExpenseView(FormView):
         if response.status_code == 200:
             print("POST request sent successfully")
         else:
-            print("Failed to send POST request")
+            print("Error: Failed to send POST request")
 
 
 class ExpenseGroupListView(ListView):

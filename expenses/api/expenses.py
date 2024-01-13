@@ -1,5 +1,4 @@
 # django imports
-from django.db.models import Sum
 from django.shortcuts import get_object_or_404
 
 # drf imports
@@ -8,9 +7,8 @@ from rest_framework import status, viewsets
 from rest_framework.response import Response
 
 # models import
-from expenses.models import Account, Expense, Period
+from expenses.models import Account, Expense
 from expenses.serializers import AccountSerializer, ExpenseSerializer
-from expenses.utils import get_real_amount
 
 
 class ExpenseViewSet(viewsets.ModelViewSet):

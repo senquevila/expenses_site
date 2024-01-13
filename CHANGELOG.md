@@ -1,5 +1,8 @@
 # Changelog
 
+## 2024-01-13
+- Automation for associating accounts by searching for reserved tokens in expense descriptions.
+
 ## 2024-01-04
 - Added open periods endpoint.
 - Added link to use CDN font from bootstrap.
