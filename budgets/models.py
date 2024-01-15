@@ -27,7 +27,9 @@ class Budget(models.Model):
     period = models.ForeignKey("expenses.Period", on_delete=models.CASCADE)
     total = models.DecimalField(max_digits=10, decimal_places=2)
 
+
     class Meta:
+        unique_together = ('user', 'period')
         verbose_name = "Presupuesto"
         verbose_name_plural = "Presupuestos"
 
