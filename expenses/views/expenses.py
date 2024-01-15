@@ -27,7 +27,7 @@ from expenses.utils import (
 
 
 class UploadExpenseView(FormView):
-    template_name = "expenses/upload.html"
+    template_name = "expenses/expenses/upload.html"
     form_class = ExpenseFileUploadForm
     success_url = reverse_lazy("home")
 
@@ -145,7 +145,7 @@ class UploadExpenseView(FormView):
 
 class ExpenseGroupListView(ListView):
     model = Expense
-    template_name = "expenses/group.html"
+    template_name = "expenses/expenses/group.html"
     context_object_name = "expenses"
 
     def get_queryset(self):
@@ -174,7 +174,7 @@ class ExpenseGroupListView(ListView):
 
 class ExpenseListView(ListView):
     model = Expense
-    template_name = "expenses/list.html"
+    template_name = "expenses/expenses/list.html"
     context_object_name = "expenses"
 
     def get_queryset(self):

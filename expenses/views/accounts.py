@@ -14,13 +14,13 @@ from expenses.models import Account, Expense
 
 class AccountListView(ListView):
     model = Account
-    template_name = "accounts/list.html"
+    template_name = "expenses/accounts/list.html"
     context_object_name = "accounts"
     ordering = ["name"]
 
 
 class AccountTransferView(FormView):
-    template_name = "accounts/transfer.html"
+    template_name = "expenses/accounts/transfer.html"
     form_class = AccountTransferForm
 
     def get_success_url(self) -> str:

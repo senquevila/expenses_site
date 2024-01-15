@@ -20,6 +20,6 @@ urlpatterns = [
     path("admin/", admin.site.urls),
     path("", include("expenses.urls")),
     path("api/", include("expenses.api.urls")),
-    path("", include("expenses.urls")),
+    path("budget/", include("budgets.urls")),
     path("__debug__/", include("debug_toolbar.urls")),
 ]
