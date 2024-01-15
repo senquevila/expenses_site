@@ -6,31 +6,31 @@ from expenses import views
 
 
 urlpatterns = [
-    path("home/", views.HomeView.as_view(), name="home"),
+    path("", views.HomeView.as_view(), name="home"),
     path(
         "periods/",
         views.PeriodListView.as_view(),
         name="period-list",
     ),
     path(
-        "period_close/<int:pk>/",
+        "periods/<int:period>/",
+        views.ExpenseGroupListView.as_view(),
+        name="period-expense-group",
+    ),
+    path(
+        "periods/<int:pk>/close/",
         views.PeriodCloseView.as_view(),
         name="period-close",
     ),
     path(
-        "period_open/<int:pk>",
+        "periods/<int:pk>/open/",
         views.PeriodOpenView.as_view(),
         name="period-open",
     ),
     path(
-        "expenses/<int:period>/<int:account>",
+        "periods/<int:period>/account/<int:account>/",
         views.ExpenseListView.as_view(),
         name="expense-list",
-    ),
-    path(
-        "periods/<int:period>",
-        views.ExpenseGroupListView.as_view(),
-        name="period-expense-group",
     ),
     path(
         "expenses/upload/",
@@ -43,7 +43,12 @@ urlpatterns = [
         name="account-list",
     ),
     path(
-        "currency-convert/",
+        "accounts/transfer/",
+        views.AccountTransferView.as_view(),
+        name="account-transfer"
+    ),
+    path(
+        "currency/convert/",
         views.CurrencyConvertListView.as_view(),
         name="currency-convert-list",
     ),

@@ -39,6 +39,7 @@ class ExpenseAdmin(admin.ModelAdmin):
         "amount",
         "account_name",
         "payment_date",
+        "created",
     )
     list_filter = (
         "period",

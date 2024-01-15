@@ -24,12 +24,6 @@ urlpatterns = [
         api_views.CreateDollarConvertionView.as_view(),
         name="create-dollar-convert",
     ),
-    # account
-    path(
-        "account/swap/",
-        api_views.SwapAccountView.as_view(),
-        name="account-swap",
-    ),
     path(
         "account/assoc/",
         api_views.AccountAssociationView.as_view(),

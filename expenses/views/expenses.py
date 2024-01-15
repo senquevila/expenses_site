@@ -6,7 +6,7 @@ from datetime import date
 from django.db.models import Q, Sum
 from django.conf import settings
 from django.forms import ValidationError
-from django.urls import reverse
+from django.urls import reverse_lazy
 from django.utils import timezone
 from django.views.generic import FormView, ListView
 
@@ -29,7 +29,7 @@ from expenses.utils import (
 class UploadExpenseView(FormView):
     template_name = "expenses/upload.html"
     form_class = ExpenseFileUploadForm
-    success_url = "/home/"
+    success_url = reverse_lazy("home")
 
     def form_invalid(self, form):
         context = {"form": form}
