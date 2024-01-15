@@ -1,7 +1,8 @@
+from django.views.generic.list import ListView
 from django.urls import reverse_lazy
 from django.views.generic.edit import CreateView, UpdateView
-from .models import Category, Budget, BudgetAssignment
-from .forms import CategoryForm, BudgetForm, BudgetAssignmentForm
+from budgets.models import Category, Budget, BudgetAssignment
+from budgets.forms import CategoryForm, BudgetForm, BudgetAssignmentForm
 
 
 class CategoryCreateView(CreateView):
@@ -18,6 +19,12 @@ class CategoryUpdateView(UpdateView):
     success_url = reverse_lazy("category_list")
 
 
+class CategoryListView(ListView):
+    model = Category
+    template_name = "category_list.html"
+    context_object_name = "categories"
+
+
 class BudgetCreateView(CreateView):
     model = Budget
     form_class = BudgetForm
@@ -32,6 +39,12 @@ class BudgetUpdateView(UpdateView):
     success_url = reverse_lazy("budget_list")
 
 
+class BudgetListView(ListView):
+    model = Budget
+    template_name = "budget_list.html"
+    context_object_name = "budgets"
+
+
 class BudgetAssignmentCreateView(CreateView):
     model = BudgetAssignment
     form_class = BudgetAssignmentForm
@@ -44,3 +57,9 @@ class BudgetAssignmentUpdateView(UpdateView):
     form_class = BudgetAssignmentForm
     template_name = "budgets/budget_assignment_form.html"
     success_url = reverse_lazy("budget_assignment_list")
+
+
+class BudgetAssignmentListView(ListView):
+    model = BudgetAssignment
+    template_name = "budget_assignment_list.html"
+    context_object_name = "budget_assignments"

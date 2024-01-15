@@ -1,0 +1,12 @@
+{% extends "base.html" %}
+
+{% block content %}
+  <h2>Budget Assignments</h2>
+  <ul>
+    {% for assignment in budget_assignments %}
+      <li>{{ assignment.budget }} - {{ assignment.category }}: {{ assignment.reserved_amount }}</li>
+    {% empty %}
+      <li>No budget assignments available.</li>
+    {% endfor %}
+  </ul>
+{% endblock %}

@@ -1,0 +1,12 @@
+{% extends "base.html" %}
+
+{% block content %}
+  <h2>Budgets</h2>
+  <ul>
+    {% for budget in budgets %}
+      <li>{{ budget.period }} - {{ budget.total }}</li>
+    {% empty %}
+      <li>No budgets available.</li>
+    {% endfor %}
+  </ul>
+{% endblock %}

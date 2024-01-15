@@ -1,25 +1,37 @@
 from django.urls import path
-from .views import (
+from budgets.views import (
     CategoryCreateView,
     CategoryUpdateView,
+    CategoryListView,
     BudgetCreateView,
     BudgetUpdateView,
+    BudgetListView,
     BudgetAssignmentCreateView,
     BudgetAssignmentUpdateView,
+    BudgetAssignmentListView,
 )
 
 urlpatterns = [
-    path("category/add/", CategoryCreateView.as_view(), name="category-add"),
-    path("category/<int:pk>/edit/", CategoryUpdateView.as_view(), name="category-edit"),
-    path("budget/add/", BudgetCreateView.as_view(), name="budget-add"),
-    path("budget/<int:pk>/edit/", BudgetUpdateView.as_view(), name="budget-edit"),
+    path("categories/", CategoryListView.as_view(), name="category-list"),
+    path("categories/add/", CategoryCreateView.as_view(), name="category-add"),
     path(
-        "assignment/add/",
+        "categories/<int:pk>/edit/", CategoryUpdateView.as_view(), name="category-edit"
+    ),
+    path("budgets/", BudgetListView.as_view(), name="budget-list"),
+    path("budgets/add/", BudgetCreateView.as_view(), name="budget-add"),
+    path("budgets/<int:pk>/edit/", BudgetUpdateView.as_view(), name="budget-edit"),
+    path(
+        "assignments/",
+        BudgetAssignmentListView.as_view(),
+        name="budget-assignment-list",
+    ),
+    path(
+        "assignments/add/",
         BudgetAssignmentCreateView.as_view(),
         name="budget-assignment-add",
     ),
     path(
-        "assignment/<int:pk>/edit/",
+        "assignments/<int:pk>/edit/",
         BudgetAssignmentUpdateView.as_view(),
         name="budget-assignment-edit",
     ),

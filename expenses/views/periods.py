@@ -11,7 +11,7 @@ from expenses.models import Expense, Period
 
 class PeriodListView(ListView):
     model = Period
-    template_name = "expenses/periods/list.html"
+    template_name = "expenses/periods_list.html"
     context_object_name = "periods"
     ordering = ["-year", "-month"]
 
