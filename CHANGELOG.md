@@ -1,5 +1,9 @@
 # Changelog
 
+## 2024-01-14
+- Added budget app.
+- Translate account.
+
 ## 2024-01-13
 - Automation for associating accounts by searching for reserved tokens in expense descriptions.
 
