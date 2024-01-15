@@ -23,16 +23,16 @@ urlpatterns = [
     path(
         "assignments/",
         BudgetAssignmentListView.as_view(),
-        name="budget-assignment-list",
+        name="assignment-list",
     ),
     path(
         "assignments/add/",
         BudgetAssignmentCreateView.as_view(),
-        name="budget-assignment-add",
+        name="assignment-add",
     ),
     path(
         "assignments/<int:pk>/edit/",
         BudgetAssignmentUpdateView.as_view(),
-        name="budget-assignment-edit",
+        name="assignment-edit",
     ),
 ]

@@ -9,14 +9,14 @@ class CategoryCreateView(CreateView):
     model = Category
     form_class = CategoryForm
     template_name = "budgets/category_form.html"
-    success_url = reverse_lazy("category_list")  # Replace with the actual URL
+    success_url = reverse_lazy("category-list")  # Replace with the actual URL
 
 
 class CategoryUpdateView(UpdateView):
     model = Category
     form_class = CategoryForm
     template_name = "budgets/category_form.html"
-    success_url = reverse_lazy("category_list")
+    success_url = reverse_lazy("category-list")
 
 
 class CategoryListView(ListView):
@@ -29,14 +29,14 @@ class BudgetCreateView(CreateView):
     model = Budget
     form_class = BudgetForm
     template_name = "budgets/budget_form.html"
-    success_url = reverse_lazy("budget_list")
+    success_url = reverse_lazy("budget-list")
 
 
 class BudgetUpdateView(UpdateView):
     model = Budget
     form_class = BudgetForm
     template_name = "budgets/budget_form.html"
-    success_url = reverse_lazy("budget_list")
+    success_url = reverse_lazy("budget-list")
 
 
 class BudgetListView(ListView):
@@ -49,14 +49,14 @@ class BudgetAssignmentCreateView(CreateView):
     model = BudgetAssignment
     form_class = BudgetAssignmentForm
     template_name = "budgets/budget_assignment_form.html"
-    success_url = reverse_lazy("budget_assignment_list")
+    success_url = reverse_lazy("budget-assignment-list")
 
 
 class BudgetAssignmentUpdateView(UpdateView):
     model = BudgetAssignment
     form_class = BudgetAssignmentForm
     template_name = "budgets/budget_assignment_form.html"
-    success_url = reverse_lazy("budget_assignment_list")
+    success_url = reverse_lazy("budget-assignment-list")
 
 
 class BudgetAssignmentListView(ListView):

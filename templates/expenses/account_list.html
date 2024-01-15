@@ -10,7 +10,7 @@ Account List
     <table class="table table-striped">
         <tr>
             <th>Account</th>
-            <th>Sign</th>
+            <th class="text-center">Sign</th>
         </tr>
         {% for account in accounts %}
         <tr>
@@ -19,7 +19,7 @@ Account List
             {% else %}
             <td>{{ account.name }}</td>
             {% endif %}
-            <td>{{ account.sign }}</td>
+            <td class="text-center {% if account.sign >= 0 %}text-bg-success{% else %}text-bg-danger{% endif %}">{{ account.sign }}</td>
         </tr>
         {% endfor %}
     </table>

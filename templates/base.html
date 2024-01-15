@@ -25,9 +25,12 @@
             Expenses
           </a>
           <div class="dropdown-menu" aria-labelledby="navbarDropdown">
-            <a class="dropdown-item" href="{% url 'expense-upload' %}">Upload</a>
+            <a class="dropdown-item" href="{% url 'expense-upload' %}">Upload expense</a>
             <div class="dropdown-divider"></div>
-            <a class="dropdown-item" href="#">Separated link</a>
+            <a class="dropdown-item" href="{% url 'account-list' %}">Accounts list</a>
+            <a class="dropdown-item" href="{% url 'account-transfer' %}">Accounts transfer</a>
+            <div class="dropdown-divider"></div>
+            <a class="dropdown-item" href="{% url 'currency-convert-list' %}">Convertions</a>
           </div>
         </li>
         <li class="nav-item dropdown">
@@ -36,18 +39,14 @@
             Budget
           </a>
           <div class="dropdown-menu" aria-labelledby="navbarDropdown">
-            <a class="dropdown-item" href="{% url 'budget-add' %}">Create</a>
-          </div>
-        </li>
-        <li class="nav-item dropdown">
-          <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown"
-            aria-haspopup="true" aria-expanded="false">
-            Configuration
-          </a>
-          <div class="dropdown-menu" aria-labelledby="navbarDropdown">
-            <a class="dropdown-item" href="{% url 'account-list' %}">Accounts list</a>
-            <a class="dropdown-item" href="{% url 'account-transfer' %}">Accounts transfer</a>
-            <a class="dropdown-item" href="{% url 'currency-convert-list' %}">Convertions</a>
+            <a class="dropdown-item" href="{% url 'budget-add' %}">Create budget</a>
+            <a class="dropdown-item" href="{% url 'budget-list' %}">List budgets</a>
+            <div class="dropdown-divider"></div>
+            <a class="dropdown-item" href="{% url 'category-add' %}">Create category</a>
+            <a class="dropdown-item" href="{% url 'category-list' %}">List categories</a>
+            <div class="dropdown-divider"></div>
+            <a class="dropdown-item" href="{% url 'assignment-add' %}">Create assignment</a>
+            <a class="dropdown-item" href="{% url 'assignment-list' %}">List assignments</a>
           </div>
         </li>
       </ul>
