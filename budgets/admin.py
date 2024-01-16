@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import Category, Budget, BudgetAssignment
+from .models import Category, Budget, BudgetAssignment, MatchAccount
 
 
 @admin.register(Category)
@@ -15,3 +15,8 @@ class BudgetAdmin(admin.ModelAdmin):
 @admin.register(BudgetAssignment)
 class BudgetAssignmentAdmin(admin.ModelAdmin):
     list_display = ["budget", "category", "budget_amount", "expense_amount"]
+
+
+@admin.register(MatchAccount)
+class MathcAccountAdmin(admin.ModelAdmin):
+    list_display = ["category", "account"]

@@ -6,13 +6,15 @@ from django.utils.timezone import now
 class Category(models.Model):
     FIXED = "FIX"
     VARIABLE = "VAR"
-    CATEGORY_TYPE=(
+    CATEGORY_TYPE = (
         (FIXED, "Costo Fijo"),
         (VARIABLE, "Costo Variable"),
     )
 
     name = models.CharField(max_length=100)
-    category_type = models.CharField(max_length=20, choices=CATEGORY_TYPE, default=FIXED)
+    category_type = models.CharField(
+        max_length=20, choices=CATEGORY_TYPE, default=FIXED
+    )
 
     class Meta:
         verbose_name = "Categoria"
@@ -27,9 +29,8 @@ class Budget(models.Model):
     period = models.ForeignKey("expenses.Period", on_delete=models.CASCADE)
     total = models.DecimalField(max_digits=10, decimal_places=2)
 
-
     class Meta:
-        unique_together = ('user', 'period')
+        unique_together = ("user", "period")
         verbose_name = "Presupuesto"
         verbose_name_plural = "Presupuestos"
 
@@ -51,3 +52,16 @@ class BudgetAssignment(models.Model):
     class Meta:
         verbose_name = "Asignacion de presupuesto"
         verbose_name_plural = "Asignaciones de presupuesto"
+
+
+class MatchAccount(models.Model):
+    category = models.ForeignKey(Category, on_delete=models.DO_NOTHING)
+    account = models.ForeignKey("expenses.Account", on_delete=models.DO_NOTHING)
+
+    class Meta:
+        unique_together = ["category", "account"]
+        verbose_name = "Categorizacion de gasto"
+        verbose_name_plural = "Categorizaciones de gastos"
+
+    def __str__(self) -> str:
+        return f"{self.category.name} = {self.account.name}"

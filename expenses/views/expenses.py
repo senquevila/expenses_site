@@ -6,7 +6,7 @@ from datetime import date
 from django.db.models import Q, Sum
 from django.conf import settings
 from django.forms import ValidationError
-from django.urls import reverse_lazy
+from django.urls import reverse_lazy, reverse
 from django.utils import timezone
 from django.views.generic import FormView, ListView
 
@@ -66,9 +66,6 @@ class UploadExpenseView(FormView):
             if q_account.exists():
                 account = q_account.first()
             else:
-                account = self._assoc_accounts(row[2])
-
-            if not account:
                 account = default_account
                 print("Default account")
 
@@ -107,16 +104,26 @@ class UploadExpenseView(FormView):
             if not payment_date:
                 payment_date = timezone.now().date()
 
-            data = {
-                "payment_date": payment_date,
-                "description": row[1],
-                "period": period.pk,
-                "account": account.pk,
-                "currency": currency.pk,
-                "amount": amount,
-            }
+            if Expense.objects.filter(
+                period=period,
+                account=account,
+                currency=currency,
+                description=row[1],
+                amount=amount,
+            ).exists():
+                print("Expense already exists")
+                continue
 
-            serializer = ExpenseSerializer(data=data)
+            serializer = ExpenseSerializer(
+                data={
+                    "payment_date": payment_date,
+                    "description": row[1],
+                    "period": period.pk,
+                    "account": account.pk,
+                    "currency": currency.pk,
+                    "amount": amount,
+                }
+            )
             if serializer.is_valid():
                 expense = serializer.save()
                 expense.local_amount = expense.get_local_amount
