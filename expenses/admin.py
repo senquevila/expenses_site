@@ -63,4 +63,7 @@ class ExpenseAdmin(admin.ModelAdmin):
 
 @admin.register(AccountAsociation)
 class AccountAsociationAdmin(admin.ModelAdmin):
-    pass
+    ordering = (
+        "account__name",
+        "token",
+    )

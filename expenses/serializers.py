@@ -1,6 +1,6 @@
 from rest_framework import serializers
 
-from expenses.models import Account, CurrencyConvert, Period, Expense
+from expenses.models import Account, AccountAsociation, CurrencyConvert, Period, Expense
 
 
 class AccountSerializer(serializers.ModelSerializer):
@@ -8,6 +8,13 @@ class AccountSerializer(serializers.ModelSerializer):
         model = Account
         fields = "__all__"
         ordering = ["name"]
+
+
+class AccountAssociationSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = AccountAsociation
+        fields = "__all__"
+        ordering = ["account__name"]
 
 
 class CurrencyConvertSerializer(serializers.ModelSerializer):
