@@ -63,6 +63,10 @@ class ExpenseAdmin(admin.ModelAdmin):
 
 @admin.register(AccountAsociation)
 class AccountAsociationAdmin(admin.ModelAdmin):
+    search_fields = (
+        "account__name",
+        "token",
+    )
     ordering = (
         "account__name",
         "token",

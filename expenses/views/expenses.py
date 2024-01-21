@@ -27,7 +27,7 @@ from expenses.utils import (
 )
 
 
-class UploadExpenseView(FormView):
+class ExpenseUploadView(FormView):
     template_name = "expenses/expense_upload.html"
     form_class = ExpenseFileUploadForm
     success_url = reverse_lazy("home")
@@ -44,12 +44,25 @@ class UploadExpenseView(FormView):
         ).exists():
             self._post_convert_dollars(self.request)
 
+        self.default_currency = Currency.objects.filter(alpha3=settings.DEFAULT_CURRENCY).first()
+        self.default_account = Account.objects.filter(name=settings.DEFAULT_ACCOUNT).first()
+
+        if not self.default_currency:
+            raise ValueError("Default currency not configured")
+
+        if not self.default_account:
+            raise ValueError("Default account not configured")
+
         decoded_file = io.TextIOWrapper(file, encoding="utf-8-sig", newline="")
         csv_reader = csv.reader(decoded_file)
 
         lines = 0
         for row in csv_reader:
             lines += 1
+
+            if lines == 1:  # Avoid the header
+                continue
+
             print(f"Line: {lines} - {row}")
             row = self._clear_row(row)
 
@@ -101,13 +114,7 @@ class UploadExpenseView(FormView):
 
     def _post_convert_dollars(self):
         url = self.request.build_absolute_uri(reverse("create-dollar-convert"))
-        response = requests.post(url, headers={"Content-Type": "application/json"})
-
-        # Check the status of the response
-        if response.status_code == 200:
-            print("POST request sent successfully")
-        else:
-            print("Error: Failed to send POST request")
+        requests.post(url, headers={"Content-Type": "application/json"})
 
     def _get_account(self, value: str):
         account_q = Account.objects.filter(name=value)
@@ -115,7 +122,7 @@ class UploadExpenseView(FormView):
         if account_q.exists():
             account = account_q.first()
         else:
-            account = Account.get_default
+            account = self.default_account
             print("Default account")
 
         return account
@@ -139,16 +146,9 @@ class UploadExpenseView(FormView):
         if currency_q.exists():
             currency = currency_q.first()
         else:
-            currency = Currency.get_default
+            currency = self.default_currency
 
         return (amount, currency)
-
-    def _get_period(self, value: date):
-        period = Period.get_period_from_date(value)
-
-        if period.closed:
-            print("Error: Period is closed")
-            continue
 
     def _get_payment_date(self, value: str):
         payment_date = str_to_date(value)
