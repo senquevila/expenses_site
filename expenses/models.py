@@ -23,7 +23,8 @@ class Period(models.Model):
     def __str__(self) -> str:
         return f"{self.year}-{self.month:02}"
 
-    def get_period_from_date(self, payment_date):
+    @staticmethod
+    def get_period_from_date(payment_date):
         try:
             return Period.objects.get(year=payment_date.year, month=payment_date.month)
         except Period.DoesNotExist:
@@ -40,13 +41,6 @@ class Currency(models.Model):
 
     def __str__(self) -> str:
         return self.name
-
-    @property
-    def get_default(self):
-        try:
-            return Currency.objects.get(alpha3=settings.DEFAULT_CURRENCY)
-        except Currency.DoesNotExist:
-            raise ValueError("Currency not configured")
 
 
 class CurrencyConvert(models.Model):
@@ -83,13 +77,6 @@ class Account(models.Model):
             return f"{self.name} [{_sign}]"
         else:
             return f"{self.name} ({self.parent.name}) [{_sign}]"
-
-    @property
-    def get_default(self):
-        try:
-            return Account.objects.get(name=settings.DEFAULT_ACCOUNT)
-        except Account.DoesNotExist:
-            raise ValueError("Account not configured")
 
 
 class Accountable(CreationModificationDateMixin):
