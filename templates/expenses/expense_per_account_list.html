@@ -1,0 +1,29 @@
+{% extends 'base.html' %}
+{% load humanize %}
+
+{% block title %}
+Expense List
+{% endblock %}
+
+{% block content %}
+<h1>Expense List from {{ account }}</h1>
+
+<p>Period: {{ period }}</p>
+<p>Total: {{ total|floatformat:"2"|intcomma }}</p>
+<table class="table table-striped">
+    <tr>
+        <th>Account</th>
+        <th class="text-end">Amount</th>
+        <th>Description</th>
+        <th>Payment date</th>
+    </tr>
+    {% for expense in expenses %}
+    <tr>
+        <td>{{ expense.account.name }}</td>
+        <td class="text-end {% if expense.account.sign == 1 %}text-bg-success{% else %}text-bg-danger{% endif %}" scope="col">{{ expense.local_amount|floatformat:"2"|intcomma }}</td>
+        <td>{{ expense.description }}</td>
+        <td>{{ expense.payment_date }}</td>
+    </tr>
+    {% endfor %}
+</table>
+{% endblock %}

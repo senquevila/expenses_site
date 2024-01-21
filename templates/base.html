@@ -25,7 +25,9 @@
             Expenses
           </a>
           <div class="dropdown-menu" aria-labelledby="navbarDropdown">
-            <a class="dropdown-item" href="{% url 'expense-upload' %}">Upload expense</a>
+            <a class="dropdown-item" href="{% url 'expense-upload' %}">Expense upload</a>
+            <a class="dropdown-item" href="{% url 'expense-list' %}">Expense list</a>
+            <a class="dropdown-item" href="{% url 'expense-add' %}">Expense create</a>
             <div class="dropdown-divider"></div>
             <a class="dropdown-item" href="{% url 'account-list' %}">Accounts list</a>
             <a class="dropdown-item" href="{% url 'account-transfer' %}">Accounts transfer</a>

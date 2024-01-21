@@ -1,17 +1,13 @@
 {% extends 'base.html' %}
 {% load humanize %}
-
 {% block title %}
 Expense List
-{% endblock %}
-
+{%endblock %}
 {% block content %}
-<h1>Expense List from {{ account }}</h1>
-
-<p>Period: {{ period }}</p>
-<p>Total: {{ total|floatformat:"2"|intcomma }}</p>
+<h1>Expense List</h1>
 <table class="table table-striped">
     <tr>
+        <th>Period</th>
         <th>Account</th>
         <th class="text-end">Amount</th>
         <th>Description</th>
@@ -19,11 +15,41 @@ Expense List
     </tr>
     {% for expense in expenses %}
     <tr>
+        <td>{{ expense.period }}</td>
         <td>{{ expense.account.name }}</td>
-        <td class="text-end {% if expense.account.sign == 1 %}text-bg-success{% else %}text-bg-danger{% endif %}" scope="col">{{ expense.local_amount|floatformat:"2"|intcomma }}</td>
+        <td class="text-end {% if expense.account.sign == 1 %}text-bg-success{% else %}text-bg-danger{% endif %}"
+            scope="col">
+            {{ expense.local_amount|floatformat:"2"|intcomma }}
+        </td>
         <td>{{ expense.description }}</td>
         <td>{{ expense.payment_date }}</td>
     </tr>
     {% endfor %}
 </table>
+<!--paginator-->
+<nav aria-label="Page navigation expense">
+    <ul class="pagination">
+        {% if expenses.has_previous %}
+        <li class="page-item">
+            <a class="page-link" href="?page=1">&laquo; first</a>
+        </li>
+        <li class="page-item">
+            <a class="page-link" href="?page={{ expenses.previous_page_number }}">previous</a>
+        </li>
+        {% endif %}
+        <li class="page-item">
+            <span class="current page-link">
+                Page {{ expenses.number }} of {{ expenses.paginator.num_pages }}.
+            </span>
+        </li>
+        {% if expenses.has_next %}
+        <li class="page-item">
+            <a class="page-link" href="?page={{ expenses.next_page_number }}">next</a>
+        </li>
+        <li class="page-item">
+            <a class="page-link" href="?page={{ expenses.paginator.num_pages }}">last &raquo;</a>
+        </li>
+        {% endif %}
+    </ul>
+</nav>
 {% endblock %}

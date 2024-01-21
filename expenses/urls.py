@@ -29,8 +29,28 @@ urlpatterns = [
     ),
     path(
         "periods/<int:period>/account/<int:account>/",
+        views.ExpenseListPerAccountView.as_view(),
+        name="expense-account-list",
+    ),
+    path(
+        "expenses/",
         views.ExpenseListView.as_view(),
         name="expense-list",
+    ),
+    path(
+        "expenses/add/",
+        views.ExpenseCreateView.as_view(),
+        name="expense-add",
+    ),
+    path(
+        "expenses/<int:pk>/edit/",
+        views.ExpenseUpdateView.as_view(),
+        name="expense-edit",
+    ),
+    path(
+        "expenses/<int:pk>/delete/",
+        views.ExpenseDeleteView.as_view(),
+        name="expense-delete",
     ),
     path(
         "expenses/upload/",
@@ -45,7 +65,7 @@ urlpatterns = [
     path(
         "accounts/transfer/",
         views.AccountTransferView.as_view(),
-        name="account-transfer"
+        name="account-transfer",
     ),
     path(
         "currency/convert/",

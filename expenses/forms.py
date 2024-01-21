@@ -24,6 +24,19 @@ class ExpenseFileUploadForm(forms.Form):
         )
 
 
+class ExpenseForm(forms.ModelForm):
+    class Meta:
+        model = Expense
+        fields = [
+            "description",
+            "payment_date",
+            "period",
+            "account",
+            "currency",
+            "amount",
+        ]
+
+
 class AccountTransferForm(forms.Form):
     account_origin = forms.ModelChoiceField(queryset=Account.objects.all())
     account_destination = forms.ModelChoiceField(queryset=Account.objects.all())

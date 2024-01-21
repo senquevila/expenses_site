@@ -1,5 +1,9 @@
 # Changelog
 
+## 2024-01-21
+- Expenses CRUD forms.
+
+
 ## 2024-01-14
 - Added budget app.
 - Translate account.

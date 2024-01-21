@@ -1,9 +1,12 @@
-from decimal import Decimal
 from datetime import timedelta
+from decimal import Decimal
+
+from django.conf import settings
 from django.db import models
 from django.db.models import F
 from django.db.models.functions import Abs
 from django.utils import timezone
+
 from expenses.mixins import CreationModificationDateMixin
 
 
@@ -20,6 +23,12 @@ class Period(models.Model):
     def __str__(self) -> str:
         return f"{self.year}-{self.month:02}"
 
+    def get_period_from_date(self, payment_date):
+        try:
+            return Period.objects.get(year=payment_date.year, month=payment_date.month)
+        except Period.DoesNotExist:
+            return None
+
 
 class Currency(models.Model):
     name = models.CharField(max_length=100)
@@ -31,6 +40,13 @@ class Currency(models.Model):
 
     def __str__(self) -> str:
         return self.name
+
+    @property
+    def get_default(self):
+        try:
+            return Currency.objects.get(alpha3=settings.DEFAULT_CURRENCY)
+        except Currency.DoesNotExist:
+            raise ValueError("Currency not configured")
 
 
 class CurrencyConvert(models.Model):
@@ -68,6 +84,13 @@ class Account(models.Model):
         else:
             return f"{self.name} ({self.parent.name}) [{_sign}]"
 
+    @property
+    def get_default(self):
+        try:
+            return Account.objects.get(name=settings.DEFAULT_ACCOUNT)
+        except Account.DoesNotExist:
+            raise ValueError("Account not configured")
+
 
 class Accountable(CreationModificationDateMixin):
     period = models.ForeignKey(Period, on_delete=models.DO_NOTHING)
@@ -93,7 +116,9 @@ class Accountable(CreationModificationDateMixin):
 class Expense(Accountable):
     description = models.CharField(max_length=255, blank=True, null=True)
     payment_date = models.DateField(default=timezone.now, blank=True, null=True)
-    local_amount = models.DecimalField(max_digits=13, decimal_places=2, default=0)
+    local_amount = models.DecimalField(
+        max_digits=13, decimal_places=2, default=0, editable=False
+    )
 
     class Meta:
         verbose_name = "Gasto"
@@ -116,6 +141,10 @@ class Expense(Accountable):
         )
         exchange = data[0]["exchange"] if data else 1
         return Decimal(self.amount) * Decimal(self.account.sign) * Decimal(exchange)
+
+    def save(self, *args, **kwargs):
+        self.local_amount = self.get_local_amount
+        super(Expense, self).save(*args, **kwargs)
 
 
 class AccountAsociation(models.Model):
