@@ -47,7 +47,7 @@ def change_account_from_assoc() -> dict:
                     "id": expense.id,
                     "expense": expense.description,
                     "account_found": assoc.account.name,
-                    "original_account": expense.account.name,
+                    "account_original": expense.account.name,
                     "date": expense.payment_date,
                 }
             )
