@@ -4,7 +4,7 @@ from django.core.validators import FileExtensionValidator
 from expenses.models import Account, Expense
 
 
-class ExpenseFileUploadForm(forms.Form):
+class ExpenseUploadForm(forms.Form):
     file = forms.FileField(
         label="Archivo",
         help_text="Seleccione un archivo CSV para cargar",
