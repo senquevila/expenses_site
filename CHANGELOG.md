@@ -2,7 +2,8 @@
 
 ## 2024-01-21
 - Expenses CRUD forms.
-
+- Upload model.
+- Show results from upload an expense file.
 
 ## 2024-01-14
 - Added budget app.

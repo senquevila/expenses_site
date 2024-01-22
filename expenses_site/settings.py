@@ -10,7 +10,7 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/4.0/ref/settings/
 """
 
-from os import environ, path
+import os
 from dotenv import load_dotenv
 from pathlib import Path
 
@@ -64,7 +64,7 @@ ROOT_URLCONF = "expenses_site.urls"
 TEMPLATES = [
     {
         "BACKEND": "django.template.backends.django.DjangoTemplates",
-        "DIRS": [path.join(BASE_DIR, 'templates')],
+        "DIRS": [os.path.join(BASE_DIR, 'templates')],
         "APP_DIRS": True,
         "OPTIONS": {
             "context_processors": [
@@ -126,7 +126,7 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/4.0/howto/static-files/
 
 STATIC_URL = "static/"
-STATIC_ROOT = path.join(BASE_DIR, "static_site")  # noqa
+STATIC_ROOT = os.path.join(BASE_DIR, "static_site")  # noqa
 STATIC_URL = "/static/"
 STATICFILES_LOCATION = "static"
 
@@ -138,9 +138,9 @@ DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
 # Web Scraping
 load_dotenv()
-SCRAPING_URL = environ.get("SCRAPING_URL", "")
-SCRAPING_TAG_ID = environ.get("SCRAPING_TAG_ID", "")
-SCRAPING_TOKEN_SPLIT = environ.get("SCRAPING_TOKEN_SPLIT", "")
+SCRAPING_URL = os.environ.get("SCRAPING_URL", "")
+SCRAPING_TAG_ID = os.environ.get("SCRAPING_TAG_ID", "")
+SCRAPING_TOKEN_SPLIT = os.environ.get("SCRAPING_TOKEN_SPLIT", "")
 
 # CORS
 CORS_ALLOW_ALL_ORIGINS = True
@@ -154,3 +154,6 @@ DEFAULT_DATE_FORMAT = "%d/%m/%y"
 INTERNAL_IPS = [
     "127.0.0.1",
 ]
+
+MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
+MEDIA_URL = '/media/'
