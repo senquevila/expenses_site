@@ -45,12 +45,7 @@ urlpatterns = [
     path(
         "expenses/upload/",
         views.ExpenseUploadView.as_view(),
-        name="expense-upload",
-    ),
-    path(
-        "expenses/upload/result",
-        views.ExpenseUploadResultView.as_view(),
-        name="expense-upload-result",
+        name="expense-upload-start",
     ),
     path(
         "periods/",

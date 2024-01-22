@@ -1,0 +1,25 @@
+{% extends 'base.html' %}
+{% load humanize %}
+
+{% block title %}
+Expense Upload Result
+{% endblock %}
+
+{% block content %}
+<div class="col-md-6">
+    <h1>Expense Upload Result</h1>
+    <p>Expenses created {{ summary.saved }} of {{ summary.total }}</p>
+    <table class="table table-striped">
+        <tr>
+            <th class="text-center">Line number</th>
+            <th>Description</th>
+        </tr>
+        {% for key, value in result.items %}
+        <tr>
+            <td class="text-center">{{ key }}</td>
+            <td>{{ value }}</td>
+        </tr>
+        {% endfor %}
+    </table>
+</div>
+{% endblock %}
