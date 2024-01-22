@@ -1,6 +1,7 @@
 from decimal import Decimal
-
 from datetime import datetime
+
+from django.conf import settings
 from django.db.models import F, Sum
 from django.db.models.functions import Abs
 
@@ -37,7 +38,9 @@ def change_account_from_assoc() -> dict:
     data = []
     assocs = AccountAsociation.objects.only("token", "account")
     for assoc in assocs:
-        expenses = Expense.objects.filter(description__icontains=assoc.token)
+        expenses = Expense.objects.filter(
+            description__icontains=assoc.token,
+            account__name=settings.DEFAULT_ACCOUNT)
         for expense in expenses:
             if assoc.account.name == expense.account.name:
                 continue
