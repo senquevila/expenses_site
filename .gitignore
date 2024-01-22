@@ -166,4 +166,5 @@ cython_debug/
 .DS_Store
 
 # Files
+media/
 .csv
