@@ -271,11 +271,10 @@ class ExpenseListView(ListView):
     template_name = "expenses/expense_list.html"
     context_object_name = "expenses"
     paginate_by = 12
-    ordering = ["-period", "-payment_date"]
 
     def get_context_data(self, **kwargs):
         context = super(ExpenseListView, self).get_context_data(**kwargs)
-        expenses = Expense.objects.all()
+        expenses = Expense.objects.all().order_by("-payment_date")
         paginator = Paginator(expenses, self.paginate_by)
 
         page = self.request.GET.get("page")
