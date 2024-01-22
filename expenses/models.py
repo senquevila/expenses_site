@@ -100,11 +100,26 @@ class Accountable(CreationModificationDateMixin):
         return self.amount * self.account.sign
 
 
+class Upload(CreationModificationDateMixin):
+    file = models.FileField(blank=True, null=True, upload_to='uploads/')
+    lines = models.IntegerField(default=0)
+
+    class Meta:
+        verbose_name = "Subida de archivo"
+        verbose_name_plural = "Subidas de archivos"
+
+    def __str__(self) -> str:
+        return str(self.file.name)
+
+
 class Expense(Accountable):
     description = models.CharField(max_length=255, blank=True, null=True)
     payment_date = models.DateField(default=timezone.now, blank=True, null=True)
     local_amount = models.DecimalField(
         max_digits=13, decimal_places=2, default=0, editable=False
+    )
+    upload = models.ForeignKey(
+        Upload, blank=True, null=True, on_delete=models.SET_NULL
     )
 
     class Meta:

@@ -5,8 +5,9 @@ from expenses.models import (
     AccountAsociation,
     Currency,
     CurrencyConvert,
-    Period,
     Expense,
+    Period,
+    Upload,
 )
 
 
@@ -39,12 +40,14 @@ class ExpenseAdmin(admin.ModelAdmin):
         "amount",
         "account_name",
         "payment_date",
+        "upload",
         "created",
     )
     list_filter = (
         "period",
         "account",
         "created",
+        "upload",
     )
     ordering = (
         "-payment_date",
@@ -71,3 +74,8 @@ class AccountAsociationAdmin(admin.ModelAdmin):
         "account__name",
         "token",
     )
+
+
+@admin.register(Upload)
+class UploadAdmin(admin.ModelAdmin):
+    pass
