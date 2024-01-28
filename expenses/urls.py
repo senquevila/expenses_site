@@ -26,27 +26,27 @@ urlpatterns = [
         name="currency-convert-list",
     ),
     path(
-        "expenses/",
+        "",
         views.ExpenseListView.as_view(),
         name="expense-list",
     ),
     path(
-        "expenses/add/",
+        "add/",
         views.ExpenseCreateView.as_view(),
         name="expense-add",
     ),
     path(
-        "expenses/<int:pk>/edit/",
+        "<int:pk>/edit/",
         views.ExpenseUpdateView.as_view(),
         name="expense-edit",
     ),
     path(
-        "expenses/<int:pk>/delete/",
+        "<int:pk>/delete/",
         views.ExpenseDeleteView.as_view(),
         name="expense-delete",
     ),
     path(
-        "expenses/upload/",
+        "upload/",
         views.ExpenseUploadView.as_view(),
         name="expense-upload-start",
     ),

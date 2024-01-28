@@ -20,12 +20,12 @@ urlpatterns = [
     path("", include(router.urls)),
     # currencies
     path(
-        "currency/create_usd_exchange/",
+        "create_usd_exchange/",
         api_views.CreateDollarConversionView.as_view(),
         name="create-dollar-convert",
     ),
     path(
-        "account/assoc/",
+        "account_assoc/",
         api_views.AccountAssociationView.as_view(),
         name="account-assoc",
     ),
