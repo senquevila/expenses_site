@@ -1,8 +1,17 @@
-from django.views.generic.list import ListView
+from typing import Any
+
+from django.db.models import ExpressionWrapper, F, FloatField
+from django.db.models.query import QuerySet
+from django.shortcuts import get_object_or_404, redirect
 from django.urls import reverse_lazy
+from django.views.generic.list import ListView
 from django.views.generic.edit import CreateView, UpdateView
-from budgets.models import Category, Budget, BudgetAssignment
+
+from rest_framework.views import APIView
+
+from budgets.models import Category, Budget, BudgetAssignment, MatchAccount
 from budgets.forms import CategoryForm, BudgetForm, BudgetAssignmentForm
+from expenses.models import Expense
 
 
 class CategoryCreateView(CreateView):
@@ -61,5 +70,48 @@ class BudgetAssignmentUpdateView(UpdateView):
 
 class BudgetAssignmentListView(ListView):
     model = BudgetAssignment
-    template_name = "budget_assignment_list.html"
+    template_name = "budgets/budget_assignment_list.html"
     context_object_name = "budget_assignments"
+
+
+class BudgetUpdateExpensesView(APIView):
+    def get(self, request, pk=None):
+        budget = get_object_or_404(Budget, pk=pk)
+
+        # Fetch expenses from the previous period
+        expenses = Expense.objects.filter(period=budget.period)
+        BudgetAssignment.objects.filter(
+            budget=budget,
+        ).update(expense_amount=0)
+
+        for expense in expenses:
+            # Find corresponding MatchAccount entry
+            match_entry = MatchAccount.objects.filter(account=expense.account).first()
+
+            if not match_entry:
+                continue
+
+            assignament = BudgetAssignment.objects.get(
+                budget=budget,
+                category=match_entry.category,
+            )
+
+            assignament.expense_amount += expense.local_amount
+            assignament.save()
+
+        return redirect("budget-list")
+
+
+class BudgetAssigmentList(ListView):
+    model = BudgetAssignment
+    template_name = "budgets/budget_assignment_list.html"
+    context_object_name = "budget_assignments"
+
+    def get_queryset(self):
+        budget = get_object_or_404(Budget, pk=self.kwargs["pk"])
+        queryset = BudgetAssignment.objects.filter(budget=budget).annotate(
+            difference=ExpressionWrapper(
+                F("expense_amount") / F("budget_amount"), output_field=FloatField()
+            )
+        )
+        return queryset

@@ -8,17 +8,12 @@ from rest_framework.response import Response
 
 # models import
 from expenses.models import Account, Expense
-from expenses.serializers import AccountSerializer, ExpenseSerializer
+from expenses.serializers import ExpenseSerializer
 
 
 class ExpenseViewSet(viewsets.ModelViewSet):
     queryset = Expense.objects.all()
     serializer_class = ExpenseSerializer
-
-
-class AccountViewSet(viewsets.ModelViewSet):
-    queryset = Account.objects.all()
-    serializer_class = AccountSerializer
 
 
 class SwapAccountView(APIView):

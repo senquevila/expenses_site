@@ -1,38 +1,42 @@
 from django.urls import path
-from budgets.views import (
-    CategoryCreateView,
-    CategoryUpdateView,
-    CategoryListView,
-    BudgetCreateView,
-    BudgetUpdateView,
-    BudgetListView,
-    BudgetAssignmentCreateView,
-    BudgetAssignmentUpdateView,
-    BudgetAssignmentListView,
-)
+from budgets import views
 
 urlpatterns = [
-    path("categories/", CategoryListView.as_view(), name="category-list"),
-    path("categories/add/", CategoryCreateView.as_view(), name="category-add"),
+    path("", views.BudgetListView.as_view(), name="budget-list"),
+    path("add/", views.BudgetCreateView.as_view(), name="budget-add"),
     path(
-        "categories/<int:pk>/edit/", CategoryUpdateView.as_view(), name="category-edit"
+        "<int:pk>/edit/", views.BudgetUpdateView.as_view(), name="budget-edit"
     ),
-    path("budgets/", BudgetListView.as_view(), name="budget-list"),
-    path("budgets/add/", BudgetCreateView.as_view(), name="budget-add"),
-    path("budgets/<int:pk>/edit/", BudgetUpdateView.as_view(), name="budget-edit"),
+    path(
+        "<int:pk>/update-expenses/",
+        views.BudgetUpdateExpensesView.as_view(),
+        name="budget-update-expense",
+    ),
+    path(
+        "<int:pk>/assignments/",
+        views.BudgetAssigmentList.as_view(),
+        name="budget-assignment-list",
+    ),
     path(
         "assignments/",
-        BudgetAssignmentListView.as_view(),
+        views.BudgetAssignmentListView.as_view(),
         name="assignment-list",
     ),
     path(
         "assignments/add/",
-        BudgetAssignmentCreateView.as_view(),
+        views.BudgetAssignmentCreateView.as_view(),
         name="assignment-add",
     ),
     path(
         "assignments/<int:pk>/edit/",
-        BudgetAssignmentUpdateView.as_view(),
+        views.BudgetAssignmentUpdateView.as_view(),
         name="assignment-edit",
+    ),
+    path("categories/", views.CategoryListView.as_view(), name="category-list"),
+    path("categories/add/", views.CategoryCreateView.as_view(), name="category-add"),
+    path(
+        "categories/<int:pk>/edit/",
+        views.CategoryUpdateView.as_view(),
+        name="category-edit",
     ),
 ]

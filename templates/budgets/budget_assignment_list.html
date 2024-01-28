@@ -1,12 +1,27 @@
 {% extends "base.html" %}
+{% load humanize %}
+{% load math_filters %}
 
 {% block content %}
+<div class="col-md-6">
   <h2>Budget Assignments</h2>
-  <ul>
+  <table class="table table-striped">
+    <tr>
+      <th>Period</th>
+      <th>Category</th>
+      <th class="text-end">Budget</th>
+      <th class="text-end">Expense</th>
+      <th class="text-end">Difference</th>
+    </tr>
     {% for assignment in budget_assignments %}
-      <li>{{ assignment.budget }} - {{ assignment.category }}: {{ assignment.reserved_amount }}</li>
-    {% empty %}
-      <li>No budget assignments available.</li>
+    <tr>
+      <td>{{ assignment.budget.period }}</td>
+      <td>{{ assignment.category }}</td>
+      <td class="text-end">{{ assignment.budget_amount|intcomma }}</td>
+      <td class="text-end">{{ assignment.expense_amount|intcomma }}</td>
+      <td class="text-end  {% if assignment.difference >= 0 %}text-bg-success{% else %}text-bg-danger{% endif %}">{{ assignment.difference|round_to_1 }}x </td>
+    </tr>
     {% endfor %}
-  </ul>
+  </table>
+</div>
 {% endblock %}

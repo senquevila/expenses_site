@@ -1,12 +1,24 @@
 {% extends "base.html" %}
+{% load humanize %}
 
 {% block content %}
+<div class="col-md-6">
   <h2>Budgets</h2>
-  <ul>
+  <table class="table table-striped">
+    <tr>
+    <th>Period</th>
+    <th>Total budget</th>
+    <th>Actions</th>
+    </tr>
     {% for budget in budgets %}
-      <li>{{ budget.period }} - {{ budget.total }}</li>
+    <tr>
+      <td><a href="{% url 'budget-assignment-list' pk=budget.id %}">{{ budget.period }}</a></td>
+      <td>{{ budget.total|intcomma }}</td>
+      <td><a href="{% url 'budget-update-expense' pk=budget.id %}">Update expenses</a></td>
+    </tr>
     {% empty %}
-      <li>No budgets available.</li>
+    <td>No budgets available</td>
     {% endfor %}
-  </ul>
+  </table>
+</div>
 {% endblock %}

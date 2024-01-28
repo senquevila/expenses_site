@@ -1,5 +1,10 @@
 # Changelog
 
+## 2024-01-28
+- Redux URLs.
+- Update expenses in the budget.
+- List expense categories associated in the budget.
+
 ## 2024-01-21
 - Expenses CRUD forms.
 - Upload model.
