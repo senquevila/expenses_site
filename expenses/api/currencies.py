@@ -19,7 +19,7 @@ class CurrencyConvertViewSet(viewsets.ModelViewSet):
     serializer_class = CurrencyConvertSerializer
 
 
-class CreateDollarConvertionView(APIView):
+class CreateDollarConversionView(APIView):
     def post(self, request, *args, **kwargs):
         if not CurrencyConvert.objects.filter(date=datetime.today()).exists():
             try:

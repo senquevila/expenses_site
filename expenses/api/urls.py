@@ -21,7 +21,7 @@ urlpatterns = [
     # currencies
     path(
         "currency/create_usd_exchange/",
-        api_views.CreateDollarConvertionView.as_view(),
+        api_views.CreateDollarConversionView.as_view(),
         name="create-dollar-convert",
     ),
     path(
