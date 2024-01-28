@@ -29,4 +29,9 @@ urlpatterns = [
         api_views.AccountAssociationView.as_view(),
         name="account-assoc",
     ),
+    path(
+        "upload_file_cleanup/",
+        api_views.ExpenseUploadFileCleanupView.as_view(),
+        name="upload-file-cleanup"
+    ),
 ]

@@ -1,4 +1,5 @@
 # django imports
+from django.db.models import Count
 from django.shortcuts import get_object_or_404
 
 # drf imports
@@ -7,7 +8,7 @@ from rest_framework import status, viewsets
 from rest_framework.response import Response
 
 # models import
-from expenses.models import Account, Expense
+from expenses.models import Account, Expense, Upload
 from expenses.serializers import ExpenseSerializer
 
 
@@ -38,3 +39,13 @@ class SwapAccountView(APIView):
         # remove account_origin
         Account.objects.filter(account=account_origin).delete()
         return Response(status=status.HTTP_200_OK)
+
+
+class ExpenseUploadFileCleanupView(APIView):
+    def delete(self, request, *args, **kwargs):
+        unused_uploads = Upload.objects.annotate(num_expenses=Count("expense")).filter(
+            num_expenses=0
+        )
+        deletes = unused_uploads.count()
+        unused_uploads.delete()
+        return Response(data={"files-removed": deletes}, status=status.HTTP_200_OK)
