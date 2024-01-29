@@ -108,6 +108,7 @@ def expense_upload_path(instance, filename):
 class Upload(CreationModificationDateMixin):
     file = models.FileField(blank=True, null=True, upload_to=expense_upload_path)
     lines = models.IntegerField(default=0)
+    result = models.JSONField(blank=True, null=True)
 
     class Meta:
         verbose_name = "Subida de archivo"
