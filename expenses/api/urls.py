@@ -34,4 +34,9 @@ urlpatterns = [
         api_views.ExpenseUploadFileCleanupView.as_view(),
         name="upload-file-cleanup"
     ),
+    path(
+        "invalid_cleanup/",
+        api_views.ExpenseDeleteInvalidView.as_view(),
+        name="expense-invalid-account-cleanup",
+    )
 ]

@@ -49,3 +49,11 @@ class ExpenseUploadFileCleanupView(APIView):
         deletes = unused_uploads.count()
         unused_uploads.delete()
         return Response(data={"files-removed": deletes}, status=status.HTTP_200_OK)
+
+
+class ExpenseDeleteInvalidView(APIView):
+    def delete(self, request, *args, **kwargs):
+        invalid_expenses = Expense.objects.filter(account__name='Invalido')
+        deletes = invalid_expenses.count()
+        invalid_expenses.delete()
+        return Response(data={"expenses-removed": deletes}, status=status.HTTP_200_OK)
