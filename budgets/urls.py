@@ -14,13 +14,8 @@ urlpatterns = [
     ),
     path(
         "<int:pk>/assignments/",
-        views.BudgetAssigmentList.as_view(),
+        views.BudgetAssigmentListView.as_view(),
         name="budget-assignment-list",
-    ),
-    path(
-        "assignments/",
-        views.BudgetAssignmentListView.as_view(),
-        name="assignment-list",
     ),
     path(
         "assignments/add/",

@@ -1,6 +1,6 @@
 from typing import Any
 
-from django.db.models import ExpressionWrapper, F, FloatField
+from django.db.models import ExpressionWrapper, F, FloatField, Sum
 from django.db.models.query import QuerySet
 from django.shortcuts import get_object_or_404, redirect
 from django.urls import reverse_lazy
@@ -58,20 +58,14 @@ class BudgetAssignmentCreateView(CreateView):
     model = BudgetAssignment
     form_class = BudgetAssignmentForm
     template_name = "budgets/budget_assignment_form.html"
-    success_url = reverse_lazy("budget-assignment-list")
+    success_url = reverse_lazy("budget-list")
 
 
 class BudgetAssignmentUpdateView(UpdateView):
     model = BudgetAssignment
     form_class = BudgetAssignmentForm
     template_name = "budgets/budget_assignment_form.html"
-    success_url = reverse_lazy("budget-assignment-list")
-
-
-class BudgetAssignmentListView(ListView):
-    model = BudgetAssignment
-    template_name = "budgets/budget_assignment_list.html"
-    context_object_name = "budget_assignments"
+    success_url = reverse_lazy("budget-list")
 
 
 class BudgetUpdateExpensesView(APIView):
@@ -91,18 +85,20 @@ class BudgetUpdateExpensesView(APIView):
             if not match_entry:
                 continue
 
-            assignament = BudgetAssignment.objects.get(
-                budget=budget,
-                category=match_entry.category,
-            )
-
-            assignament.expense_amount += expense.local_amount
-            assignament.save()
+            try:
+                assignament = BudgetAssignment.objects.get(
+                    budget=budget,
+                    category=match_entry.category,
+                )
+                assignament.expense_amount += expense.local_amount
+                assignament.save()
+            except BudgetAssignment.DoesNotExist:
+                print(match_entry.category.name)
 
         return redirect("budget-list")
 
 
-class BudgetAssigmentList(ListView):
+class BudgetAssigmentListView(ListView):
     model = BudgetAssignment
     template_name = "budgets/budget_assignment_list.html"
     context_object_name = "budget_assignments"
@@ -115,3 +111,13 @@ class BudgetAssigmentList(ListView):
             )
         )
         return queryset
+
+    def get_context_data(self, **kwargs: Any) -> dict[str, Any]:
+        context = super().get_context_data(**kwargs)
+        total = BudgetAssignment.objects.filter(budget__pk=self.kwargs["pk"]).aggregate(
+            total_budget=Sum("budget_amount"),
+            total_expense=Sum("expense_amount"),
+        )
+        context["total_budget"] = round(total.get("total_budget", 0), 2)
+        context["total_expense"] = round(total.get("total_expense", 0), 2)
+        return context
