@@ -5,6 +5,7 @@
 - Update expenses in the budget.
 - List expense categories associated in the budget.
 - Cleanup the DB when a upload does not have expenses associated.
+- Add result from expense upload.
 
 ## 2024-01-21
 - Expenses CRUD forms.
