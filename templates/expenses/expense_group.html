@@ -17,7 +17,7 @@ Expense List
         </tr>
         {% for group in expenses %}
         <tr>
-            <td><a href="{% url 'expense-account-list' period=period_id account=group.account__id %}">{{ group.account__name }}</a></td>
+            <td><a href="{% url 'expense-list' %}?period={{ period_id }}&account={{ group.account__id }}">{{ group.account__name }}</a></td>
             <td class="text-end {% if group.total >= 0 %}text-bg-success{% else %}text-bg-danger{% endif %}" scope="col">{{ group.total|floatformat:"2"|intcomma }}</td>
         </tr>
         {% endfor %}
