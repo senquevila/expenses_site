@@ -1,6 +1,13 @@
 from rest_framework import serializers
 
-from expenses.models import Account, AccountAsociation, CurrencyConvert, Period, Expense
+from expenses.models import (
+    Account,
+    AccountAsociation,
+    CurrencyConvert,
+    Expense,
+    Period,
+    Upload,
+)
 
 
 class AccountSerializer(serializers.ModelSerializer):
@@ -41,4 +48,10 @@ class ExpenseSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Expense
+        fields = "__all__"
+
+
+class UploadSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Upload
         fields = "__all__"

@@ -38,8 +38,8 @@ class ExpenseForm(forms.ModelForm):
 
 
 class AccountTransferForm(forms.Form):
-    account_origin = forms.ModelChoiceField(queryset=Account.objects.all())
-    account_destination = forms.ModelChoiceField(queryset=Account.objects.all())
+    account_origin = forms.ModelChoiceField(queryset=Account.objects.order_by("name"))
+    account_destination = forms.ModelChoiceField(queryset=Account.objects.order_by("name"))
 
     def clean(self):
         cleaned_data = super().clean()

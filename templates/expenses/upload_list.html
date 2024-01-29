@@ -1,0 +1,28 @@
+{% extends 'base.html' %}
+{% load humanize %}
+
+{% block title %}
+Upload List
+{% endblock %}
+
+{% block content %}
+<div class="col-md-6">
+    <h1>Upload List</h1>
+    <table class="table table-striped">
+        <tr>
+            <th>ID</th>
+            <th>Upload</th>
+            <th class="text-center">Lines</th>
+            <th>Result</th>
+        </tr>
+        {% for upload in uploads %}
+        <tr>
+            <td><a href="{% url 'expense-list' %}?upload={{ upload.id }}">{{ upload.id }}</a></td>
+            <td>{{ upload.file.name }}</td>
+            <td class="text-center">{{ upload.lines }}</td>
+            <td><code>{{ upload.result }}</code></td>
+        </tr>
+        {% endfor %}
+    </table>
+</div>
+{% endblock %}

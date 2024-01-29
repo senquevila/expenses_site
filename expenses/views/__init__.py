@@ -3,3 +3,4 @@ from .currencies import *  # noqa
 from .expenses import *  # noqa
 from .home import *  # noqa
 from .periods import *  # noqa
+from .uploads import *  # noqa

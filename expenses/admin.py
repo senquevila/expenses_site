@@ -38,6 +38,7 @@ class ExpenseAdmin(admin.ModelAdmin):
         "description",
         "currency",
         "amount",
+        "local_amount",
         "account_name",
         "payment_date",
         "upload",
@@ -45,9 +46,10 @@ class ExpenseAdmin(admin.ModelAdmin):
     )
     list_filter = (
         "period",
-        "account",
         "created",
+        "currency",
         "upload",
+        "account",
     )
     ordering = (
         "-payment_date",
@@ -55,6 +57,7 @@ class ExpenseAdmin(admin.ModelAdmin):
     )
     search_fields = (
         "description__startswith",
+        "account__name__startswith",
         "amount",
     )
 

@@ -9,7 +9,6 @@ from expenses import views
 
 
 urlpatterns = [
-    path("", views.HomeView.as_view(), name="home"),
     path(
         "accounts/",
         views.AccountListView.as_view(),
@@ -51,6 +50,11 @@ urlpatterns = [
         name="expense-upload-start",
     ),
     path(
+        "upload/result/<int:pk>/",
+        views.ExpenseUploadResult.as_view(),
+        name="expense-upload-result",
+    ),
+    path(
         "periods/",
         views.PeriodListView.as_view(),
         name="period-list",
@@ -71,9 +75,9 @@ urlpatterns = [
         name="period-open",
     ),
     path(
-        "periods/<int:period>/account/<int:account>/",
-        views.ExpenseListPerAccountView.as_view(),
-        name="expense-account-list",
+        "uploads/",
+        views.UploadListView.as_view(),
+        name="upload-list",
     ),
 ]
 

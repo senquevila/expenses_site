@@ -1,18 +1,23 @@
 import csv
+import json
+from typing import Any
+from django.db.models.query import QuerySet
 import requests
 
+
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
-from django.db.models import Q, Sum
 from django.conf import settings
+from django.db.models import Q, Sum
+from django.http import HttpResponseRedirect
 from django.urls import reverse_lazy, reverse
 from django.utils import timezone
-from django.shortcuts import render
 from django.views.generic import (
     CreateView,
     DeleteView,
     FormView,
     ListView,
     UpdateView,
+    TemplateView,
 )
 
 from expenses.forms import ExpenseUploadForm, ExpenseForm
@@ -39,7 +44,6 @@ ACCOUNT_FIELD = 3
 class ExpenseUploadView(FormView):
     template_name = "expenses/expense_upload.html"
     form_class = ExpenseUploadForm
-    success_url = reverse_lazy("expense-upload-process")
 
     def form_invalid(self, form):
         return self.render_to_response(self.get_context_data(form=form))
@@ -48,17 +52,20 @@ class ExpenseUploadView(FormView):
         file = form.cleaned_data["file"]
 
         if file:
-            context = {}
-            self.process_csv(file=file, context=context)
-            return render(self.request, 'expenses/expense_upload_result.html', context)
+            upload_id = self.process_csv(file=file)
+            return HttpResponseRedirect(
+                reverse("expense-upload-result", args=(upload_id,))
+            )
         else:
             form.add_error(None, "File empty")
 
-    def process_csv(self, file, context):
+    def process_csv(self, file):
+        context = {}
+
         context["result"] = {}
         self._set_defaults()
 
-        decoded_file = file.read().decode('utf-8-sig').splitlines()
+        decoded_file = file.read().decode("utf-8-sig").splitlines()
         csv_reader = csv.reader(decoded_file)
 
         # save the file upload
@@ -124,14 +131,14 @@ class ExpenseUploadView(FormView):
                 context["result"][lines] = str(serializer.errors)
 
         context["summary"] = {
-            "saved": created,
+            "created": created,
             "total": upload.lines,
         }
 
-        from pprint import pprint
-        pprint(context)
-
-        change_account_from_assoc()
+        # context["association"] = json.dumps(change_account_from_assoc())
+        upload.result = json.dumps(context)
+        upload.save()
+        return upload.id
 
     def _set_defaults(self):
         # get the default values
@@ -149,10 +156,10 @@ class ExpenseUploadView(FormView):
             raise ValueError("Default account not configured")
 
         # get the actual currency convertion
-        '''if not CurrencyConvert.objects.filter(
+        """if not CurrencyConvert.objects.filter(
             date=date.today(), currency__alpha3="USD"
         ).exists():
-            self._post_convert_dollars()'''
+            self._post_convert_dollars()"""
 
     def _clear_row(self, row: list):
         return [str(item).strip() for item in row]
@@ -211,6 +218,21 @@ class ExpenseUploadView(FormView):
         return payment_date
 
 
+class ExpenseUploadResult(TemplateView):
+    template_name = "expenses/expense_upload_result.html"
+
+    def get_context_data(self, **kwargs: Any) -> dict[str, Any]:
+        context = super().get_context_data(**kwargs)
+        try:
+            upload = Upload.objects.get(pk=self.kwargs.get("pk"))
+            data = json.loads(upload.result)
+            context.update(data)
+        except Upload.DoesNotExist:
+            pass
+
+        return context
+
+
 class ExpenseGroupListView(ListView):
     model = Expense
     template_name = "expenses/expense_group.html"
@@ -239,44 +261,32 @@ class ExpenseGroupListView(ListView):
         context["total"] = get_total_local_amount(Q(period=period))
         return context
 
-
-class ExpenseListPerAccountView(ListView):
-    model = Expense
-    template_name = "expenses/expense_per_account_list.html"
-    context_object_name = "expenses"
-
-    def get_queryset(self):
-        self.period_id = self.kwargs.get("period")
-        self.account_id = self.kwargs.get("account")
-
-        # Filter expenses by the specified period
-        queryset = Expense.objects.filter(
-            period=self.period_id, account=self.account_id
-        ).order_by("local_amount")
-
-        return queryset
-
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        period = Period.objects.get(pk=self.period_id)
-        account = Account.objects.get(pk=self.account_id)
-        context["period"] = str(period)
-        context["account"] = account.name
-        context["total"] = get_total_local_amount(Q(period=period, account=account))
-        return context
-
-
 class ExpenseListView(ListView):
     model = Expense
     template_name = "expenses/expense_list.html"
     context_object_name = "expenses"
     paginate_by = 12
 
-    def get_context_data(self, **kwargs):
-        context = super(ExpenseListView, self).get_context_data(**kwargs)
-        expenses = Expense.objects.all().order_by("-payment_date")
-        paginator = Paginator(expenses, self.paginate_by)
+    def get_queryset(self) -> QuerySet:
+        queryset = Expense.objects.all().order_by("-payment_date")
 
+        upload_id = self.request.GET.get("upload")
+        if upload_id:
+            queryset = queryset.filter(upload__id=upload_id)
+
+        period_id = self.request.GET.get("period")
+        if period_id:
+            queryset = queryset.filter(period__id=period_id)
+
+        account_id = self.request.GET.get("account")
+        if account_id:
+            queryset = queryset.filter(account__id=account_id)
+
+        return queryset
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        paginator = Paginator(self.get_queryset(), self.paginate_by)
         page = self.request.GET.get("page")
 
         try:
