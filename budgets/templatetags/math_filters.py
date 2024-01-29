@@ -12,8 +12,8 @@ def difference(value, arg):
 
 
 @register.filter
-def round_to_1(value):
+def round_to_n(value):
     try:
-        return round(value, 1)
+        return round(value, 2)
     except (ValueError, TypeError):
         return value
