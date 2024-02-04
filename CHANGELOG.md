@@ -1,4 +1,8 @@
 # Changelog
+## 2024-02-04
+- Added periods activation.
+- Added admin forms actions: remove blank uploads, remove invalid expenses, disabled periods.
+- Changed upload expense result giving detail for all the rows.
 
 ## 2024-01-28
 - Redux URLs.
@@ -14,10 +18,10 @@
 
 ## 2024-01-14
 - Added budget app.
-- Translate account.
+- Added Translate account.
 
 ## 2024-01-13
-- Automation for associating accounts by searching for reserved tokens in expense descriptions.
+- Added automation for associating accounts by searching for reserved tokens in expense descriptions.
 
 ## 2024-01-04
 - Added open periods endpoint.

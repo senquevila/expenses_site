@@ -1,9 +1,9 @@
+from typing import Any
 from django.contrib import messages
-from django.shortcuts import get_object_or_404, redirect
+from django.db.models.query import QuerySet
+from django.shortcuts import redirect
 from django.views.generic import ListView
 
-from rest_framework import status
-from rest_framework.response import Response
 from rest_framework.views import APIView
 
 from expenses.models import Expense, Period
@@ -13,7 +13,10 @@ class PeriodListView(ListView):
     model = Period
     template_name = "expenses/periods_list.html"
     context_object_name = "periods"
-    ordering = ["-year", "-month"]
+
+    def get_queryset(self) -> QuerySet[Any]:
+        queryset = Period.objects.filter(active=True).order_by("-year", "-month")
+        return queryset
 
 
 class PeriodCloseView(APIView):
@@ -31,13 +34,16 @@ class PeriodCloseView(APIView):
         expenses = Expense.objects.filter(period=period)
         return sum(expense.local_amount for expense in expenses)
 
+
 class PeriodOpenView(APIView):
-    def get(self, request, pk:int=None):
+    def get(self, request, pk: int = None):
         try:
             period = Period.objects.get(pk=pk, closed=True)
             period.closed = False
             period.total = 0
             period.save()
         except Period.DoesNotExist:
-            messages.error(request=request, message="Period is already open or not exists")
+            messages.error(
+                request=request, message="Period is already open or not exists"
+            )
         return redirect("period-list")
