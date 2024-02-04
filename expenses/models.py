@@ -15,6 +15,7 @@ class Period(models.Model):
     year = models.IntegerField()
     closed = models.BooleanField(default=False)
     total = models.DecimalField(max_digits=13, decimal_places=2, default=0)
+    active = models.BooleanField(default=True)
 
     class Meta:
         verbose_name = "Periodo"
