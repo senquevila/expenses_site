@@ -1,4 +1,5 @@
-from django.contrib import admin
+from django.contrib import admin, messages
+from django.db.models import Count
 
 from expenses.models import (
     Account,
@@ -11,9 +12,19 @@ from expenses.models import (
 )
 
 
+def disabled_periods(PeriodAdmin, request, queryset):
+    queryset.update(active=False)
+    updates = queryset.count()
+    messages.success(request=request, message=f"Disabled {updates} periods")
+
+
+disabled_periods.short_description = "Disabled selected periods"
+
+
 @admin.register(Period)
 class PeriodAdmin(admin.ModelAdmin):
     ordering = ["-year", "-month"]
+    actions = [disabled_periods]
 
 
 @admin.register(Currency)
@@ -29,6 +40,16 @@ class CurrencyConvertAdmin(admin.ModelAdmin):
 @admin.register(Account)
 class AccountAdmin(admin.ModelAdmin):
     ordering = ["name"]
+
+
+def remove_invalid_expenses(ExpenseAdmin, request, queryset):
+    invalid_expenses = Expense.objects.filter(account__name="Invalido")
+    deletes = invalid_expenses.count()
+    invalid_expenses.delete()
+    messages.success(request=request, message=f"Removed {deletes} invalid expenses")
+
+
+remove_invalid_expenses.short_description = "Removed all the invalid expenses"
 
 
 @admin.register(Expense)
@@ -56,10 +77,11 @@ class ExpenseAdmin(admin.ModelAdmin):
         "-created",
     )
     search_fields = (
-        "description__startswith",
-        "account__name__startswith",
+        "description__icontains",
+        "account__name__icontains",
         "amount",
     )
+    actions = [remove_invalid_expenses]
 
     def account_name(self, obj):
         return obj.account.name
@@ -70,8 +92,8 @@ class ExpenseAdmin(admin.ModelAdmin):
 @admin.register(AccountAsociation)
 class AccountAsociationAdmin(admin.ModelAdmin):
     search_fields = (
-        "account__name",
-        "token",
+        "account__name__icontains",
+        "token__icontains",
     )
     ordering = (
         "account__name",
@@ -79,6 +101,18 @@ class AccountAsociationAdmin(admin.ModelAdmin):
     )
 
 
+def remove_empty_uploads(UploadAdmin, request, queryset):
+    unused_uploads = Upload.objects.annotate(num_expenses=Count("expense")).filter(
+        num_expenses=0
+    )
+    deletes = unused_uploads.count()
+    unused_uploads.delete()
+    messages.success(request=request, message=f"Removed {deletes} uploads")
+
+
+remove_empty_uploads.short_description = "Remove uploads with no expenses"
+
+
 @admin.register(Upload)
 class UploadAdmin(admin.ModelAdmin):
-    pass
+    actions = [remove_empty_uploads]
