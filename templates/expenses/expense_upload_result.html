@@ -12,12 +12,14 @@ Expense Upload Result
     <table class="table table-striped">
         <tr>
             <th class="text-center">Line number</th>
+            <th>Row</th>
             <th>Description</th>
         </tr>
-        {% for key, value in result.items %}
+        {% for line_number, value in result.items %}
         <tr>
-            <td class="text-center">{{ key }}</td>
-            <td>{{ value }}</td>
+            <td class="text-center">{{ line_number }}</td>
+            <td>{{ value.source }}</td>
+            <td>{{ value.description }}</td>
         </tr>
         {% endfor %}
     </table>

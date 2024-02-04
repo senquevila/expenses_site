@@ -60,9 +60,7 @@ class ExpenseUploadView(FormView):
             form.add_error(None, "File empty")
 
     def process_csv(self, file):
-        context = {}
-
-        context["result"] = {}
+        context = {"result": {}}
         self._set_defaults()
 
         decoded_file = file.read().decode("utf-8-sig").splitlines()
@@ -82,24 +80,37 @@ class ExpenseUploadView(FormView):
             if lines == 1:  # Avoid the header
                 continue
 
-            print(f"Line: {lines} - {row}")
             row = self._clear_row(row)
-
             payment_date = self._get_payment_date(row[DATE_FIELD])
             period = Period.get_period_from_date(payment_date)
 
             if not period:
-                context["result"][lines] = "Period not found for the payment date"
+                self.set_message(
+                    data=context,
+                    line_number=lines,
+                    source=row,
+                    description="Period not found for payment date",
+                )
                 continue
 
             if period.closed:
-                context["result"][lines] = "Error: Period is closed"
+                self.set_message(
+                    data=context,
+                    line_number=lines,
+                    source=row,
+                    description="Period closed",
+                )
                 continue
 
             amount, currency = self._get_amount(row)
 
             if amount == 0:
-                context["result"][lines] = "Amount zero"
+                self.set_message(
+                    data=context,
+                    line_number=lines,
+                    source=row,
+                    description="Amount is zero",
+                )
                 continue
 
             account = self._get_account(row)
@@ -110,7 +121,12 @@ class ExpenseUploadView(FormView):
                 description=row[1],
                 amount=amount,
             ).exists():
-                context["result"][lines] = "Expense already exists"
+                self.set_message(
+                    data=context,
+                    line_number=lines,
+                    source=row,
+                    description="Expense already exists",
+                )
                 continue
 
             serializer = ExpenseSerializer(
@@ -127,18 +143,39 @@ class ExpenseUploadView(FormView):
             if serializer.is_valid():
                 serializer.save()
                 created += 1
+                self.set_message(
+                    data=context,
+                    line_number=lines,
+                    source=row,
+                    description="CREATED",
+                )
             else:
-                context["result"][lines] = str(serializer.errors)
+                self.set_message(
+                    data=context,
+                    line_number=lines,
+                    source=row,
+                    description=str(serializer.errors),
+                )
 
         context["summary"] = {
             "created": created,
             "total": upload.lines,
         }
 
-        # context["association"] = json.dumps(change_account_from_assoc())
+        change_account_from_assoc()
+
         upload.result = json.dumps(context)
         upload.save()
         return upload.id
+
+    def set_message(self, data: dict, line_number: int, source: str, description: str):
+        if line_number not in data["result"]:
+            data["result"][line_number] = {}
+
+        data["result"][line_number] = {
+            "source": str(source),
+            "description": description,
+        }
 
     def _set_defaults(self):
         # get the default values
@@ -260,6 +297,7 @@ class ExpenseGroupListView(ListView):
         context["period_id"] = period.id
         context["total"] = get_total_local_amount(Q(period=period))
         return context
+
 
 class ExpenseListView(ListView):
     model = Expense
