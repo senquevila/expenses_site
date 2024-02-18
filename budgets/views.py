@@ -1,7 +1,6 @@
 from typing import Any
 
 from django.db.models import ExpressionWrapper, F, FloatField, Sum
-from django.db.models.query import QuerySet
 from django.shortcuts import get_object_or_404, redirect
 from django.urls import reverse_lazy
 from django.views.generic.list import ListView
@@ -9,29 +8,9 @@ from django.views.generic.edit import CreateView, UpdateView
 
 from rest_framework.views import APIView
 
-from budgets.models import Category, Budget, BudgetAssignment, MatchAccount
-from budgets.forms import CategoryForm, BudgetForm, BudgetAssignmentForm
+from budgets.models import Budget, BudgetAssignment
+from budgets.forms import BudgetForm, BudgetAssignmentForm
 from expenses.models import Expense
-
-
-class CategoryCreateView(CreateView):
-    model = Category
-    form_class = CategoryForm
-    template_name = "budgets/category_form.html"
-    success_url = reverse_lazy("category-list")  # Replace with the actual URL
-
-
-class CategoryUpdateView(UpdateView):
-    model = Category
-    form_class = CategoryForm
-    template_name = "budgets/category_form.html"
-    success_url = reverse_lazy("category-list")
-
-
-class CategoryListView(ListView):
-    model = Category
-    template_name = "category_list.html"
-    context_object_name = "categories"
 
 
 class BudgetCreateView(CreateView):
@@ -79,21 +58,16 @@ class BudgetUpdateExpensesView(APIView):
         ).update(expense_amount=0)
 
         for expense in expenses:
-            # Find corresponding MatchAccount entry
-            match_entry = MatchAccount.objects.filter(account=expense.account).first()
-
-            if not match_entry:
-                continue
 
             try:
                 assignament = BudgetAssignment.objects.get(
                     budget=budget,
-                    category=match_entry.category,
+                    account=expense.account,
                 )
                 assignament.expense_amount += expense.local_amount
                 assignament.save()
             except BudgetAssignment.DoesNotExist:
-                print(match_entry.category.name)
+                print(expense.account)
 
         return redirect("budget-list")
 

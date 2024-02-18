@@ -3,27 +3,6 @@ from django.db import models
 from django.utils.timezone import now
 
 
-class Category(models.Model):
-    FIXED = "FIX"
-    VARIABLE = "VAR"
-    CATEGORY_TYPE = (
-        (FIXED, "Costo Fijo"),
-        (VARIABLE, "Costo Variable"),
-    )
-
-    name = models.CharField(max_length=100)
-    category_type = models.CharField(
-        max_length=20, choices=CATEGORY_TYPE, default=FIXED
-    )
-
-    class Meta:
-        verbose_name = "Categoria"
-        verbose_name_plural = "Categorias"
-
-    def __str__(self) -> str:
-        return self.name
-
-
 class Budget(models.Model):
     user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
     period = models.ForeignKey("expenses.Period", on_delete=models.CASCADE)
@@ -45,24 +24,11 @@ class Budget(models.Model):
 
 class BudgetAssignment(models.Model):
     budget = models.ForeignKey(Budget, on_delete=models.CASCADE)
-    category = models.ForeignKey(Category, on_delete=models.CASCADE)
+    account = models.ForeignKey("expenses.Account", blank=True, null=True, on_delete=models.CASCADE)
     budget_amount = models.DecimalField(max_digits=10, decimal_places=2, default=0)
     expense_amount = models.DecimalField(max_digits=10, decimal_places=2, default=0)
 
     class Meta:
-        unique_together = ("budget", "category")
+        unique_together = ("budget", "account")
         verbose_name = "Asignacion de presupuesto"
         verbose_name_plural = "Asignaciones de presupuesto"
-
-
-class MatchAccount(models.Model):
-    category = models.ForeignKey(Category, on_delete=models.CASCADE)
-    account = models.ForeignKey("expenses.Account", on_delete=models.CASCADE)
-
-    class Meta:
-        unique_together = ["category", "account"]
-        verbose_name = "Categorizacion de gasto"
-        verbose_name_plural = "Categorizaciones de gastos"
-
-    def __str__(self) -> str:
-        return f"{self.category.name} = {self.account.name}"

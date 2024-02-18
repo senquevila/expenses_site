@@ -4,7 +4,7 @@ from django.db.models.signals import post_save
 from django.dispatch import receiver
 from django.db.models import Sum
 
-from budgets.models import Budget, BudgetAssignment, MatchAccount
+from budgets.models import Budget, BudgetAssignment
 from expenses.models import Expense, Period
 
 
@@ -29,15 +29,9 @@ def create_budget_from_expenses(sender, instance, created, **kwargs):
         expenses = Expense.objects.filter(period=previous_period)
 
         for expense in expenses:
-            # Find corresponding MatchAccount entry
-            match_entry = MatchAccount.objects.filter(account=expense.account).first()
-
-            if not match_entry:
-                continue
-
             assignament, created = BudgetAssignment.objects.get_or_create(
                 budget=instance,
-                category=match_entry.category,
+                account=expense.account,
                 defaults={
                     "budget_amount": 0,
                     "expense_amount": 0,

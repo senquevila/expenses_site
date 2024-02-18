@@ -27,11 +27,4 @@ urlpatterns = [
         views.BudgetAssignmentUpdateView.as_view(),
         name="assignment-edit",
     ),
-    path("categories/", views.CategoryListView.as_view(), name="category-list"),
-    path("categories/add/", views.CategoryCreateView.as_view(), name="category-add"),
-    path(
-        "categories/<int:pk>/edit/",
-        views.CategoryUpdateView.as_view(),
-        name="category-edit",
-    ),
 ]

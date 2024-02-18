@@ -8,23 +8,32 @@
   <table class="table table-striped">
     <tr>
       <th>Period</th>
-      <th>Category</th>
+      <th>Account</th>
+      <th class="text-center">Type</th>
       <th class="text-end">Budget</th>
       <th class="text-end">Expense</th>
-      <th class="text-end">Difference</th>
+      <th class="text-center">Difference</th>
     </tr>
     {% for assignment in budget_assignments %}
     <tr>
       <td>{{ assignment.budget.period }}</td>
-      <td>{{ assignment.category }}</td>
+      <td>{{ assignment.account.name }}</td>
+      <td class="text-center">
+        {% if assignment.account.account_type == "FIX" %}
+        <span class="badge text-bg-secondary rounded-pill">{{ assignment.account.account_type }}</span>
+        {% else %}
+        <span class="badge text-bg-info rounded-pill">{{ assignment.account.account_type }}</span>
+        {% endif %}
+        </span>
+      </td>
       <td class="text-end">{{ assignment.budget_amount|intcomma }}</td>
       <td class="text-end">{{ assignment.expense_amount|intcomma }}</td>
-      <td class="text-end  {% if assignment.difference <= 1 %}text-bg-success{% else %}text-bg-danger{% endif %}">{{ assignment.difference|round_to_n }}x </td>
+      <td class="text-center"><span class="badge rounded-pill {% if assignment.difference <= 1 %}text-bg-success{% else %}text-bg-danger{% endif %}">{{ assignment.difference|round_to_n }}x</span></td>
     </tr>
     {% endfor %}
     <tr>
       <td><strong>Total</strong></td>
-      <td></td>
+      <td colspan="2"></td>
       <td class="text-end">{{ total_budget|intcomma }}</td>
       <td class="text-end">{{ total_expense|intcomma }}</td>
     </tr>
