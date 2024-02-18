@@ -1,4 +1,10 @@
 # Changelog
+## 2024-02-18
+- Added account_type in account model.
+- Removed swap account view.
+- Changed cascade delete on foreign key fields.
+- Fixed result template.
+
 ## 2024-02-04
 - Added periods activation.
 - Added admin forms actions: remove blank uploads, remove invalid expenses, disabled periods.
