@@ -83,7 +83,7 @@ class BudgetAssigmentListView(ListView):
             difference=ExpressionWrapper(
                 F("expense_amount") / F("budget_amount"), output_field=FloatField()
             )
-        ).order_by("-budget_amount")
+        ).order_by("expense_amount")
         return queryset
 
     def get_context_data(self, **kwargs: Any) -> dict[str, Any]:
