@@ -45,7 +45,7 @@ class Currency(models.Model):
 
 
 class CurrencyConvert(models.Model):
-    currency = models.ForeignKey(Currency, on_delete=models.DO_NOTHING)
+    currency = models.ForeignKey(Currency, on_delete=models.CASCADE)
     exchange = models.DecimalField(max_digits=10, decimal_places=4)
     date = models.DateField(auto_now_add=True)
 
@@ -87,9 +87,9 @@ class Account(models.Model):
         return f"{_sign}{self.name} {p_name} [{self.account_type}]"
 
 class Accountable(CreationModificationDateMixin):
-    period = models.ForeignKey(Period, on_delete=models.DO_NOTHING)
-    account = models.ForeignKey(Account, on_delete=models.DO_NOTHING)
-    currency = models.ForeignKey(Currency, on_delete=models.DO_NOTHING)
+    period = models.ForeignKey(Period, on_delete=models.CASCADE)
+    account = models.ForeignKey(Account, on_delete=models.CASCADE)
+    currency = models.ForeignKey(Currency, on_delete=models.CASCADE)
     amount = models.DecimalField(max_digits=13, decimal_places=2)
 
     class Meta:

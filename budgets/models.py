@@ -56,8 +56,8 @@ class BudgetAssignment(models.Model):
 
 
 class MatchAccount(models.Model):
-    category = models.ForeignKey(Category, on_delete=models.DO_NOTHING)
-    account = models.ForeignKey("expenses.Account", on_delete=models.DO_NOTHING)
+    category = models.ForeignKey(Category, on_delete=models.CASCADE)
+    account = models.ForeignKey("expenses.Account", on_delete=models.CASCADE)
 
     class Meta:
         unique_together = ["category", "account"]
