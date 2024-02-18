@@ -9,7 +9,7 @@ from rest_framework.response import Response
 from rest_framework.views import APIView
 
 from expenses.forms import AccountTransferForm
-from expenses.models import Account, Expense
+from expenses.models import Account, AccountAsociation, Expense
 
 
 class AccountListView(ListView):
@@ -34,5 +34,11 @@ class AccountTransferView(FormView):
         Expense.objects.filter(account=account_origin).update(
             account=account_destination
         )
+
+        AccountAsociation.objects.filter(account=account_origin).update(
+            account=account_destination
+        )
+
+        account_origin.delete()
 
         return HttpResponseRedirect(self.get_success_url())
