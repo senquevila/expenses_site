@@ -230,7 +230,7 @@ class ExpenseUploadView(FormView):
         money = value.split(" ")
         try:
             amount = float(money[0].replace(",", ""))
-        except (IndexError, ValueError) as e:
+        except (IndexError, ValueError):
             amount = 0
 
         try:
@@ -264,6 +264,7 @@ class ExpenseUploadResult(TemplateView):
             upload = Upload.objects.get(pk=self.kwargs.get("pk"))
             data = json.loads(upload.result)
             context.update(data)
+            context["file"] = upload.file
         except Upload.DoesNotExist:
             pass
 
