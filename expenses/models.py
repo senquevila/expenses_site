@@ -64,9 +64,18 @@ class Account(models.Model):
         (DEBE, "Debe (-)"),
         (HABER, "Haber (+)"),
     )
+    FIXED = "FIX"
+    VARIABLE = "VAR"
+    ACCOUNT_TYPE = (
+        (FIXED, "Fijo"),
+        (VARIABLE, "Variable"),
+    )
     name = models.CharField(max_length=100)
     parent = models.ForeignKey("self", null=True, blank=True, on_delete=models.CASCADE)
     sign = models.IntegerField(choices=SIGN_TYPE)
+    account_type = models.CharField(
+        max_length=5, choices=ACCOUNT_TYPE, default=VARIABLE
+    )
 
     class Meta:
         verbose_name = "Cuenta"
@@ -74,11 +83,8 @@ class Account(models.Model):
 
     def __str__(self) -> str:
         _sign = "-" if self.sign == -1 else "+"
-        if not self.parent:
-            return f"{self.name} [{_sign}]"
-        else:
-            return f"{self.name} ({self.parent.name}) [{_sign}]"
-
+        p_name = f" < {self.parent.name}" if self.parent else ""
+        return f"{_sign}{self.name} {p_name} [{self.account_type}]"
 
 class Accountable(CreationModificationDateMixin):
     period = models.ForeignKey(Period, on_delete=models.DO_NOTHING)

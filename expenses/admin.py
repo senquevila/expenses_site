@@ -39,7 +39,7 @@ class CurrencyConvertAdmin(admin.ModelAdmin):
 
 @admin.register(Account)
 class AccountAdmin(admin.ModelAdmin):
-    ordering = ["name"]
+    ordering = ["account_type", "name"]
 
 
 def remove_invalid_expenses(ExpenseAdmin, request, queryset):

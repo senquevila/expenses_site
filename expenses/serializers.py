@@ -14,7 +14,7 @@ class AccountSerializer(serializers.ModelSerializer):
     class Meta:
         model = Account
         fields = "__all__"
-        ordering = ["name"]
+        ordering = ["account_type", "name"]
 
 
 class AccountAssociationSerializer(serializers.ModelSerializer):
