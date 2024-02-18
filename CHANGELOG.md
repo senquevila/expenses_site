@@ -6,6 +6,7 @@
 ### Fixed
 - Cascade delete on foreign key fields.
 - Upload Result template.
+- Budget assignaments.
 ### Removed
 - swap account view.
 - Category and MatchAccount models.

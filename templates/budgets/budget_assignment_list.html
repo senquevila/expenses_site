@@ -5,9 +5,9 @@
 {% block content %}
 <div class="col-md-6">
   <h2>Budget Assignments</h2>
+  <p>Period: {{ period }}</p>
   <table class="table table-striped">
     <tr>
-      <th>Period</th>
       <th>Account</th>
       <th class="text-center">Type</th>
       <th class="text-end">Budget</th>
@@ -16,7 +16,6 @@
     </tr>
     {% for assignment in budget_assignments %}
     <tr>
-      <td>{{ assignment.budget.period }}</td>
       <td>{{ assignment.account.name }}</td>
       <td class="text-center">
         {% if assignment.account.account_type == "FIX" %}
@@ -33,7 +32,7 @@
     {% endfor %}
     <tr>
       <td><strong>Total</strong></td>
-      <td colspan="2"></td>
+      <td></td>
       <td class="text-end">{{ total_budget|intcomma }}</td>
       <td class="text-end">{{ total_expense|intcomma }}</td>
     </tr>

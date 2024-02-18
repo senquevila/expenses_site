@@ -83,11 +83,13 @@ class BudgetAssigmentListView(ListView):
             difference=ExpressionWrapper(
                 F("expense_amount") / F("budget_amount"), output_field=FloatField()
             )
-        )
+        ).order_by("-budget_amount")
         return queryset
 
     def get_context_data(self, **kwargs: Any) -> dict[str, Any]:
         context = super().get_context_data(**kwargs)
+        budget = get_object_or_404(Budget, pk=self.kwargs["pk"])
+        context["period"] = budget.period
         total = BudgetAssignment.objects.filter(budget__pk=self.kwargs["pk"]).aggregate(
             total_budget=Sum("budget_amount"),
             total_expense=Sum("expense_amount"),
