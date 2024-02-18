@@ -17,30 +17,6 @@ class ExpenseViewSet(viewsets.ModelViewSet):
     serializer_class = ExpenseSerializer
 
 
-class SwapAccountView(APIView):
-    def post(self, request, *args, **kwargs):
-        account_origin = get_object_or_404(
-            Account, pk=request.data.get("account_origin")
-        )
-        account_destination = get_object_or_404(
-            Account, pk=request.data.get("account_destination")
-        )
-
-        if account_origin.id == account_destination.id:
-            return Response(
-                {"desciption": "Accounts are the same"},
-                status=status.HTTP_400_BAD_REQUEST,
-            )
-
-        # change expenses from account_origin to account_destination
-        Expense.objects.filter(account=account_origin).update(
-            account=account_destination
-        )
-        # remove account_origin
-        Account.objects.filter(account=account_origin).delete()
-        return Response(status=status.HTTP_200_OK)
-
-
 class ExpenseUploadFileCleanupView(APIView):
     def delete(self, request, *args, **kwargs):
         unused_uploads = Upload.objects.annotate(num_expenses=Count("expense")).filter(
@@ -53,7 +29,7 @@ class ExpenseUploadFileCleanupView(APIView):
 
 class ExpenseDeleteInvalidView(APIView):
     def delete(self, request, *args, **kwargs):
-        invalid_expenses = Expense.objects.filter(account__name='Invalido')
+        invalid_expenses = Expense.objects.filter(account__name="Invalido")
         deletes = invalid_expenses.count()
         invalid_expenses.delete()
         return Response(data={"expenses-removed": deletes}, status=status.HTTP_200_OK)
