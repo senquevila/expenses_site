@@ -1,6 +1,5 @@
 # django imports
 from django.db.models import Count
-from django.shortcuts import get_object_or_404
 
 # drf imports
 from rest_framework.views import APIView
@@ -8,7 +7,7 @@ from rest_framework import status, viewsets
 from rest_framework.response import Response
 
 # models import
-from expenses.models import Account, Expense, Upload
+from expenses.models import Expense, Upload
 from expenses.serializers import ExpenseSerializer
 
 
