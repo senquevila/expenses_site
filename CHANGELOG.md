@@ -1,4 +1,7 @@
 # Changelog
+## 2024-03-02
+### New
+- Translations on model fields and verbose_name.
 ## 2024-02-18
 ### New
 - `account_type` in account model.
