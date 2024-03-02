@@ -11,6 +11,8 @@ from expenses.models import (
     Upload,
 )
 
+from expenses.utils import change_account_from_assoc
+
 
 def disabled_periods(PeriodAdmin, request, queryset):
     queryset.update(active=False)
@@ -39,7 +41,7 @@ class CurrencyConvertAdmin(admin.ModelAdmin):
 
 @admin.register(Account)
 class AccountAdmin(admin.ModelAdmin):
-    ordering = ["account_type", "name"]
+    ordering = ["name", "account_type"]
 
 
 def remove_invalid_expenses(ExpenseAdmin, request, queryset):
@@ -50,6 +52,16 @@ def remove_invalid_expenses(ExpenseAdmin, request, queryset):
 
 
 remove_invalid_expenses.short_description = "Removed all the invalid expenses"
+
+
+def assoc_default_account(ExpenseAdmin, request, queryset):
+    changes = change_account_from_assoc()
+    messages.success(
+        request=request, message=f"Associated {len(changes)} expenses with Default account"
+    )
+
+
+assoc_default_account.short_description = "Associate expenses from default account"
 
 
 @admin.register(Expense)
@@ -69,8 +81,8 @@ class ExpenseAdmin(admin.ModelAdmin):
         "period",
         "created",
         "currency",
-        "upload",
         "account",
+        "upload",
     )
     ordering = (
         "-payment_date",
@@ -81,7 +93,7 @@ class ExpenseAdmin(admin.ModelAdmin):
         "account__name__icontains",
         "amount",
     )
-    actions = [remove_invalid_expenses]
+    actions = [remove_invalid_expenses, assoc_default_account]
 
     def account_name(self, obj):
         return obj.account.name
@@ -116,3 +128,6 @@ remove_empty_uploads.short_description = "Remove uploads with no expenses"
 @admin.register(Upload)
 class UploadAdmin(admin.ModelAdmin):
     actions = [remove_empty_uploads]
+    ordering = (
+        "-created",
+    )
