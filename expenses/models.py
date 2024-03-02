@@ -13,7 +13,7 @@ from expenses.mixins import CreationModificationDateMixin
 class Period(models.Model):
     month = models.IntegerField(_("Mes"))
     year = models.IntegerField(_("Año"))
-    closed = models.BooleanField(_("Permite modificaciones"), default=False)
+    closed = models.BooleanField(_("Solo lectura"), default=False)
     total = models.DecimalField(_("Monto total"), max_digits=13, decimal_places=2, default=0)
     active = models.BooleanField(_("Es visible"), default=True)
 
@@ -84,7 +84,7 @@ class Account(models.Model):
     def __str__(self) -> str:
         _sign = "-" if self.sign == -1 else "+"
         p_name = f" < {self.parent.name}" if self.parent else ""
-        return f"{_sign}{self.name} {p_name} [{self.account_type}]"
+        return f"{self.name} {p_name} [{_sign}{self.account_type}]"
 
 class Accountable(CreationModificationDateMixin):
     period = models.ForeignKey(Period, on_delete=models.CASCADE)
