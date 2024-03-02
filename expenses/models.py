@@ -1,7 +1,7 @@
 from datetime import timedelta
 from decimal import Decimal
 
-from django.conf import settings
+from django.utils.translation import gettext_lazy as _
 from django.db import models
 from django.db.models import F
 from django.db.models.functions import Abs
@@ -11,15 +11,15 @@ from expenses.mixins import CreationModificationDateMixin
 
 
 class Period(models.Model):
-    month = models.IntegerField()
-    year = models.IntegerField()
-    closed = models.BooleanField(default=False)
-    total = models.DecimalField(max_digits=13, decimal_places=2, default=0)
-    active = models.BooleanField(default=True)
+    month = models.IntegerField(_("Mes"))
+    year = models.IntegerField(_("Año"))
+    closed = models.BooleanField(_("Permite modificaciones"), default=False)
+    total = models.DecimalField(_("Monto total"), max_digits=13, decimal_places=2, default=0)
+    active = models.BooleanField(_("Es visible"), default=True)
 
     class Meta:
-        verbose_name = "Periodo"
-        verbose_name_plural = "Periodos"
+        verbose_name = _("Periodo")
+        verbose_name_plural = _("Periodos")
 
     def __str__(self) -> str:
         return f"{self.year}-{self.month:02}"
@@ -33,12 +33,12 @@ class Period(models.Model):
 
 
 class Currency(models.Model):
-    name = models.CharField(max_length=100)
-    alpha3 = models.CharField(max_length=3, blank=True, null=True)
+    name = models.CharField(_("Nombre"), max_length=100)
+    alpha3 = models.CharField(_("Codigo alpha-3"), max_length=3, blank=True, null=True)
 
     class Meta:
-        verbose_name = "Moneda"
-        verbose_name_plural = "Monedas"
+        verbose_name = _("Moneda")
+        verbose_name_plural = _("Monedas")
 
     def __str__(self) -> str:
         return self.name
@@ -46,12 +46,12 @@ class Currency(models.Model):
 
 class CurrencyConvert(models.Model):
     currency = models.ForeignKey(Currency, on_delete=models.CASCADE)
-    exchange = models.DecimalField(max_digits=10, decimal_places=4)
-    date = models.DateField(auto_now_add=True)
+    exchange = models.DecimalField(_("Tasa de conversión"), max_digits=10, decimal_places=4)
+    date = models.DateField(_("Fecha de conversión"), auto_now_add=True)
 
     class Meta:
-        verbose_name = "Conversion de moneda"
-        verbose_name_plural = "Conversiones de monedas"
+        verbose_name = _("Conversion de moneda")
+        verbose_name_plural = _("Conversiones de monedas")
 
     def __str__(self) -> str:
         return f"{self.date} > {self.currency}"
@@ -70,16 +70,16 @@ class Account(models.Model):
         (FIXED, "Fijo"),
         (VARIABLE, "Variable"),
     )
-    name = models.CharField(max_length=100)
+    name = models.CharField(_("Nombre"), max_length=100)
     parent = models.ForeignKey("self", null=True, blank=True, on_delete=models.CASCADE)
-    sign = models.IntegerField(choices=SIGN_TYPE)
+    sign = models.IntegerField(_("Signo"), choices=SIGN_TYPE)
     account_type = models.CharField(
-        max_length=5, choices=ACCOUNT_TYPE, default=VARIABLE
+        _("Tipo de cuenta"), max_length=5, choices=ACCOUNT_TYPE, default=VARIABLE
     )
 
     class Meta:
-        verbose_name = "Cuenta"
-        verbose_name_plural = "Cuentas"
+        verbose_name = _("Cuenta")
+        verbose_name_plural = _("Cuentas")
 
     def __str__(self) -> str:
         _sign = "-" if self.sign == -1 else "+"
@@ -90,7 +90,7 @@ class Accountable(CreationModificationDateMixin):
     period = models.ForeignKey(Period, on_delete=models.CASCADE)
     account = models.ForeignKey(Account, on_delete=models.CASCADE)
     currency = models.ForeignKey(Currency, on_delete=models.CASCADE)
-    amount = models.DecimalField(max_digits=13, decimal_places=2)
+    amount = models.DecimalField(_("Monto"), max_digits=13, decimal_places=2)
 
     class Meta:
         abstract = True
@@ -113,23 +113,23 @@ def expense_upload_path(instance, filename):
 
 
 class Upload(CreationModificationDateMixin):
-    file = models.FileField(blank=True, null=True, upload_to=expense_upload_path)
-    lines = models.IntegerField(default=0)
-    result = models.JSONField(blank=True, null=True)
+    file = models.FileField(_("Archivo"), blank=True, null=True, upload_to=expense_upload_path)
+    lines = models.IntegerField(_("Número de líneas"), default=0)
+    result = models.JSONField(_("Resultado"), blank=True, null=True)
 
     class Meta:
-        verbose_name = "Subida de archivo"
-        verbose_name_plural = "Subidas de archivos"
+        verbose_name = _("Subida de archivo")
+        verbose_name_plural = _("Subidas de archivos")
 
     def __str__(self) -> str:
         return str(self.file.name)
 
 
 class Expense(Accountable):
-    description = models.CharField(max_length=255, blank=True, null=True)
-    payment_date = models.DateField(default=timezone.now, blank=True, null=True)
+    description = models.CharField(_("Descripción"), max_length=255, blank=True, null=True)
+    payment_date = models.DateField(_("Fecha de pago"), default=timezone.now, blank=True, null=True)
     local_amount = models.DecimalField(
-        max_digits=13, decimal_places=2, default=0, editable=False
+        _("Monto local"), max_digits=13, decimal_places=2, default=0, editable=False
     )
     upload = models.ForeignKey(
         Upload,
@@ -139,8 +139,8 @@ class Expense(Accountable):
     )
 
     class Meta:
-        verbose_name = "Gasto"
-        verbose_name_plural = "Gastos"
+        verbose_name = _("Gasto")
+        verbose_name_plural = _("Gastos")
 
     def __str__(self) -> str:
         return super().__str__()
@@ -167,11 +167,16 @@ class Expense(Accountable):
 
 class AccountAsociation(models.Model):
     account = models.ForeignKey(Account, on_delete=models.CASCADE)
-    token = models.CharField(max_length=100)
+    token = models.CharField(_("Token para asociar"), max_length=100)
 
     class Meta:
-        verbose_name = "Asociacion de cuenta"
-        verbose_name_plural = "Asociaciones de cuentas"
+        verbose_name = _("Asociacion de cuenta")
+        verbose_name_plural = _("Asociaciones de cuentas")
 
     def __str__(self) -> str:
         return f"{self.account.name} -> {self.token}"
+
+
+class UploadData(models.Model):
+    upload = models.ForeignKey(Upload, on_delete=models.CASCADE)
+    json = models.JSONField()
