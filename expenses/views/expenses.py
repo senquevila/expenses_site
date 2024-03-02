@@ -1,5 +1,6 @@
 import csv
 import json
+import re
 from typing import Any
 from django.db.models.query import QuerySet
 import requests
@@ -227,9 +228,11 @@ class ExpenseUploadView(FormView):
         except IndexError:
             return (0, self.default_currency)
 
-        money = value.split(" ")
+        # replace weird characters
+        value = value.replace("\xa0", " ").replace(",", "")
+        money = self._extract_currency_and_value(value)
         try:
-            amount = float(money[0].replace(",", ""))
+            amount = float(money[0])
         except (IndexError, ValueError):
             amount = 0
 
@@ -245,6 +248,24 @@ class ExpenseUploadView(FormView):
             currency = self.default_currency
 
         return (amount, currency)
+
+    def _extract_currency_and_value(self, input: str) -> tuple:
+        pattern = r"(?P<currency>L|LPS|HNL|USD)?\s*(?P<value>\d+\.\d{2})"
+        match = re.search(pattern, input)
+        if match:
+            currency = match.group("currency")
+            value = match.group("value")
+
+            currency_map = {
+                "L": "HNL",  # Assuming 'L' stands for Lempira, the currency of Honduras
+                "LPS": "HNL",
+                "HNL": "HNL",
+                "USD": "USD",
+            }
+
+            return value, currency_map.get(currency, None)
+        else:
+            return 0, None
 
     def _get_payment_date(self, value: str):
         payment_date = str_to_date(value)
