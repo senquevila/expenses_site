@@ -17,7 +17,7 @@ Upload List
         </tr>
         {% for upload in uploads %}
         <tr>
-            <td><a href="{% url 'expense-list' %}?upload={{ upload.id }}">{{ upload.id }}</a></td>
+            <td><a href="{% url 'transaction-list' %}?upload={{ upload.id }}">{{ upload.id }}</a></td>
             <td>{{ upload.file.name }}</td>
             <td class="text-center">{{ upload.lines }}</td>
             <td><code>{{ upload.result }}</code></td>

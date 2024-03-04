@@ -2,17 +2,18 @@
 ## 2024-03-02
 ### New
 - Translations on model fields and verbose_name.
-### Fixed
+### Change
 - Process to extract the amount and currency in expense uploads.
+- Rename expense model for transaction.
 ## 2024-02-18
 ### New
 - `account_type` in account model.
 - Changelog template: Add New, Fixed and Removed subtitles.
-### Fixed
+### Change
 - Cascade delete on foreign key fields.
 - Upload Result template.
 - Budget assignaments.
-### Removed
+### Remove
 - swap account view.
 - Category and MatchAccount models.
 
@@ -20,7 +21,7 @@
 ### New
 - Periods activation.
 - Admin forms actions: remove blank uploads, remove invalid expenses, disabled periods.
-### Fixed
+### Change
 - Upload expense result giving detail for all the rows.
 
 ## 2024-01-28
@@ -29,7 +30,7 @@
 - Update expenses in the budget.
 - List expense categories associated in the budget.
 - Result from expense upload.
-### Fixed
+### Change
 - Cleanup the DB when a upload does not have expenses associated.
 
 ## 2024-01-21
@@ -50,19 +51,19 @@
 ### New
 - Open periods endpoint.
 - Link to use CDN font from bootstrap.
-### Fixed
+### Change
 - Changelog format. Using the verbs: Added, Changed and Removed
 
 ## 2024-01-01
 ### New
 - Bank and BankAccount models.
-### Removed
+### Remove
 - Removed not used API endpoints.
 
 ## 2023-12-31
-### Fixed
+### Change
 - Changed Filter to omit closed period in the expenses uploads.
-### Removed
+### Remove
 - Period from upload expenses. This field will be calculated from the payment date.
 
 ## 2023-11-04

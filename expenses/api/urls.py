@@ -10,7 +10,7 @@ from django.urls import include
 
 
 router = DefaultRouter()
-router.register(r"expenses", api_views.ExpenseViewSet, basename="expenses")
+router.register(r"expenses", api_views.TransactionViewSet, basename="expenses")
 router.register(r"accounts", api_views.AccountViewSet, basename="accounts")
 router.register(
     r"currency_converts", api_views.CurrencyConvertViewSet, basename="currency_converts"
@@ -31,12 +31,12 @@ urlpatterns = [
     ),
     path(
         "upload_file_cleanup/",
-        api_views.ExpenseUploadFileCleanupView.as_view(),
+        api_views.TransactionUploadFileCleanupView.as_view(),
         name="upload-file-cleanup"
     ),
     path(
         "invalid_cleanup/",
-        api_views.ExpenseDeleteInvalidView.as_view(),
+        api_views.TransactionDeleteInvalidView.as_view(),
         name="expense-invalid-account-cleanup",
     )
 ]

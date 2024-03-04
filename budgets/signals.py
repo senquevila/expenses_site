@@ -5,7 +5,7 @@ from django.dispatch import receiver
 from django.db.models import Sum
 
 from budgets.models import Budget, BudgetAssignment
-from expenses.models import Expense, Period
+from expenses.models import Transaction, Period
 
 
 @receiver(post_save, sender=Budget)
@@ -26,7 +26,7 @@ def create_budget_from_expenses(sender, instance, created, **kwargs):
             return
 
         # Fetch expenses from the previous period
-        expenses = Expense.objects.filter(period=previous_period)
+        expenses = Transaction.objects.filter(period=previous_period)
 
         for expense in expenses:
             assignament, created = BudgetAssignment.objects.get_or_create(

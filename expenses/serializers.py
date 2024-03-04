@@ -4,7 +4,7 @@ from expenses.models import (
     Account,
     AccountAsociation,
     CurrencyConvert,
-    Expense,
+    Transaction,
     Period,
     Upload,
 )
@@ -41,13 +41,13 @@ class PeriodSerializer(serializers.ModelSerializer):
         ordering = ["-year", "-month"]
 
 
-class ExpenseSerializer(serializers.ModelSerializer):
+class TransactionSerializer(serializers.ModelSerializer):
     """
-    Serializer for the Expense model.
+    Serializer for the Transaction model.
     """
 
     class Meta:
-        model = Expense
+        model = Transaction
         fields = "__all__"
 
 

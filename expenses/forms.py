@@ -1,10 +1,10 @@
 from django import forms
 from django.core.validators import FileExtensionValidator
 
-from expenses.models import Account, Expense
+from expenses.models import Account, Transaction
 
 
-class ExpenseUploadForm(forms.Form):
+class TransactionUploadForm(forms.Form):
     file = forms.FileField(
         label="Archivo",
         help_text="Seleccione un archivo CSV para cargar",
@@ -12,7 +12,7 @@ class ExpenseUploadForm(forms.Form):
     )
 
     class Meta:
-        model = Expense
+        model = Transaction
         fields = (
             "periodo",
             "description",
@@ -24,9 +24,9 @@ class ExpenseUploadForm(forms.Form):
         )
 
 
-class ExpenseForm(forms.ModelForm):
+class TransactionForm(forms.ModelForm):
     class Meta:
-        model = Expense
+        model = Transaction
         fields = [
             "description",
             "payment_date",

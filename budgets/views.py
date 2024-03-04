@@ -10,7 +10,7 @@ from rest_framework.views import APIView
 
 from budgets.models import Budget, BudgetAssignment
 from budgets.forms import BudgetForm, BudgetAssignmentForm
-from expenses.models import Expense
+from expenses.models import Transaction
 
 
 class BudgetCreateView(CreateView):
@@ -52,7 +52,7 @@ class BudgetUpdateExpensesView(APIView):
         budget = get_object_or_404(Budget, pk=pk)
 
         # Fetch expenses from the previous period
-        expenses = Expense.objects.filter(period=budget.period)
+        expenses = Transaction.objects.filter(period=budget.period)
         BudgetAssignment.objects.filter(
             budget=budget,
         ).update(expense_amount=0)

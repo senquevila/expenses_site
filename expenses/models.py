@@ -125,7 +125,7 @@ class Upload(CreationModificationDateMixin):
         return str(self.file.name)
 
 
-class Expense(Accountable):
+class Transaction(Accountable):
     description = models.CharField(_("Descripción"), max_length=255, blank=True, null=True)
     payment_date = models.DateField(_("Fecha de pago"), default=timezone.now, blank=True, null=True)
     local_amount = models.DecimalField(
@@ -139,8 +139,8 @@ class Expense(Accountable):
     )
 
     class Meta:
-        verbose_name = _("Gasto")
-        verbose_name_plural = _("Gastos")
+        verbose_name = _("Transacción")
+        verbose_name_plural = _("Transacciones")
 
     def __str__(self) -> str:
         return super().__str__()
@@ -162,7 +162,7 @@ class Expense(Accountable):
 
     def save(self, *args, **kwargs):
         self.local_amount = self.get_local_amount
-        super(Expense, self).save(*args, **kwargs)
+        super().save(*args, **kwargs)
 
 
 class AccountAsociation(models.Model):

@@ -5,10 +5,10 @@ from django.conf import settings
 from django.db.models import F, Sum
 from django.db.models.functions import Abs
 
-from expenses.models import AccountAsociation, Expense, CurrencyConvert
+from expenses.models import AccountAsociation, Transaction, CurrencyConvert
 
 
-def get_real_amount(expense: Expense) -> float:
+def get_real_amount(expense: Transaction) -> float:
     data = (
         CurrencyConvert.objects.filter(currency=expense.currency)
         .annotate(date_diff=Abs(F("date") - expense.payment_date))
@@ -30,7 +30,7 @@ def str_to_date(str_date) -> datetime.date:
 
 
 def get_total_local_amount(filtered) -> Decimal:
-    queryset = Expense.objects.filter(filtered).aggregate(total=Sum("local_amount"))
+    queryset = Transaction.objects.filter(filtered).aggregate(total=Sum("local_amount"))
     return queryset["total"] or 0
 
 
@@ -38,7 +38,7 @@ def change_account_from_assoc() -> dict:
     data = []
     assocs = AccountAsociation.objects.only("token", "account")
     for assoc in assocs:
-        expenses = Expense.objects.filter(
+        expenses = Transaction.objects.filter(
             description__icontains=assoc.token,
             account__name=settings.DEFAULT_ACCOUNT)
         for expense in expenses:

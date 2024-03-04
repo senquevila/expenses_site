@@ -26,33 +26,33 @@ urlpatterns = [
     ),
     path(
         "",
-        views.ExpenseListView.as_view(),
-        name="expense-list",
+        views.TransactonListView.as_view(),
+        name="transaction-list",
     ),
     path(
         "add/",
-        views.ExpenseCreateView.as_view(),
-        name="expense-add",
+        views.TransactionCreateView.as_view(),
+        name="transaction-add",
     ),
     path(
         "<int:pk>/edit/",
-        views.ExpenseUpdateView.as_view(),
-        name="expense-edit",
+        views.TransactionUpdateView.as_view(),
+        name="transaction-edit",
     ),
     path(
         "<int:pk>/delete/",
-        views.ExpenseDeleteView.as_view(),
-        name="expense-delete",
+        views.TransactionDeleteView.as_view(),
+        name="transaction-delete",
     ),
     path(
         "upload/",
-        views.ExpenseUploadView.as_view(),
-        name="expense-upload-start",
+        views.TransactionUploadView.as_view(),
+        name="transaction-upload-start",
     ),
     path(
         "upload/result/<int:pk>/",
-        views.ExpenseUploadResult.as_view(),
-        name="expense-upload-result",
+        views.TransactionUploadResult.as_view(),
+        name="transaction-upload-result",
     ),
     path(
         "periods/",
@@ -61,7 +61,7 @@ urlpatterns = [
     ),
     path(
         "periods/<int:period>/",
-        views.ExpenseGroupListView.as_view(),
+        views.TransactionGroupListView.as_view(),
         name="period-expense-group",
     ),
     path(

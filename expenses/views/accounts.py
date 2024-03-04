@@ -9,7 +9,7 @@ from rest_framework.response import Response
 from rest_framework.views import APIView
 
 from expenses.forms import AccountTransferForm
-from expenses.models import Account, AccountAsociation, Expense
+from expenses.models import Account, AccountAsociation, Transaction
 
 
 class AccountListView(ListView):
@@ -31,7 +31,7 @@ class AccountTransferView(FormView):
         account_destination = form.cleaned_data["account_destination"]
 
         # change expenses from account_origin to account_destination
-        Expense.objects.filter(account=account_origin).update(
+        Transaction.objects.filter(account=account_origin).update(
             account=account_destination
         )
 

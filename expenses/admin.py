@@ -6,7 +6,7 @@ from expenses.models import (
     AccountAsociation,
     Currency,
     CurrencyConvert,
-    Expense,
+    Transaction,
     Period,
     Upload,
 )
@@ -44,8 +44,8 @@ class AccountAdmin(admin.ModelAdmin):
     ordering = ["name", "account_type"]
 
 
-def remove_invalid_expenses(ExpenseAdmin, request, queryset):
-    invalid_expenses = Expense.objects.filter(account__name="Invalido")
+def remove_invalid_expenses(TransactionAdmin, request, queryset):
+    invalid_expenses = Transaction.objects.filter(account__name="Invalido")
     deletes = invalid_expenses.count()
     invalid_expenses.delete()
     messages.success(request=request, message=f"Removed {deletes} invalid expenses")
@@ -54,7 +54,7 @@ def remove_invalid_expenses(ExpenseAdmin, request, queryset):
 remove_invalid_expenses.short_description = "Removed all the invalid expenses"
 
 
-def assoc_default_account(ExpenseAdmin, request, queryset):
+def assoc_default_account(TransactionAdmin, request, queryset):
     changes = change_account_from_assoc()
     messages.success(
         request=request, message=f"Associated {len(changes)} expenses with Default account"
@@ -64,8 +64,8 @@ def assoc_default_account(ExpenseAdmin, request, queryset):
 assoc_default_account.short_description = "Associate expenses from default account"
 
 
-@admin.register(Expense)
-class ExpenseAdmin(admin.ModelAdmin):
+@admin.register(Transaction)
+class TransactionAdmin(admin.ModelAdmin):
     list_display = (
         "period",
         "description",

@@ -21,15 +21,15 @@ from django.views.generic import (
     TemplateView,
 )
 
-from expenses.forms import ExpenseUploadForm, ExpenseForm
+from expenses.forms import TransactionUploadForm, TransactionForm
 from expenses.models import (
     Account,
     Currency,
-    Expense,
+    Transaction,
     Period,
     Upload,
 )
-from expenses.serializers import ExpenseSerializer
+from expenses.serializers import TransactionSerializer
 from expenses.utils import (
     change_account_from_assoc,
     get_total_local_amount,
@@ -42,9 +42,9 @@ AMOUNT_FIELD = 2
 ACCOUNT_FIELD = 3
 
 
-class ExpenseUploadView(FormView):
-    template_name = "expenses/expense_upload.html"
-    form_class = ExpenseUploadForm
+class TransactionUploadView(FormView):
+    template_name = "expenses/transaction_upload.html"
+    form_class = TransactionUploadForm
 
     def form_invalid(self, form):
         return self.render_to_response(self.get_context_data(form=form))
@@ -55,7 +55,7 @@ class ExpenseUploadView(FormView):
         if file:
             upload_id = self.process_csv(file=file)
             return HttpResponseRedirect(
-                reverse("expense-upload-result", args=(upload_id,))
+                reverse("transaction-upload-result", args=(upload_id,))
             )
         else:
             form.add_error(None, "File empty")
@@ -116,7 +116,7 @@ class ExpenseUploadView(FormView):
 
             account = self._get_account(row)
 
-            if Expense.objects.filter(
+            if Transaction.objects.filter(
                 period=period,
                 currency=currency,
                 description=row[1],
@@ -126,11 +126,11 @@ class ExpenseUploadView(FormView):
                     data=context,
                     line_number=lines,
                     source=row,
-                    description="Expense already exists",
+                    description="Transaction already exists",
                 )
                 continue
 
-            serializer = ExpenseSerializer(
+            serializer = TransactionSerializer(
                 data={
                     "payment_date": payment_date,
                     "description": row[DESCRIPTION_FIELD],
@@ -276,8 +276,8 @@ class ExpenseUploadView(FormView):
         return payment_date
 
 
-class ExpenseUploadResult(TemplateView):
-    template_name = "expenses/expense_upload_result.html"
+class TransactionUploadResult(TemplateView):
+    template_name = "expenses/transaction_upload_result.html"
 
     def get_context_data(self, **kwargs: Any) -> dict[str, Any]:
         context = super().get_context_data(**kwargs)
@@ -292,9 +292,9 @@ class ExpenseUploadResult(TemplateView):
         return context
 
 
-class ExpenseGroupListView(ListView):
-    model = Expense
-    template_name = "expenses/expense_group.html"
+class TransactionGroupListView(ListView):
+    model = Transaction
+    template_name = "expenses/transaction_group.html"
     context_object_name = "expenses"
 
     def get_queryset(self):
@@ -303,7 +303,7 @@ class ExpenseGroupListView(ListView):
 
         # Filter expenses by the specified period
         queryset = (
-            Expense.objects.filter(period=self.period_id)
+            Transaction.objects.filter(period=self.period_id)
             .values("account")
             .annotate(total=Sum("local_amount"))
             .values("account__name", "account__id", "total")
@@ -321,14 +321,14 @@ class ExpenseGroupListView(ListView):
         return context
 
 
-class ExpenseListView(ListView):
-    model = Expense
-    template_name = "expenses/expense_list.html"
+class TransactonListView(ListView):
+    model = Transaction
+    template_name = "expenses/transaction_list.html"
     context_object_name = "expenses"
     paginate_by = 12
 
     def get_queryset(self) -> QuerySet:
-        queryset = Expense.objects.all().order_by("-payment_date")
+        queryset = Transaction.objects.all().order_by("-payment_date")
 
         upload_id = self.request.GET.get("upload")
         if upload_id:
@@ -360,21 +360,21 @@ class ExpenseListView(ListView):
         return context
 
 
-class ExpenseCreateView(CreateView):
-    model = Expense
-    form_class = ExpenseForm
-    template_name = "expenses/expense_form.html"
-    success_url = reverse_lazy("expense-list")
+class TransactionCreateView(CreateView):
+    model = Transaction
+    form_class = TransactionForm
+    template_name = "expenses/transaction_form.html"
+    success_url = reverse_lazy("transaction-list")
 
 
-class ExpenseUpdateView(UpdateView):
-    model = Expense
-    form_class = ExpenseForm
-    template_name = "expenses/expense_form.html"
-    success_url = reverse_lazy("expense-list")
+class TransactionUpdateView(UpdateView):
+    model = Transaction
+    form_class = TransactionForm
+    template_name = "expenses/transaction_form.html"
+    success_url = reverse_lazy("transaction-list")
 
 
-class ExpenseDeleteView(DeleteView):
-    model = Expense
-    template_name = "expenses/expense_confirm_delete.html"
-    success_url = reverse_lazy("expense-list")
+class TransactionDeleteView(DeleteView):
+    model = Transaction
+    template_name = "expenses/transaction_confirm_delete.html"
+    success_url = reverse_lazy("transaction-list")

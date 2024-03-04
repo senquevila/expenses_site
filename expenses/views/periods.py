@@ -6,7 +6,7 @@ from django.views.generic import ListView
 
 from rest_framework.views import APIView
 
-from expenses.models import Expense, Period
+from expenses.models import Transaction, Period
 
 
 class PeriodListView(ListView):
@@ -31,7 +31,7 @@ class PeriodCloseView(APIView):
         return redirect("period-list")
 
     def _get_total(self, period: Period) -> float:
-        expenses = Expense.objects.filter(period=period)
+        expenses = Transaction.objects.filter(period=period)
         return sum(expense.local_amount for expense in expenses)
 
 
