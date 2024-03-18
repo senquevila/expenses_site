@@ -2,14 +2,14 @@ import csv
 import json
 import re
 from typing import Any
-from django.db.models.query import QuerySet
 import requests
 
 
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from django.conf import settings
 from django.db.models import Q, Sum
-from django.http import HttpResponseRedirect
+from django.db.models.query import QuerySet
+from django.http import HttpResponseRedirect, JsonResponse
 from django.urls import reverse_lazy, reverse
 from django.utils import timezone
 from django.views.generic import (
@@ -21,7 +21,11 @@ from django.views.generic import (
     TemplateView,
 )
 
-from expenses.forms import TransactionUploadForm, TransactionForm
+from expenses.forms import (
+    TransactionUploadForm,
+    TransactionForm,
+    TransactionInspectionForm,
+)
 from expenses.models import (
     Account,
     Currency,
@@ -85,33 +89,27 @@ class TransactionUploadView(FormView):
             payment_date = self._get_payment_date(row[DATE_FIELD])
             period = Period.get_period_from_date(payment_date)
 
+            message = {
+                "data":context,
+                "line_number":lines,
+                "source":row,
+            }
+
             if not period:
-                self.set_message(
-                    data=context,
-                    line_number=lines,
-                    source=row,
-                    description="Period not found for payment date",
-                )
+                message["description"] = "Period not found for payment date"
+                self.set_message(**message)
                 continue
 
             if period.closed:
-                self.set_message(
-                    data=context,
-                    line_number=lines,
-                    source=row,
-                    description="Period closed",
-                )
+                message["description"] = "Period close"
+                self.set_message(**message)
                 continue
 
             amount, currency = self._get_amount(row)
 
             if amount == 0:
-                self.set_message(
-                    data=context,
-                    line_number=lines,
-                    source=row,
-                    description="Amount is zero",
-                )
+                message["description"] = "Amount zero"
+                self.set_message(**message)
                 continue
 
             account = self._get_account(row)
@@ -122,12 +120,8 @@ class TransactionUploadView(FormView):
                 description=row[1],
                 amount=amount,
             ).exists():
-                self.set_message(
-                    data=context,
-                    line_number=lines,
-                    source=row,
-                    description="Transaction already exists",
-                )
+                message["description"] = "Transaction already exists"
+                self.set_message(**message)
                 continue
 
             serializer = TransactionSerializer(
@@ -144,19 +138,10 @@ class TransactionUploadView(FormView):
             if serializer.is_valid():
                 serializer.save()
                 created += 1
-                self.set_message(
-                    data=context,
-                    line_number=lines,
-                    source=row,
-                    description="CREATED",
-                )
+                message["description"] = "CREATED"
             else:
-                self.set_message(
-                    data=context,
-                    line_number=lines,
-                    source=row,
-                    description=str(serializer.errors),
-                )
+                message["description"] = str(serializer.errors)
+            self.set_message(**message)
 
         context["summary"] = {
             "created": created,
@@ -250,7 +235,7 @@ class TransactionUploadView(FormView):
         return (amount, currency)
 
     def _extract_currency_and_value(self, input: str) -> tuple:
-        pattern = r"(?P<currency>L|LPS|HNL|USD)?\s*(?P<value>\d+\.\d{2})"
+        pattern = r"(?P<currency>L|LPS|HNL|USD)?\s*(?P<value>\d+(?:\.\d{2})?)"
         match = re.search(pattern, input)
         if match:
             currency = match.group("currency")
@@ -285,11 +270,37 @@ class TransactionUploadResult(TemplateView):
             upload = Upload.objects.get(pk=self.kwargs.get("pk"))
             data = json.loads(upload.result)
             context.update(data)
-            context["file"] = upload.file
+            context["upload"] = upload
         except Upload.DoesNotExist:
             pass
 
         return context
+
+
+class TransactionUploadInspection(TemplateView):
+    template_name = "expenses/transaction_upload_inspection.html"
+
+    def get_context_data(self, **kwargs: Any) -> dict[str, Any]:
+        context = super().get_context_data(**kwargs)
+        try:
+            upload = Upload.objects.get(pk=self.kwargs.get("pk"))
+            transactions = Transaction.objects.filter(upload=upload)
+            context["upload"] = upload
+            context["transactions"] = transactions
+            context["accounts"] = Account.objects.order_by("name")
+        except Upload.DoesNotExist:
+            pass
+
+        return context
+
+    def post(self, request, *args, **kwargs):
+        print("post")
+        transaction = Transaction.objects.get(pk=request.POST.get("transaction_id"))
+        form = TransactionInspectionForm(request.POST, instance=transaction)
+        if form.is_valid():
+            form.save()
+            return JsonResponse({"success": True})
+        return JsonResponse({"success": False, "errors": form.errors})
 
 
 class TransactionGroupListView(ListView):

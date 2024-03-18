@@ -1,0 +1,84 @@
+{% extends 'base.html' %}
+{% load humanize %}
+
+{% block title %}
+Expense Upload Inspection
+{% endblock %}
+
+{% block content %}
+<div class="col-md-8">
+    <h1>Expense Upload Inspection</h1>
+    <p>File upload: <code>{{ upload.file }}</code></p>
+    <p><span id="message" style="display: none;"></span></p>
+    <table class="table table-striped">
+        <tr>
+            <th class="text-center">Payment Date</th>
+            <th>Description</th>
+            <th class="text-end">Amount</th>
+            <th>Account</th>
+            <th>Actions</th>
+        </tr>
+        {% for transaction in transactions %}
+        <tr>
+            <form method="post" class="edit-form" data-item-id="{{ transaction.id }}">
+                {% csrf_token %}
+                <td class="text-center">{{ transaction.payment_date }}</td>
+                <td>{{ transaction.description }}</td>
+                <td class="text-end">{{ transaction.amount }}</td>
+                <td>
+                    <select name="account">
+                        {% for account in accounts %}
+                            <option value="{{ account.id }}" {% if account == transaction.account %}selected{% endif %}>
+                                {{ account.name }}
+                            </option>
+                        {% endfor %}
+                    </select>
+                </td>
+                <td>
+                    <button type="submit" class="btn btn-primary">Save</button>
+                </td>
+            </form>
+        </tr>
+        {% endfor %}
+    </table>
+</div>
+<script>
+    document.querySelectorAll('.edit-form').forEach(function(form) {
+        console.log("document")
+        form.addEventListener('submit', function(event) {
+            event.preventDefault();
+            const transactionId = form.getAttribute('data-item-id');
+            console.log(transactionId)
+            const formData = new FormData(form);
+            formData.append('transaction_id', transactionId);
+
+            fetch('{% url "transaction-upload-inspection" pk=upload.pk %}', {  // Ensure you have the correct URL here
+                method: 'POST',
+                body: formData,
+                headers: {
+                    'X-CSRFToken': formData.get("csrfmiddlewaretoken"),
+                },
+            })
+            .then(response => response.json())
+            .then(data => {
+                const messageElement = document.getElementById('message');
+                if (data.success) {
+                    messageElement.textContent =  'Updated successfully';
+                    messageElement.style.display = 'block';
+                    messageElement.className = "badge text-bg-success"
+                    setTimeout(() => {
+                        messageElement.style.display = 'none';
+                    }, 1500);  // 10000 milliseconds = 10 seconds
+                } else {
+                    messageElement.textContent = 'An error occurred';
+                    messageElement.style.display = 'block';
+                    messageElement.className = "badge text-bg-danger"
+                    setTimeout(() => {
+                        messageElement.style.display = 'none';
+                    }, 1500);
+                }
+            });
+        });
+    });
+</script>
+{% endblock %}

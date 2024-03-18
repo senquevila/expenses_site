@@ -9,7 +9,9 @@ Expense Upload Result
 <div class="col-md-8">
     <h1>Expense Upload Result</h1>
     <p>Expenses created {{ summary.created }} of {{ summary.total }}</p>
-    <p>File upload: <code>{{ file }}</code></p>
+    <p>File upload: <code>{{ upload.file }}</code></p>
+    <hr>
+    <p><a href="{% url 'transaction-upload-inspection' pk=upload.pk %}">Inspect transactions uploaded</a></p>
     <table class="table table-striped">
         <tr>
             <th class="text-center">Line number</th>

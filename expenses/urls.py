@@ -55,6 +55,11 @@ urlpatterns = [
         name="transaction-upload-result",
     ),
     path(
+        "upload/inspection/<int:pk>/",
+        views.TransactionUploadInspection.as_view(),
+        name="transaction-upload-inspection",
+    ),
+    path(
         "periods/",
         views.PeriodListView.as_view(),
         name="period-list",
