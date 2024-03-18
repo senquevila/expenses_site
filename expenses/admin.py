@@ -64,6 +64,22 @@ def assoc_default_account(TransactionAdmin, request, queryset):
 assoc_default_account.short_description = "Associate expenses from default account"
 
 
+def update_local_amount(TransactionAdmin, request, queryset):
+    changes = 0
+    for transaction in queryset.all():
+        print(transaction.__dict__)
+        _new_local_amount = transaction.get_local_amount
+        print(_new_local_amount)
+        if transaction.local_amount != _new_local_amount:
+            changes += 1
+            transaction.local_amount = _new_local_amount
+            transaction.save()
+    messages.success(
+        request=request, message=f"{changes} transactions updated with new local amount"
+    )
+
+update_local_amount.short_description = "Update transactions with new local amount"
+
 @admin.register(Transaction)
 class TransactionAdmin(admin.ModelAdmin):
     list_display = (
@@ -93,7 +109,7 @@ class TransactionAdmin(admin.ModelAdmin):
         "account__name__icontains",
         "amount",
     )
-    actions = [remove_invalid_expenses, assoc_default_account]
+    actions = [remove_invalid_expenses, assoc_default_account, update_local_amount]
 
     def account_name(self, obj):
         return obj.account.name
@@ -114,7 +130,7 @@ class AccountAsociationAdmin(admin.ModelAdmin):
 
 
 def remove_empty_uploads(UploadAdmin, request, queryset):
-    unused_uploads = Upload.objects.annotate(num_expenses=Count("expense")).filter(
+    unused_uploads = Upload.objects.annotate(num_expenses=Count("transaction")).filter(
         num_expenses=0
     )
     deletes = unused_uploads.count()
@@ -122,7 +138,7 @@ def remove_empty_uploads(UploadAdmin, request, queryset):
     messages.success(request=request, message=f"Removed {deletes} uploads")
 
 
-remove_empty_uploads.short_description = "Remove uploads with no expenses"
+remove_empty_uploads.short_description = "Remove uploads with no transactions"
 
 
 @admin.register(Upload)
