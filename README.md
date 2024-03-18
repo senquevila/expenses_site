@@ -20,11 +20,11 @@ python manage.py runserver
 
 ## Contributing
 
-Please read [CONTRIBUTING](https://gist.github.com/senquevila/CONTRIBUTING.md) for details on our code of conduct, and the process for submitting pull requests to us.
+Please read [CONTRIBUTING](https://gist.github.com/senquevila/expenses_site/CONTRIBUTING.md) for details on our code of conduct, and the process for submitting pull requests to us.
 
 ## Versioning
 
-We use [SemVer](http://semver.org/) for versioning. For the versions available, see the [tags on this repository](https://github.com/yourusername/yourprojectname/tags).
+We use [SemVer](http://semver.org/) for versioning. For the versions available, see the [tags on this repository](https://github.com/senquevila/expenses_site/tags).
 
 ## Authors
 
