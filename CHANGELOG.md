@@ -1,4 +1,8 @@
 # Changelog
+## 2024-03-18
+## New
+- Edit accounts from last uploads directly.
+- Add `get_local_amount` in admin actions.
 ## 2024-03-02
 ### New
 - Translations on model fields and verbose_name.
@@ -12,7 +16,7 @@
 ### Change
 - Cascade delete on foreign key fields.
 - Upload Result template.
-- Budget assignaments.
+- Budget assignments.
 ### Remove
 - swap account view.
 - Category and MatchAccount models.
