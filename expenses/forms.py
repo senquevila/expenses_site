@@ -104,10 +104,10 @@ class UploadTransformForm(forms.ModelForm):
         ]
 
         for field in _fields[:2]:
-            self.fields[field].widget.attrs["class"] = "form-control"
+            self.fields[field].widget.attrs["class"] = "form-control repaint-row-trigger"
 
         for field in _fields[2:]:
-            self.fields[field].widget.attrs["class"] = "form-control repaint-trigger"
+            self.fields[field].widget.attrs["class"] = "form-control repaint-col-trigger"
 
     class Meta:
         model = Upload
