@@ -1,0 +1,86 @@
+{% extends 'base.html' %} {% load humanize %} {% block title %} Expense Upload
+Transform {% endblock %} {% block content %}
+<div class="col-md-6">
+    <h1>Expense Upload Transform</h1>
+    <p><span id="message" style="display: none"></span></p>
+    <form method="post">
+        {% csrf_token %}
+        <div class="container">
+            <fieldset>
+                <legend>CSV row dimension</legend>
+                <div class="row form-group">
+                    <div class="col-md-6">
+                        <label for="{{ form.start_row.id_for_label }}" class="form-label">
+                            {{ form.start_row.label }}
+                        </label>
+                        {{ form.start_row }}
+                        <div class="form-text">{{ form.start_row.help_text }}</div>
+                        {% if form.start_row.errors %}
+                        <div class="alert alert-danger">{{ form.start_row.errors }}</div>
+                        {% endif %}
+                    </div>
+                    <div class="col-md-6">
+                        <label for="{{ form.end_row.id_for_label }}" class="form-label">
+                            {{ form.end_row.label }}
+                        </label>
+                        {{ form.end_row }}
+                        <div class="form-text">{{ form.end_row.help_text }}</div>
+                        {% if form.end_row.errors %}
+                        <div class="alert alert-danger">{{ form.end_row.errors }}</div>
+                        {% endif %}
+                    </div>
+                </div>
+            </fieldset>
+            <!-- Repeat for other fields -->
+            <fieldset class="mt-3">
+                <legend>Column mapping</legend>
+                <div class="row form-group">
+                    <div class="col-md-6">
+                        <label for="{{ form.payment_date.id_for_label }}" class="form-label">
+                            {{ form.payment_date.label }}
+                        </label>
+                        {{ form.payment_date }}
+                        {% if form.payment_date.errors %}
+                        <div class="alert alert-danger">
+                            {{ form.payment_date.errors }}
+                        </div>
+                        {% endif %}
+                    </div>
+                    <div class="col-md-6">
+                        <label for="{{ form.description.id_for_label }}" class="form-label">
+                            {{ form.description.label }}
+                        </label>
+                        {{ form.description }}
+                        {% if form.description.errors %}
+                        <div class="alert alert-danger">{{ form.description.errors }}</div>
+                        {% endif %}
+                    </div>
+                </div>
+                <div class="row form-group mt-2">
+                    <div class="col-md-6">
+                        <label for="{{ form.amount.id_for_label }}" class="form-label">
+                            {{ form.amount.label }}
+                        </label>
+                        {{ form.amount }} {% if form.amount.errors %}
+                        <div class="alert alert-danger">{{ form.amount.errors }}</div>
+                        {% endif %}
+                    </div>
+                    <div class="col-md-6">
+                        <label for="{{ form.amount_currency.id_for_label }}" class="form-label">
+                            {{ form.amount_currency.label }}
+                        </label>
+                        {{ form.amount_currency }}
+                        {% if form.amount_currency.errors %}
+                        <div class="alert alert-danger">{{ form.amount_currency.errors }}</div>
+                        {% endif %}
+                    </div>
+                </div>
+            </fieldset>
+            <!-- Add more fields as needed -->
+            <div class="col-md-6 mt-3">
+                <button type="submit" class="btn btn-primary">Submit</button>
+            </div>
+        </div>
+    </form>
+</div>
+{% endblock %}
