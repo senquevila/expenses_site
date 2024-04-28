@@ -130,6 +130,7 @@ def upload_parameters_default():
 
 class Upload(CreationModificationDateMixin):
     file = models.FileField(_("Archivo"), blank=True, null=True, upload_to=expense_upload_path)
+    data = models.JSONField(_("Datos"), blank=True, null=True)
     dimension = models.JSONField(_("Dimension del document"), default=upload_dimension_default)
     result = models.JSONField(_("Resultado"), blank=True, null=True)
     parameters = models.JSONField(_("Parámetros"), blank=True, null=True, default=upload_parameters_default)
