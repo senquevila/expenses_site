@@ -46,18 +46,23 @@ urlpatterns = [
     ),
     path(
         "upload/",
-        views.TransactionUploadView.as_view(),
-        name="transaction-upload-start",
+        views.UploadView.as_view(),
+        name="upload",
+    ),
+    path(
+        "upload/transform/<int:pk>/",
+        views.UploadTransformView.as_view(),
+        name="upload-transform",
     ),
     path(
         "upload/result/<int:pk>/",
-        views.TransactionUploadResult.as_view(),
-        name="transaction-upload-result",
+        views.UploadResultView.as_view(),
+        name="upload-result",
     ),
     path(
-        "upload/inspection/<int:pk>/",
-        views.TransactionUploadInspection.as_view(),
-        name="transaction-upload-inspection",
+        "upload/inspect/<int:pk>/",
+        views.UploadInspectView.as_view(),
+        name="upload-inspect",
     ),
     path(
         "periods/",
