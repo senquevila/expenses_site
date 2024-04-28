@@ -1,4 +1,6 @@
 # Changelog
+## 2024-04-28
+- Change the upload process, adding preliminary steps to process a raw CSV.
 ## 2024-03-18
 ## New
 - Edit accounts from last uploads directly.
