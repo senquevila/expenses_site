@@ -52,7 +52,7 @@ Expense Upload Inspection
             const formData = new FormData(form);
             formData.append('transaction_id', transactionId);
 
-            fetch('{% url "transaction-upload-inspection" pk=upload.pk %}', {  // Ensure you have the correct URL here
+            fetch('{% url "upload-inspect" pk=upload.pk %}', {  // Ensure you have the correct URL here
                 method: 'POST',
                 body: formData,
                 headers: {
