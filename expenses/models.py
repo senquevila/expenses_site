@@ -112,10 +112,27 @@ def expense_upload_path(instance, filename):
     return f"expenses/{now.strftime('%Y/%m')}/{filename}"
 
 
+def upload_dimension_default():
+    return {
+        "rows": 0,
+        "cols": 0,
+    }
+
+
+def upload_parameters_default():
+    return {
+        "rows": {
+            "start": 0,
+            "end": 0,
+        },
+        "cols": [],
+    }
+
 class Upload(CreationModificationDateMixin):
     file = models.FileField(_("Archivo"), blank=True, null=True, upload_to=expense_upload_path)
-    lines = models.IntegerField(_("Número de líneas"), default=0)
+    dimension = models.JSONField(_("Dimension del document"), default=upload_dimension_default)
     result = models.JSONField(_("Resultado"), blank=True, null=True)
+    parameters = models.JSONField(_("Parámetros"), blank=True, null=True, default=upload_parameters_default)
 
     class Meta:
         verbose_name = _("Subida de archivo")
@@ -123,6 +140,11 @@ class Upload(CreationModificationDateMixin):
 
     def __str__(self) -> str:
         return str(self.file.name)
+
+
+class UploadData(models.Model):
+    upload = models.ForeignKey(Upload, on_delete=models.CASCADE)
+    json = models.JSONField()
 
 
 class Transaction(Accountable):
@@ -175,8 +197,3 @@ class AccountAsociation(models.Model):
 
     def __str__(self) -> str:
         return f"{self.account.name} -> {self.token}"
-
-
-class UploadData(models.Model):
-    upload = models.ForeignKey(Upload, on_delete=models.CASCADE)
-    json = models.JSONField()
