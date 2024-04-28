@@ -69,18 +69,24 @@ class UploadView(FormView):
         csv_file = StringIO(decoded_file)
         reader = csv.reader(csv_file)
 
-        rows = list(reader)
-        if not rows:
-            max_cols = 0
-            num_rows = 0
-        else:
-            max_cols = max(len(row) for row in rows)
-            num_rows = len(rows)
+        data = []
+        key = 0
+        num_cols = 0
+        # Fill the dictionary with data, using one of the fields (e.g., name) as the key
+        for row in reader:
+            l_row = list(row)
+            l_row.insert(0, key)
+            data.append(l_row)
+            num_cols = max(num_cols, len(l_row))
+            key += 1
+
+        num_rows = key + 1
 
         upload.dimension = {
             "rows": num_rows,
-            "cols": max_cols,
+            "cols": num_cols,
         }
+        upload.data = data
         upload.save()
 
         return HttpResponseRedirect(reverse("upload-transform", args=(upload.id,)))
@@ -93,15 +99,9 @@ class UploadTransformView(FormView):
     def get_context_data(self, **kwargs: Any) -> dict[str, Any]:
         context = super().get_context_data(**kwargs)
         upload = Upload.objects.get(pk=self.kwargs.get("pk"))
-        # read the CSV file and save into a dictionary
-        decoded_file = upload.file.read().decode("utf-8-sig")
-        csv_file = StringIO(decoded_file)
-        reader = csv.reader(csv_file)
-        # put into the context with a dict the data for the reader
-        data = list(reader)
-        context["rows"] = data
+        context["rows"] = upload.data
+        context["dimension"] = upload.dimension
         return context
-
 
     def process_csv(self, file):
         context = {"result": {}}
