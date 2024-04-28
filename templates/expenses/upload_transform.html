@@ -1,86 +1,207 @@
-{% extends 'base.html' %} {% load humanize %} {% block title %} Expense Upload
-Transform {% endblock %} {% block content %}
-<div class="col-md-6">
+{% extends 'base.html' %}
+{% load humanize static %}
+
+{% block title %}Expense Upload Transform{% endblock %}
+{% block stylesheets %}
+<link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.11.3/css/jquery.dataTables.min.css">
+<link rel="stylesheet" href="{% static '/global/css/styles.css' %}">
+{% endblock %}
+
+{% block content %}
+<div class="row container">
     <h1>Expense Upload Transform</h1>
-    <p><span id="message" style="display: none"></span></p>
-    <form method="post">
-        {% csrf_token %}
-        <div class="container">
-            <fieldset>
-                <legend>CSV row dimension</legend>
-                <div class="row form-group">
-                    <div class="col-md-6">
-                        <label for="{{ form.start_row.id_for_label }}" class="form-label">
-                            {{ form.start_row.label }}
-                        </label>
-                        {{ form.start_row }}
-                        <div class="form-text">{{ form.start_row.help_text }}</div>
-                        {% if form.start_row.errors %}
-                        <div class="alert alert-danger">{{ form.start_row.errors }}</div>
-                        {% endif %}
-                    </div>
-                    <div class="col-md-6">
-                        <label for="{{ form.end_row.id_for_label }}" class="form-label">
-                            {{ form.end_row.label }}
-                        </label>
-                        {{ form.end_row }}
-                        <div class="form-text">{{ form.end_row.help_text }}</div>
-                        {% if form.end_row.errors %}
-                        <div class="alert alert-danger">{{ form.end_row.errors }}</div>
-                        {% endif %}
-                    </div>
-                </div>
-            </fieldset>
-            <!-- Repeat for other fields -->
-            <fieldset class="mt-3">
-                <legend>Column mapping</legend>
-                <div class="row form-group">
-                    <div class="col-md-6">
-                        <label for="{{ form.payment_date.id_for_label }}" class="form-label">
-                            {{ form.payment_date.label }}
-                        </label>
-                        {{ form.payment_date }}
-                        {% if form.payment_date.errors %}
-                        <div class="alert alert-danger">
-                            {{ form.payment_date.errors }}
+    <div class="col-md-3">
+        <p><span id="message" style="display: none"></span></p>
+        <form method="post">
+            {% csrf_token %}
+            <div class="container">
+                <fieldset>
+                    <legend>CSV row dimension</legend>
+                    <div class="row form-group">
+                        <div class="col-md-6">
+                            <label for="{{ form.start_row.id_for_label }}" class="form-label">
+                                {{ form.start_row.label }}
+                            </label>
+                            {{ form.start_row }}
+                            <div class="form-text">{{ form.start_row.help_text }}</div>
+                            {% if form.start_row.errors %}
+                            <div class="alert alert-danger">{{ form.start_row.errors }}</div>
+                            {% endif %}
                         </div>
-                        {% endif %}
+                        <div class="col-md-6">
+                            <label for="{{ form.end_row.id_for_label }}" class="form-label">
+                                {{ form.end_row.label }}
+                            </label>
+                            {{ form.end_row }}
+                            <div class="form-text">{{ form.end_row.help_text }}</div>
+                            {% if form.end_row.errors %}
+                            <div class="alert alert-danger">{{ form.end_row.errors }}</div>
+                            {% endif %}
+                        </div>
                     </div>
-                    <div class="col-md-6">
-                        <label for="{{ form.description.id_for_label }}" class="form-label">
-                            {{ form.description.label }}
-                        </label>
-                        {{ form.description }}
-                        {% if form.description.errors %}
-                        <div class="alert alert-danger">{{ form.description.errors }}</div>
-                        {% endif %}
+                </fieldset>
+                <!-- Repeat for other fields -->
+                <fieldset class="mt-3">
+                    <legend>Column mapping</legend>
+                    <div class="row form-group">
+                        <div class="col-md-6">
+                            <label for="{{ form.payment_date.id_for_label }}" class="form-label">
+                                {{ form.payment_date.label }}
+                                <div id="color-payment_date" class="circle"></div>
+                            </label>
+                            {{ form.payment_date }}
+                            {% if form.payment_date.errors %}
+                            <div class="alert alert-danger">
+                                {{ form.payment_date.errors }}
+                            </div>
+                            {% endif %}
+                        </div>
+                        <div class="col-md-6">
+                            <label for="{{ form.description.id_for_label }}" class="form-label">
+                                {{ form.description.label }}
+                                <div id="color-description" class="circle"></div>
+                            </label>
+                            {{ form.description }}
+                            {% if form.description.errors %}
+                            <div class="alert alert-danger">{{ form.description.errors }}</div>
+                            {% endif %}
+                        </div>
                     </div>
+                    <div class="row form-group mt-2">
+                        <div class="col-md-6">
+                            <label for="{{ form.amount.id_for_label }}" class="form-label">
+                                {{ form.amount.label }}
+                                <div id="color-amount" class="circle"></div>
+                            </label>
+                            {{ form.amount }} {% if form.amount.errors %}
+                            <div class="alert alert-danger">{{ form.amount.errors }}</div>
+                            {% endif %}
+                        </div>
+                        <div class="col-md-6">
+                            <label for="{{ form.amount_currency.id_for_label }}" class="form-label">
+                                {{ form.amount_currency.label }}
+                                <div id="color-amount_currency" class="circle"></div>
+                            </label>
+                            {{ form.amount_currency }}
+                            {% if form.amount_currency.errors %}
+                            <div class="alert alert-danger">{{ form.amount_currency.errors }}</div>
+                            {% endif %}
+                        </div>
+                    </div>
+                </fieldset>
+                <hr>
+                <!-- Add more fields as needed -->
+                <div class="col-md-6 mt-3">
+                    <button type="submit" class="btn btn-primary">Submit</button>
                 </div>
-                <div class="row form-group mt-2">
-                    <div class="col-md-6">
-                        <label for="{{ form.amount.id_for_label }}" class="form-label">
-                            {{ form.amount.label }}
-                        </label>
-                        {{ form.amount }} {% if form.amount.errors %}
-                        <div class="alert alert-danger">{{ form.amount.errors }}</div>
-                        {% endif %}
-                    </div>
-                    <div class="col-md-6">
-                        <label for="{{ form.amount_currency.id_for_label }}" class="form-label">
-                            {{ form.amount_currency.label }}
-                        </label>
-                        {{ form.amount_currency }}
-                        {% if form.amount_currency.errors %}
-                        <div class="alert alert-danger">{{ form.amount_currency.errors }}</div>
-                        {% endif %}
-                    </div>
-                </div>
-            </fieldset>
-            <!-- Add more fields as needed -->
-            <div class="col-md-6 mt-3">
-                <button type="submit" class="btn btn-primary">Submit</button>
             </div>
-        </div>
-    </form>
+        </form>
+    </div>
+    <div class="col-md-9">
+        <!-- datagrid -->
+        <table id="example" class="display mt-5" style="width:100%">
+            <thead>
+                <tr>
+                    <!-- Columns will be inserted dynamically -->
+                </tr>
+            </thead>
+            <tbody>
+                <!-- Data will be populated by DataTables -->
+            </tbody>
+        </table>
+        <!-- end of datagrid -->
+    </div>
 </div>
+{% endblock %}
+
+{% block javascripts %}
+
+<script src="https://code.jquery.com/jquery-3.5.1.js"></script>
+<script src="https://cdn.datatables.net/1.11.3/js/jquery.dataTables.min.js"></script>
+<script>
+    var data = {{ rows|safe }};
+    var data_dimension = {{ dimension|safe }};
+
+    const num_row = data_dimension["rows"];
+    const num_col = data_dimension["cols"];
+
+    console.log(num_col, num_row);
+
+    function getAllKeys(data) {
+        let allKeys = new Set();
+        data.forEach(item => {
+            Object.keys(item).forEach(key => allKeys.add(key));
+        });
+        return Array.from(allKeys);
+    }
+
+    function normalizeData(data, keys) {
+        return data.map(item => {
+            let normalized = {};
+            keys.forEach(key => {
+                normalized[key] = item.hasOwnProperty(key) ? item[key] : "";  // Or `null` or some other default
+            });
+            return normalized;
+        });
+    }
+
+    function repaintDataTable() {
+        const columns = [
+            {
+                index: parseInt($('#id_payment_date').val()),
+                color: '#7FFFD4' // Aquamarine
+            },
+            {
+                index: parseInt($('#id_description').val()),
+                color: '#E9967A' // Dark Salmon
+            },
+            {
+                index: parseInt($('#id_amount').val()),
+                color: '#F0E68C' // Khaki
+            },
+            {
+                index: parseInt($('#id_amount_currency').val()),
+                color: '#7B68EE' // Medium Slate Blue
+            }
+        ];
+
+        $('#example tbody tr').each(function() {
+            // Reset all cells to white initially to clear previous colors
+            $(this).find('td').css('background-color', 'white');
+
+            // Apply specific colors from the columns configuration
+            $(this).find('td').each(function(cellIndex) {
+                columns.forEach(column => {
+                    if (cellIndex === column.index) {
+                        $(this).css('background-color', column.color);
+                    }
+                });
+            });
+        });
+    }
+
+    $(document).ready(function() {
+        if (data.length > 0) {
+            const allKeys = getAllKeys(data);
+            const normalizedData = normalizeData(data, allKeys);
+
+            var columns = allKeys.map(function(key) {
+                return { title: key.charAt(0).toUpperCase() + key.slice(1), data: key, defaultContent: "" };
+            });
+
+            $('#example').DataTable({
+                data: normalizedData,
+                columns: columns
+            });
+        }
+
+        $("#id_end_row").val(num_row);
+
+        $('.repaint-trigger').on('change', function() {
+            repaintDataTable();
+        });
+
+        repaintDataTable(); // Initial repaint
+    });
+</script>
 {% endblock %}

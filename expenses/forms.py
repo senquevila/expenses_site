@@ -80,31 +80,34 @@ class UploadTransformForm(forms.ModelForm):
     start_row = forms.IntegerField(
         label="Start row",
         help_text="File number where the data starts",
-        initial=2,
+        initial=0,
     )
     end_row = forms.IntegerField(
         label="End row",
         help_text="File number where the data ends",
         initial=0,
     )
-    payment_date = forms.IntegerField(label="Payment date", required=False)
-    description = forms.IntegerField(label="Description", required=False)
-    amount = forms.IntegerField(label="Amount", required=False)
-    amount_currency = forms.IntegerField(label="Dollar amount", required=False)
+    payment_date = forms.IntegerField(label="Payment date", initial=0)
+    description = forms.IntegerField(label="Description", initial=0)
+    amount = forms.IntegerField(label="Amount", initial=0)
+    amount_currency = forms.IntegerField(label="Dollar amount", initial=0)
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         _fields = [
+            "start_row",
+            "end_row",
             "payment_date",
             "description",
             "amount",
             "amount_currency",
-            "start_row",
-            "end_row",
         ]
 
-        for field in _fields:
+        for field in _fields[:2]:
             self.fields[field].widget.attrs["class"] = "form-control"
+
+        for field in _fields[2:]:
+            self.fields[field].widget.attrs["class"] = "form-control repaint-trigger"
 
     class Meta:
         model = Upload
