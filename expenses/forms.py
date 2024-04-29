@@ -87,10 +87,10 @@ class UploadTransformForm(forms.ModelForm):
         help_text="File number where the data ends",
         initial=0,
     )
-    payment_date = forms.IntegerField(label="Payment date", initial=0)
-    description = forms.IntegerField(label="Description", initial=0)
-    amount = forms.IntegerField(label="Amount", initial=0)
-    amount_currency = forms.IntegerField(label="Dollar amount", initial=0)
+    payment_date = forms.IntegerField(label="Payment date", initial=1)
+    description = forms.IntegerField(label="Description", initial=2)
+    amount = forms.IntegerField(label="Amount", initial=3)
+    amount_currency = forms.IntegerField(label="Dollar amount", initial=4)
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
