@@ -11,7 +11,7 @@ from django.views.generic import (
 
 from expenses.forms import TransactionForm
 from expenses.models import Transaction, Period
-from expenses.utils import get_total_local_amount
+from expenses.utils.tools import get_total_local_amount
 
 DATE_FIELD = 0
 DESCRIPTION_FIELD = 1
