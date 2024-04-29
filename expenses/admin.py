@@ -11,7 +11,7 @@ from expenses.models import (
     Upload,
 )
 
-from expenses.utils import change_account_from_assoc
+from expenses.utils.tools import change_account_from_assoc
 
 
 def disabled_periods(PeriodAdmin, request, queryset):
