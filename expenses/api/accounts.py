@@ -4,7 +4,7 @@ from rest_framework import viewsets
 from rest_framework.views import APIView
 
 from expenses.models import Account
-from expenses.utils import change_account_from_assoc
+from expenses.utils.tools import change_account_from_assoc
 from expenses.serializers import AccountSerializer
 
 
