@@ -1,6 +1,7 @@
 # Changelog
-## 2024-05-11
+## 2024-05-12
 - [Admin] Update period admin.
+- Remove the result view from the upload process view. The result can be seen in the period actions.
 ## 2024-04-28
 - Change the upload process, adding preliminary steps to process a raw CSV.
 ## 2024-03-18
