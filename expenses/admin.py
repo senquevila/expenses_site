@@ -25,6 +25,8 @@ disabled_periods.short_description = "Disabled selected periods"
 
 @admin.register(Period)
 class PeriodAdmin(admin.ModelAdmin):
+    list_display = ("year", "month", "active")
+    list_filter = ("active",)
     ordering = ["-year", "-month"]
     actions = [disabled_periods]
 

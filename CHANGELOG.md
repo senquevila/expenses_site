@@ -1,4 +1,6 @@
 # Changelog
+## 2024-05-11
+- [Admin] Update period admin.
 ## 2024-04-28
 - Change the upload process, adding preliminary steps to process a raw CSV.
 ## 2024-03-18
