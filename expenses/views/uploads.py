@@ -22,13 +22,20 @@ from expenses.models import (
     Transaction,
     Upload,
 )
+from expenses.serializers import UploadSerializer
 from expenses.utils.uploads import process_bank_csv
 
 
 class UploadListView(ListView):
     template_name = "expenses/upload_list.html"
+    serializer_class = UploadSerializer
     context_object_name = "uploads"
-    queryset = Upload.objects.order_by("-id")
+
+    def get_queryset(self):
+        uploads = Upload.objects.order_by("-id")
+        for upload in uploads:
+            upload.trx_count = Transaction.objects.filter(upload=upload).count()
+        return uploads
 
 
 class UploadView(FormView):
@@ -106,12 +113,20 @@ class UploadTransformView(FormView):
             # process the csv content
             process_bank_csv(upload)
 
-            return HttpResponseRedirect(reverse("upload-result", args=(upload.id,)))
+            return HttpResponseRedirect(reverse("upload-inspect", args=(upload.id,)))
 
         return self.form_invalid(form)  # Handle invalid form submission
 
 
 class UploadResultView(TemplateView):
+    """
+    Show the content of the uploaded file and their status result.
+    Status:
+        - created
+        - duplicated
+        - period not found or closed
+    """
+
     template_name = "expenses/upload_result.html"
 
     def get_context_data(self, **kwargs: Any) -> dict[str, Any]:
@@ -128,6 +143,10 @@ class UploadResultView(TemplateView):
 
 
 class UploadInspectView(TemplateView):
+    """
+    Edit the transaction account given in the upload process.
+    """
+
     template_name = "expenses/upload_inspect.html"
 
     def get_context_data(self, **kwargs: Any) -> dict[str, Any]:
