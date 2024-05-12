@@ -48,7 +48,7 @@ class TransactionGroupListView(ListView):
         return context
 
 
-class TransactonListView(ListView):
+class TransactionListView(ListView):
     model = Transaction
     template_name = "expenses/transaction_list.html"
     context_object_name = "expenses"

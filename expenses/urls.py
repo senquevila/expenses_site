@@ -26,7 +26,7 @@ urlpatterns = [
     ),
     path(
         "",
-        views.TransactonListView.as_view(),
+        views.TransactionListView.as_view(),
         name="transaction-list",
     ),
     path(
