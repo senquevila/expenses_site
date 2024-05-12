@@ -31,7 +31,7 @@ Upload List
                 <a href="{% url 'transaction-list' %}?upload={{ upload.id }}" class="btn btn-success">{{ upload.trx_count }}</a>
             </td>
             <td>
-                <a href="{% url 'upload-result' pk=upload.pk %}" class="btn btn-primary">Res.</a>
+                <a href="{% url 'upload-result' pk=upload.pk %}" class="btn btn-primary">{{ upload.line_count }}</a>
             </td>
         </tr>
         {% endfor %}
