@@ -11,7 +11,6 @@ Expense Upload Result
     <p>Expenses created {{ summary.created }} of {{ summary.total }}</p>
     <p>File upload: <code>{{ upload.file }}</code></p>
     <hr>
-    <p><a href="{% url 'upload-inspect' pk=upload.pk %}">Inspect transactions uploaded</a></p>
     <table class="table table-striped">
         <tr>
             <th class="text-center">Line number</th>
