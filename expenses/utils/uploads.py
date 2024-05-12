@@ -175,7 +175,7 @@ def get_amount(value: str, default_currency) -> tuple:
     amount_str, currency_str = extract_currency_and_value(value)
     try:
         amount = float(amount_str)
-    except (IndexError, ValueError):
+    except (IndexError, ValueError, TypeError):
         amount = None
 
     if not amount:
@@ -187,7 +187,6 @@ def get_amount(value: str, default_currency) -> tuple:
         currency = q_currency.first()
     else:
         currency = default_currency
-    print("hi")
     return (float(amount), currency)
 
 
