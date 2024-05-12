@@ -5,22 +5,34 @@
 Upload List
 {% endblock %}
 
+{% block stylesheets %}
+<style>
+    .btn {
+        width: 60px;
+    }
+</style>
+{% endblock %}
+
 {% block content %}
-<div class="col-md-6">
+<div class="col-md-8">
     <h1>Upload List</h1>
     <table class="table table-striped">
         <tr>
-            <th>ID</th>
-            <th>Upload</th>
-            <th class="text-center">Lines</th>
-            <th>Result</th>
+            <th>Created</th>
+            <th>File</th>
+            <th>Transactions</th>
+            <th>Results</th>
         </tr>
         {% for upload in uploads %}
         <tr>
-            <td><a href="{% url 'transaction-list' %}?upload={{ upload.id }}">{{ upload.id }}</a></td>
+            <td>{{ upload.created }}</td>
             <td>{{ upload.file.name }}</td>
-            <td class="text-center">{{ upload.lines }}</td>
-            <td><code>{{ upload.result }}</code></td>
+            <td>
+                <a href="{% url 'transaction-list' %}?upload={{ upload.id }}" class="btn btn-success">{{ upload.trx_count }}</a>
+            </td>
+            <td>
+                <a href="{% url 'upload-result' pk=upload.pk %}" class="btn btn-primary">Res.</a>
+            </td>
         </tr>
         {% endfor %}
     </table>
