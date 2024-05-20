@@ -138,10 +138,8 @@ def get_payment_date_and_period(row, indexes):
 
 
 def get_transaction_amount_and_currency(row, indexes, default_currency):
-    amount_1, currency_1 = get_amount(row[indexes["amount"]], default_currency)
-    amount_2, currency_2 = get_amount(
-        "USD " + row[indexes["amount_currency"]], default_currency
-    )
+    amount_1, currency_1 = get_amount(row, indexes["amount"], default_currency)
+    amount_2, currency_2 = get_amount_currency(row, indexes["amount_currency"], default_currency)
 
     if amount_1 is not None and amount_2 is not None:
         if amount_1 >= amount_2:
@@ -166,10 +164,15 @@ def set_message(data: dict, line_number: int, source: str, description: str):
     }
 
 
-def get_amount(value: str, default_currency) -> tuple:
+def get_amount(row: list, index: int, default_currency) -> tuple:
     """
     Asumming that the value is: [number currency]
     """
+    if index < 0:
+        return None, None
+
+    value = str(row[index])
+
     # replace weird characters
     value = value.replace("\xa0", " ").replace(",", "")
     amount_str, currency_str = extract_currency_and_value(value)
@@ -188,6 +191,12 @@ def get_amount(value: str, default_currency) -> tuple:
     else:
         currency = default_currency
     return (float(amount), currency)
+
+
+def get_amount_currency(row: list, index: int, default_currency) -> tuple:
+    row_copy = row.copy()
+    row_copy[index] = "USD " + str(row_copy[index])
+    get_amount(row_copy, index, default_currency)
 
 
 def extract_currency_and_value(input: str) -> tuple:
