@@ -1,4 +1,7 @@
 # Changelog
+## 2024-05-20
+- Validate in transform when the index is not valid (-1).
+- Divide the processing in amounts (when is local or foreign).
 ## 2024-05-12
 - [Admin] Update period admin.
 - Remove the result view from the upload process view. The result can be seen in the period actions.
