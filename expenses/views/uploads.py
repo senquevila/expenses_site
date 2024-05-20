@@ -92,6 +92,7 @@ class UploadTransformView(FormView):
     def get_context_data(self, **kwargs: Any) -> dict[str, Any]:
         context = super().get_context_data(**kwargs)
         upload = Upload.objects.get(pk=self.kwargs.get("pk"))
+        context["file"] = upload.file
         context["rows"] = upload.data
         context["dimension"] = upload.dimension
         return context
