@@ -154,6 +154,7 @@ class Transaction(Accountable):
     local_amount = models.DecimalField(
         _("Monto local"), max_digits=13, decimal_places=2, default=0, editable=False
     )
+    identifier = models.CharField(max_length=64, blank=True, null=True)
     upload = models.ForeignKey(
         Upload,
         blank=True,

@@ -1,3 +1,4 @@
+import hashlib
 import json
 import re
 
@@ -40,6 +41,15 @@ def process_bank_csv(upload: Upload):
             "source": row,
         }
 
+        # create identifier
+        row_hash = hashlib.sha256("".join(row[1:]).encode()).hexdigest()
+
+        # check if the transaction already exists
+        if Transaction.objects.filter(identifier=row_hash).exists():
+            message["description"] = "Transaction already exists"
+            set_message(**message)
+            continue
+
         payment_date, period = get_payment_date_and_period(row, indexes)
         if not period or period.closed:
             set_message(
@@ -62,6 +72,7 @@ def process_bank_csv(upload: Upload):
 
         description = row[indexes["description"]]
 
+        # TODO: temporal
         if Transaction.objects.filter(
             period=period,
             currency=currency,
@@ -82,6 +93,7 @@ def process_bank_csv(upload: Upload):
                 "currency": currency.pk,
                 "amount": amount,
                 "upload": upload.pk,
+                "identifier": row_hash,
             }
         )
         if serializer.is_valid():
