@@ -205,9 +205,8 @@ def get_amount(row: list, index: int, default_currency) -> tuple:
 
 
 def get_amount_currency(row: list, index: int, default_currency) -> tuple:
-    row_copy = row.copy()
-    row_copy[index] = "USD " + str(row_copy[index])
-    get_amount(row_copy, index, default_currency)
+    row[index] = "USD " + str(row[index])
+    return get_amount(row, index, default_currency)
 
 
 def extract_currency_and_value(input: str) -> tuple:
