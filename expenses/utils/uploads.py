@@ -50,7 +50,7 @@ def process_bank_csv(upload: Upload):
             )
             continue
 
-        # get the amount and currency
+        # get the amount and local currency
         amount, currency = get_transaction_amount_and_currency(
             row, indexes, default_currency
         )
@@ -139,7 +139,13 @@ def get_payment_date_and_period(row, indexes):
 
 def get_transaction_amount_and_currency(row, indexes, default_currency):
     amount_1, currency_1 = get_amount(row, indexes["amount"], default_currency)
-    amount_2, currency_2 = get_amount_currency(row, indexes["amount_currency"], default_currency)
+
+    if amount_1 is not None and currency_1 is not None:
+        amount_2, currency_2 = None, None
+    else:
+        amount_2, currency_2 = get_amount_currency(
+            row, indexes["amount_currency"], default_currency
+        )
 
     if amount_1 is not None and amount_2 is not None:
         if amount_1 >= amount_2:
@@ -168,10 +174,14 @@ def get_amount(row: list, index: int, default_currency) -> tuple:
     """
     Asumming that the value is: [number currency]
     """
+    # check if the index is valid
     if index < 0:
         return None, None
 
-    value = str(row[index])
+    try:
+        value = str(row[index])
+    except IndexError:
+        return None, None
 
     # replace weird characters
     value = value.replace("\xa0", " ").replace(",", "")
@@ -190,6 +200,7 @@ def get_amount(row: list, index: int, default_currency) -> tuple:
         currency = q_currency.first()
     else:
         currency = default_currency
+
     return (float(amount), currency)
 
 
@@ -200,11 +211,13 @@ def get_amount_currency(row: list, index: int, default_currency) -> tuple:
 
 
 def extract_currency_and_value(input: str) -> tuple:
-    pattern = r"(?P<currency>L|LPS|HNL|USD)?\s*(?P<value>\d+(?:\.\d{2})?)"
+    # Updated pattern to handle negative amounts and currency symbol both before and after the value
+    pattern = r"(?P<currency1>L|LPS|HNL|USD)?\s*(?P<value>-?\d+(?:\.\d{2})?)\s*(?P<currency2>L|LPS|HNL|USD)?"
     match = re.search(pattern, input)
     if match:
-        currency = match.group("currency")
         value = match.group("value")
+        # Check if currency1 is present, else fallback to currency2
+        currency = match.group("currency1") or match.group("currency2")
 
         currency_map = {
             "L": "HNL",  # Assuming 'L' stands for Lempira, the currency of Honduras
