@@ -1,7 +1,8 @@
 # Changelog
-## 2025-06-09
+## 2024-06-09
 - Add testing.
 - Fix currency extraction.
+- Add programmed transactions.
 ## 2024-05-20
 - Validate in transform when the index is not valid (-1).
 - Divide the processing in amounts (when is local or foreign).

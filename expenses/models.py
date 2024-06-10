@@ -188,6 +188,22 @@ class Transaction(Accountable):
         super().save(*args, **kwargs)
 
 
+class ProgramTransaction(models.Model):
+    account = models.ForeignKey(Account, on_delete=models.CASCADE)
+    currency = models.ForeignKey(Currency, on_delete=models.CASCADE)
+    amount = models.DecimalField(_("Monto"), max_digits=13, decimal_places=2)
+    name = models.CharField(_("Nombre"), max_length=100)
+    start_date = models.DateField(_("Fecha de inicio"), default=timezone.now, blank=True, null=True)
+    end_date = models.DateField(_("Fecha de fin"), default=timezone.now, blank=True, null=True)
+    active = models.BooleanField(_("Programado"), default=True)
+
+    class Meta:
+        verbose_name = _("Transacción programada")
+        verbose_name_plural = _("Transacciones programadas")
+
+    def __str__(self) -> str:
+        return f"{self.name}"
+
 class AccountAsociation(models.Model):
     account = models.ForeignKey(Account, on_delete=models.CASCADE)
     token = models.CharField(_("Token para asociar"), max_length=100)

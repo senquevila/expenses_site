@@ -6,9 +6,10 @@ from expenses.models import (
     AccountAsociation,
     Currency,
     CurrencyConvert,
-    Transaction,
     Period,
+    ProgramTransaction,
     Upload,
+    Transaction,
 )
 
 from expenses.utils.tools import change_account_from_assoc
@@ -149,3 +150,8 @@ class UploadAdmin(admin.ModelAdmin):
     ordering = (
         "-created",
     )
+
+
+@admin.register(ProgramTransaction)
+class ProgramTransactionAdmin(admin.ModelAdmin):
+    list_display = ("name", "start_date", "end_date", "active")
