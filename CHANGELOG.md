@@ -1,6 +1,7 @@
 # Changelog
 ## 2024-06-10
 - Add identifier to check unique transactions.
+- Simplify the inspect process.
 ## 2024-06-09
 - Add testing.
 - Fix currency extraction.
