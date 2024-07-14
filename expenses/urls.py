@@ -70,6 +70,11 @@ urlpatterns = [
         name="period-list",
     ),
     path(
+        "periods/add/",
+        views.PeriodCreateView.as_view(),
+        name="period-add",
+    ),
+    path(
         "periods/<int:period>/",
         views.TransactionGroupListView.as_view(),
         name="period-expense-group",

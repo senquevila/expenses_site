@@ -1,12 +1,22 @@
 from typing import Any
+
 from django.contrib import messages
 from django.db.models.query import QuerySet
 from django.shortcuts import redirect
-from django.views.generic import ListView
+from django.urls import reverse_lazy
+from django.views.generic import ListView, edit
 
 from rest_framework.views import APIView
 
 from expenses.models import Transaction, Period
+from expenses.forms import PeriodForm
+
+
+class PeriodCreateView(edit.CreateView):
+    model = Period
+    form_class = PeriodForm
+    template_name = "expenses/period_add.html"
+    success_url = reverse_lazy("period-list")
 
 
 class PeriodListView(ListView):

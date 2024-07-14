@@ -1,5 +1,5 @@
 {% extends 'base.html' %}
-{% load humanize %}
+{% load humanize query_params %}
 {% block title %}
 Expense List
 {%endblock %}
@@ -31,10 +31,10 @@ Expense List
     <ul class="pagination">
         {% if expenses.has_previous %}
         <li class="page-item">
-            <a class="page-link" href="?page=1">&laquo; first</a>
+            <a class="page-link" href="?{% query_transform page=1 %}">&laquo; first</a>
         </li>
         <li class="page-item">
-            <a class="page-link" href="?page={{ expenses.previous_page_number }}">previous</a>
+            <a class="page-link" href="?{% query_transform page=expenses.previous_page_number %}">Previous</a>
         </li>
         {% endif %}
         <li class="page-item">
@@ -44,10 +44,10 @@ Expense List
         </li>
         {% if expenses.has_next %}
         <li class="page-item">
-            <a class="page-link" href="?page={{ expenses.next_page_number }}">next</a>
+            <a class="page-link" href="?{% query_transform page=expenses.next_page_number %}">Next</a>
         </li>
         <li class="page-item">
-            <a class="page-link" href="?page={{ expenses.paginator.num_pages }}">last &raquo;</a>
+            <a class="page-link" href="?{% query_transform page=expenses.paginator.num_pages %}">last &raquo;</a>
         </li>
         {% endif %}
     </ul>

@@ -1,11 +1,7 @@
-from typing import Any, Mapping
 from django import forms
-from django.core.files.base import File
 from django.core.validators import FileExtensionValidator
-from django.db.models.base import Model
-from django.forms.utils import ErrorList
 
-from expenses.models import Account, Transaction, Upload
+from expenses.models import Account, Period, Transaction, Upload
 
 
 class AccountTransferForm(forms.Form):
@@ -112,3 +108,9 @@ class UploadTransformForm(forms.ModelForm):
     class Meta:
         model = Upload
         fields = ("parameters",)
+
+
+class PeriodForm(forms.ModelForm):
+    class Meta:
+        model = Period
+        fields = ['month', 'year', 'closed', 'total', 'active']

@@ -1,4 +1,9 @@
 # Changelog
+## 2024-07-14
+- Configure signals in the project.
+- Add a form to create a period.
+- Fix pagination, maintaining the query parameters.
+- A period has a unique year and month.
 ## 2024-06-10
 - Add identifier to check unique transactions.
 - Simplify the inspect process.

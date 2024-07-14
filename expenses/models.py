@@ -20,6 +20,7 @@ class Period(models.Model):
     class Meta:
         verbose_name = _("Periodo")
         verbose_name_plural = _("Periodos")
+        unique_together = ("month", "year")
 
     def __str__(self) -> str:
         return f"{self.year}-{self.month:02}"
