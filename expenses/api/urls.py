@@ -32,11 +32,11 @@ urlpatterns = [
     path(
         "upload_file_cleanup/",
         api_views.TransactionUploadFileCleanupView.as_view(),
-        name="upload-file-cleanup"
+        name="upload-file-cleanup",
     ),
     path(
         "invalid_cleanup/",
         api_views.TransactionDeleteInvalidView.as_view(),
         name="expense-invalid-account-cleanup",
-    )
+    ),
 ]

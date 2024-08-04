@@ -4,9 +4,7 @@ from budgets import views
 urlpatterns = [
     path("", views.BudgetListView.as_view(), name="budget-list"),
     path("add/", views.BudgetCreateView.as_view(), name="budget-add"),
-    path(
-        "<int:pk>/edit/", views.BudgetUpdateView.as_view(), name="budget-edit"
-    ),
+    path("<int:pk>/edit/", views.BudgetUpdateView.as_view(), name="budget-edit"),
     path(
         "<int:pk>/update-expenses/",
         views.BudgetUpdateExpensesView.as_view(),

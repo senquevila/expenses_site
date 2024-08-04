@@ -46,7 +46,16 @@ class TransactionGroupListView(ListView):
         period = Period.objects.get(pk=self.period_id)
         context["period"] = str(period)
         context["period_id"] = period.id
+
         context["total"] = get_total_local_amount(Q(period=period))
+        _last = (
+            Transaction.objects.filter(period=self.period_id)
+            .values("payment_date")
+            .order_by("-payment_date")
+            .first()
+        )
+        context["last_trx"] = _last["payment_date"] if _last else None
+
         return context
 
 

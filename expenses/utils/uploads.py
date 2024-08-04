@@ -29,7 +29,7 @@ def process_bank_csv(upload: Upload):
     row_range = upload.parameters["rows"]
     indexes = get_field_indexes(upload.parameters["cols"])
 
-    for row in upload.data[row_range["start"] : row_range["end"]]:
+    for row in upload.data[row_range["start"] : row_range["end"] + 1]:
         row = [str(item).strip() for item in row]
 
         if skip_row(row, indexes):

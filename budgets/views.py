@@ -79,11 +79,15 @@ class BudgetAssigmentListView(ListView):
 
     def get_queryset(self):
         budget = get_object_or_404(Budget, pk=self.kwargs["pk"])
-        queryset = BudgetAssignment.objects.filter(budget=budget).annotate(
-            difference=ExpressionWrapper(
-                F("expense_amount") / F("budget_amount"), output_field=FloatField()
+        queryset = (
+            BudgetAssignment.objects.filter(budget=budget)
+            .annotate(
+                difference=ExpressionWrapper(
+                    F("expense_amount") / F("budget_amount"), output_field=FloatField()
+                )
             )
-        ).order_by("expense_amount")
+            .order_by("expense_amount")
+        )
         return queryset
 
     def get_context_data(self, **kwargs: Any) -> dict[str, Any]:

@@ -38,6 +38,7 @@ def test_get_amount_default_currency_usd_preffix(default_currency, setup_currenc
     assert amount == 100.0
     assert currency.alpha3 == "USD"
 
+
 @pytest.mark.django_db
 def test_get_amount_default_currency_usd_suffix(default_currency, setup_currencies):
     row = ["100 USD"]
@@ -45,12 +46,14 @@ def test_get_amount_default_currency_usd_suffix(default_currency, setup_currenci
     assert amount == 100.0
     assert currency.alpha3 == "USD"
 
+
 @pytest.mark.django_db
 def test_get_amount_default_currency_invalid_index(default_currency, setup_currencies):
     row = ["100 ABC"]
     amount, currency = get_amount(row, -1, default_currency)
     assert amount is None
     assert currency is None
+
 
 @pytest.mark.django_db
 def test_get_amount_default_currency_none(default_currency, setup_currencies):
@@ -62,7 +65,7 @@ def test_get_amount_default_currency_none(default_currency, setup_currencies):
 
 @pytest.mark.django_db
 def test_get_amount_default_currency_empty(default_currency, setup_currencies):
-    row = ['']
+    row = [""]
     amount, currency = get_amount(row, 0, default_currency)
     assert amount is None
     assert currency is None
@@ -70,7 +73,7 @@ def test_get_amount_default_currency_empty(default_currency, setup_currencies):
 
 @pytest.mark.django_db
 def test_get_amount_default_currency_negative(default_currency, setup_currencies):
-    row = ['USD -1.99']
+    row = ["USD -1.99"]
     amount, currency = get_amount(row, 0, default_currency)
     assert amount == -1.99
     assert currency.alpha3 == "USD"

@@ -31,4 +31,6 @@ class TransactionDeleteInvalidView(APIView):
         invalid_expenses = Transaction.objects.filter(account__name="Invalido")
         deletes = invalid_expenses.count()
         invalid_expenses.delete()
-        return Response(data={"transaction-removed": deletes}, status=status.HTTP_200_OK)
+        return Response(
+            data={"transaction-removed": deletes}, status=status.HTTP_200_OK
+        )

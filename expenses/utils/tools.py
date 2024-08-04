@@ -42,8 +42,8 @@ def change_account_from_assoc() -> dict:
     assocs = AccountAsociation.objects.only("token", "account")
     for assoc in assocs:
         expenses = Transaction.objects.filter(
-            description__icontains=assoc.token,
-            account__name=settings.DEFAULT_ACCOUNT)
+            description__icontains=assoc.token, account__name=settings.DEFAULT_ACCOUNT
+        )
         for expense in expenses:
             if assoc.account.name == expense.account.name:
                 continue
@@ -84,11 +84,12 @@ def create_dollar_conversion() -> tuple:
         try:
             exchange = _get_exchange()
         except Exception:
-            return {"message": "Problem capturing exchange"}, status.HTTP_424_FAILED_DEPENDENCY
+            return {
+                "message": "Problem capturing exchange"
+            }, status.HTTP_424_FAILED_DEPENDENCY
 
         CurrencyConvert.objects.create(
-            currency_id=settings.DEFAULT_CURRENCY,
-            exchange=exchange
+            currency_id=settings.DEFAULT_CURRENCY, exchange=exchange
         )
         return {"message": "Exchange created"}, status.HTTP_201_CREATED
 

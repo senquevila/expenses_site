@@ -83,10 +83,10 @@ class UploadTransformForm(forms.ModelForm):
         help_text="File number where the data ends",
         initial=0,
     )
-    payment_date = forms.IntegerField(label="Payment date", initial=1)
+    payment_date = forms.IntegerField(label="Date", initial=1)
     description = forms.IntegerField(label="Description", initial=2)
-    amount = forms.IntegerField(label="Amount", initial=3)
-    amount_currency = forms.IntegerField(label="Dollar amount", initial=4)
+    amount = forms.IntegerField(label="Local", initial=3)
+    amount_currency = forms.IntegerField(label="USD", initial=4)
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -100,10 +100,14 @@ class UploadTransformForm(forms.ModelForm):
         ]
 
         for field in _fields[:2]:
-            self.fields[field].widget.attrs["class"] = "form-control repaint-row-trigger"
+            self.fields[field].widget.attrs[
+                "class"
+            ] = "form-control repaint-row-trigger"
 
         for field in _fields[2:]:
-            self.fields[field].widget.attrs["class"] = "form-control repaint-col-trigger"
+            self.fields[field].widget.attrs[
+                "class"
+            ] = "form-control repaint-col-trigger"
 
     class Meta:
         model = Upload
@@ -113,4 +117,4 @@ class UploadTransformForm(forms.ModelForm):
 class PeriodForm(forms.ModelForm):
     class Meta:
         model = Period
-        fields = ['month', 'year', 'closed', 'total', 'active']
+        fields = ["month", "year", "closed", "total", "active"]
