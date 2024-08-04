@@ -3,6 +3,7 @@
 ### New
 - Save the upload configuration into local storage.
 - Add commands to the page view.
+- Add Loan model and admin.
 ## 2024-07-14
 ### New
 - Add a form to create a period.

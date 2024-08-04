@@ -159,6 +159,6 @@ class ProgramTransactionAdmin(admin.ModelAdmin):
 
 @admin.register(Loan)
 class LoanAdmin(admin.ModelAdmin):
-    list_display = ("name", "amount", "currency", "start_date", "end_date", "is_active")
+    list_display = ("description", "amount", "currency", "start_date", "end_date", "is_active")
     list_filter = ("is_active", "bank")
     ordering = ["-start_date", "-end_date"]

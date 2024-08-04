@@ -255,3 +255,10 @@ class Loan(models.Model):
     months = models.SmallIntegerField(_("Meses"), default=0)
     is_active = models.BooleanField(_("Activo"), default=True)
     bank = models.CharField(_("Banco"), max_length=100)
+
+    class Meta:
+        verbose_name = _("Préstamo")
+        verbose_name_plural = _("Préstamos")
+
+    def __str__(self) -> str:
+        return f"{self.bank} - {self.description}"
