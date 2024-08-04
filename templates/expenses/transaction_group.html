@@ -8,9 +8,14 @@ Expense List
 {% block content %}
 <div class="col-md-6">
     <h1>Expenses by Accounts</h1>
-    <p>Period: {{ period }}</p>
-    <p>Total: {{ total|floatformat:"2"|intcomma }}</p>
-    <table class="table table-striped">
+    <div class="card" style="width: 18rem;">
+        <div class="card-body">
+            <h2 class="card-title">{{ period }}</h2>
+            <h4 class="card-text">{{ total|floatformat:"2"|intcomma }}</h4>
+            <p class="card-text">{{ last_trx }}</p>
+        </div>
+    </div>
+    <table class="table table-striped" style="margin-top: 10px;">
         <tr>
             <th>Account</th>
             <th class="text-end">Amount</th>

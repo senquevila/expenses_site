@@ -14,7 +14,9 @@ class Period(models.Model):
     month = models.IntegerField(_("Mes"))
     year = models.IntegerField(_("Año"))
     closed = models.BooleanField(_("Solo lectura"), default=False)
-    total = models.DecimalField(_("Monto total"), max_digits=13, decimal_places=2, default=0)
+    total = models.DecimalField(
+        _("Monto total"), max_digits=13, decimal_places=2, default=0
+    )
     active = models.BooleanField(_("Es visible"), default=True)
 
     class Meta:
@@ -47,7 +49,9 @@ class Currency(models.Model):
 
 class CurrencyConvert(models.Model):
     currency = models.ForeignKey(Currency, on_delete=models.CASCADE)
-    exchange = models.DecimalField(_("Tasa de conversión"), max_digits=10, decimal_places=4)
+    exchange = models.DecimalField(
+        _("Tasa de conversión"), max_digits=10, decimal_places=4
+    )
     date = models.DateField(_("Fecha de conversión"), auto_now_add=True)
 
     class Meta:
@@ -86,6 +90,7 @@ class Account(models.Model):
         _sign = "-" if self.sign == -1 else "+"
         p_name = f" < {self.parent.name}" if self.parent else ""
         return f"{self.name} {p_name} [{_sign}{self.account_type}]"
+
 
 class Accountable(CreationModificationDateMixin):
     period = models.ForeignKey(Period, on_delete=models.CASCADE)
@@ -129,12 +134,19 @@ def upload_parameters_default():
         "cols": [],
     }
 
+
 class Upload(CreationModificationDateMixin):
-    file = models.FileField(_("Archivo"), blank=True, null=True, upload_to=expense_upload_path)
+    file = models.FileField(
+        _("Archivo"), blank=True, null=True, upload_to=expense_upload_path
+    )
     data = models.JSONField(_("Datos"), blank=True, null=True)
-    dimension = models.JSONField(_("Dimension del document"), default=upload_dimension_default)
+    dimension = models.JSONField(
+        _("Dimension del document"), default=upload_dimension_default
+    )
     result = models.JSONField(_("Resultado"), blank=True, null=True)
-    parameters = models.JSONField(_("Parámetros"), blank=True, null=True, default=upload_parameters_default)
+    parameters = models.JSONField(
+        _("Parámetros"), blank=True, null=True, default=upload_parameters_default
+    )
 
     class Meta:
         verbose_name = _("Subida de archivo")
@@ -150,8 +162,12 @@ class UploadData(models.Model):
 
 
 class Transaction(Accountable):
-    description = models.CharField(_("Descripción"), max_length=255, blank=True, null=True)
-    payment_date = models.DateField(_("Fecha de pago"), default=timezone.now, blank=True, null=True)
+    description = models.CharField(
+        _("Descripción"), max_length=255, blank=True, null=True
+    )
+    payment_date = models.DateField(
+        _("Fecha de pago"), default=timezone.now, blank=True, null=True
+    )
     local_amount = models.DecimalField(
         _("Monto local"), max_digits=13, decimal_places=2, default=0, editable=False
     )
@@ -195,8 +211,12 @@ class ProgramTransaction(models.Model):
     currency = models.ForeignKey(Currency, on_delete=models.CASCADE)
     amount = models.DecimalField(_("Monto"), max_digits=13, decimal_places=2)
     name = models.CharField(_("Nombre"), max_length=100)
-    start_date = models.DateField(_("Fecha de inicio"), default=timezone.now, blank=True, null=True)
-    end_date = models.DateField(_("Fecha de fin"), default=timezone.now, blank=True, null=True)
+    start_date = models.DateField(
+        _("Fecha de inicio"), default=timezone.now, blank=True, null=True
+    )
+    end_date = models.DateField(
+        _("Fecha de fin"), default=timezone.now, blank=True, null=True
+    )
     active = models.BooleanField(_("Programado"), default=True)
 
     class Meta:
@@ -205,6 +225,7 @@ class ProgramTransaction(models.Model):
 
     def __str__(self) -> str:
         return f"{self.name}"
+
 
 class AccountAsociation(models.Model):
     account = models.ForeignKey(Account, on_delete=models.CASCADE)
@@ -216,3 +237,21 @@ class AccountAsociation(models.Model):
 
     def __str__(self) -> str:
         return f"{self.account.name} -> {self.token}"
+
+
+class Loan(models.Model):
+    description = models.CharField(_("Descripción"), max_length=255)
+    amount = models.DecimalField(_("Monto"), max_digits=13, decimal_places=2)
+    currency = models.ForeignKey(Currency, on_delete=models.CASCADE)
+    start_date = models.DateField(
+        _("Fecha de inicio"), default=timezone.now, blank=True, null=True
+    )
+    end_date = models.DateField(
+        _("Fecha de fin"), default=timezone.now, blank=True, null=True
+    )
+    monthly_payment = models.DecimalField(
+        _("Pago mensual"), max_digits=13, decimal_places=2
+    )
+    months = models.SmallIntegerField(_("Meses"), default=0)
+    is_active = models.BooleanField(_("Activo"), default=True)
+    bank = models.CharField(_("Banco"), max_length=100)

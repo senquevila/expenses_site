@@ -6,6 +6,7 @@ from expenses.models import (
     AccountAsociation,
     Currency,
     CurrencyConvert,
+    Loan,
     Period,
     ProgramTransaction,
     Upload,
@@ -58,7 +59,8 @@ remove_invalid_expenses.short_description = "Removed all the invalid expenses"
 def assoc_default_account(TransactionAdmin, request, queryset):
     changes = change_account_from_assoc()
     messages.success(
-        request=request, message=f"Associated {len(changes)} expenses with Default account"
+        request=request,
+        message=f"Associated {len(changes)} expenses with Default account",
     )
 
 
@@ -79,7 +81,9 @@ def update_local_amount(TransactionAdmin, request, queryset):
         request=request, message=f"{changes} transactions updated with new local amount"
     )
 
+
 update_local_amount.short_description = "Update transactions with new local amount"
+
 
 @admin.register(Transaction)
 class TransactionAdmin(admin.ModelAdmin):
@@ -145,11 +149,16 @@ remove_empty_uploads.short_description = "Remove uploads with no transactions"
 @admin.register(Upload)
 class UploadAdmin(admin.ModelAdmin):
     actions = [remove_empty_uploads]
-    ordering = (
-        "-created",
-    )
+    ordering = ("-created",)
 
 
 @admin.register(ProgramTransaction)
 class ProgramTransactionAdmin(admin.ModelAdmin):
     list_display = ("name", "start_date", "end_date", "active")
+
+
+@admin.register(Loan)
+class LoanAdmin(admin.ModelAdmin):
+    list_display = ("name", "amount", "currency", "start_date", "end_date", "is_active")
+    list_filter = ("is_active", "bank")
+    ordering = ["-start_date", "-end_date"]
