@@ -53,6 +53,15 @@
             <a class="dropdown-item" href="{% url 'assignment-add' %}">Create assignment</a>
           </div>
         </li>
+        <li class="nav-item dropdown">
+          <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown"
+            aria-haspopup="true" aria-expanded="false">
+            Commands
+          </a>
+          <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+            <a class="dropdown-item" href="{% url 'remove-invalid' %}">Remove invalid accounts</a>
+            <a class="dropdown-item" href="{% url 'create-dollars-convertion' %}">Update dollar conversion</a>
+        </li>
       </ul>
     </div>
   </nav>

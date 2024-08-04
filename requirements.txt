@@ -2,7 +2,9 @@ asgiref==3.6.0
 beautifulsoup4==4.12.2
 certifi==2023.5.7
 charset-normalizer==3.1.0
-Django==4.2.1
+Django==4.2.14
+django-cors-headers==4.4.0
+django-debug-toolbar==4.4.6  # for development
 djangorestframework==3.14.0
 idna==3.4
 python-dotenv==1.0.0

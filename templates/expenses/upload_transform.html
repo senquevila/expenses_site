@@ -23,7 +23,7 @@
     <hr>
     <div class="col-md-3">
         <p><span id="message" style="display: none"></span></p>
-        <form method="post">
+        <form id="expenseForm" method="post">
             {% csrf_token %}
             <div class="container">
                 <fieldset>
@@ -248,8 +248,33 @@
         });
     }
 
+    function saveFormData() {
+        const formData = {
+            start_row: $('#id_start_row').val(),
+            end_row: $('#id_end_row').val(),
+            payment_date: $('#id_payment_date').val(),
+            description: $('#id_description').val(),
+            amount: $('#id_amount').val(),
+            amount_currency: $('#id_amount_currency').val()
+        };
+        localStorage.setItem('expenseFormData', JSON.stringify(formData));
+    }
+
+    function loadFormData() {
+        const formData = JSON.parse(localStorage.getItem('expenseFormData'));
+        if (formData) {
+            $('#id_start_row').val(formData.start_row);
+            $('#id_end_row').val(formData.end_row);
+            $('#id_payment_date').val(formData.payment_date);
+            $('#id_description').val(formData.description);
+            $('#id_amount').val(formData.amount);
+            $('#id_amount_currency').val(formData.amount_currency);
+        }
+    }
 
     $(document).ready(function() {
+        loadFormData();
+
         if (data.length > 0) {
             const allKeys = getAllKeys(data);
             const normalizedData = normalizeData(data, allKeys);
@@ -277,6 +302,12 @@
 
         $('.repaint-row-trigger').on('change', function() {
             repaintRowTable();
+        });
+
+        $('#expenseForm').on('submit', function(e) {
+            e.preventDefault();
+            saveFormData();
+            this.submit();
         });
 
         change_color_bullet();

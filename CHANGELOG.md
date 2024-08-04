@@ -1,116 +1,146 @@
 # Changelog
+## 2024-08-04
+### New
+- Save the upload configuration into local storage.
+- Add commands to the page view.
 ## 2024-07-14
-- Configure signals in the project.
+### New
 - Add a form to create a period.
-- Fix pagination, maintaining the query parameters.
-- A period has a unique year and month.
+### Change
+- Configure signals in the project.
+- Fix pagination while maintaining the query parameters.
+- Ensure a period has a unique year and month.
+
 ## 2024-06-10
-- Add identifier to check unique transactions.
-- Simplify the inspect process.
+### New
+- Add an identifier to check unique transactions.
+### Change
+- Simplify the inspection process.
+
 ## 2024-06-09
+### New
 - Add testing.
-- Fix currency extraction.
 - Add programmed transactions.
+### Change
+- Fix currency extraction.
+
 ## 2024-05-20
-- Validate in transform when the index is not valid (-1).
-- Divide the processing in amounts (when is local or foreign).
+### Change
+- Validate the transformation when the index is not valid (-1).
+- Divide the processing of amounts (local or foreign).
+
 ## 2024-05-12
-- [Admin] Update period admin.
+### New
+- [Admin] Update period administration.
+### Change
+- Fix the issue when the amount is empty in the upload file.
+### Remove
 - Remove the result view from the upload process view. The result can be seen in the period actions.
-- Fix when amount is empty in the upload file.
+
 ## 2024-04-28
-- Change the upload process, adding preliminary steps to process a raw CSV.
+- Change the upload process by adding preliminary steps to process a raw CSV.
+
 ## 2024-03-18
-## New
-- Edit accounts from last uploads directly.
+### New
+- Edit accounts from recent uploads directly.
 - Add `get_local_amount` in admin actions.
+
 ## 2024-03-02
 ### New
-- Translations on model fields and verbose_name.
+- Add translations on model fields and `verbose_name`.
+
 ### Change
-- Process to extract the amount and currency in expense uploads.
-- Rename expense model for transaction.
+- Update the process to extract the amount and currency in expense uploads.
+- Rename the expense model to transaction.
+
 ## 2024-02-18
 ### New
-- `account_type` in account model.
-- Changelog template: Add New, Fixed and Removed subtitles.
+- Add `account_type` to the account model.
+- Add a changelog template with New, Fixed, and Removed subtitles.
+
 ### Change
-- Cascade delete on foreign key fields.
-- Upload Result template.
-- Budget assignments.
+- Implement cascade delete on foreign key fields.
+- Update the upload result template.
+- Update budget assignments.
+
 ### Remove
-- swap account view.
-- Category and MatchAccount models.
+- Remove the swap account view.
+- Remove Category and MatchAccount models.
 
 ## 2024-02-04
 ### New
-- Periods activation.
-- Admin forms actions: remove blank uploads, remove invalid expenses, disabled periods.
+- Enable period activations.
+- Add admin form actions: remove blank uploads, remove invalid expenses, disable periods.
+
 ### Change
-- Upload expense result giving detail for all the rows.
+- Update the upload expense result to give details for all rows.
 
 ## 2024-01-28
 ### New
-- Redux URLs.
+- Add Redux URLs.
 - Update expenses in the budget.
-- List expense categories associated in the budget.
-- Result from expense upload.
+- List expense categories associated with the budget.
+- Display results from expense uploads.
+
 ### Change
-- Cleanup the DB when a upload does not have expenses associated.
+- Cleanup the database when an upload does not have associated expenses.
 
 ## 2024-01-21
-- Expenses CRUD forms.
-- Upload model.
-- Show results from upload an expense file.
+- Create expenses CRUD forms.
+- Implement the upload model.
+- Show results from uploading an expense file.
 
 ## 2024-01-14
 ### New
-- Budget app.
-- Translate account.
+- Add the budget app.
+- Translate account fields.
 
 ## 2024-01-13
 ### New
-- Automation for associating accounts by searching for reserved tokens in expense descriptions.
+- Automate account association by searching for reserved tokens in expense descriptions.
 
 ## 2024-01-04
 ### New
-- Open periods endpoint.
-- Link to use CDN font from bootstrap.
+- Add the open periods endpoint.
+- Link to use CDN font from Bootstrap.
+
 ### Change
-- Changelog format. Using the verbs: Added, Changed and Removed
+- Update the changelog format to use the verbs: Added, Changed, and Removed.
 
 ## 2024-01-01
 ### New
-- Bank and BankAccount models.
+- Add Bank and BankAccount models.
+
 ### Remove
-- Removed not used API endpoints.
+- Remove unused API endpoints.
 
 ## 2023-12-31
 ### Change
-- Changed Filter to omit closed period in the expenses uploads.
+- Update the filter to omit closed periods in the expenses uploads.
+
 ### Remove
-- Period from upload expenses. This field will be calculated from the payment date.
+- Remove the period from upload expenses. This field will be calculated from the payment date.
 
 ## 2023-11-04
 ### New
-- `local_amount` field on Expense model.
-- `populate_local_amount` command.
-- `refresh_period_total` command.
-- USD convertion when upload expenses.
+- Add `local_amount` field to the Expense model.
+- Add `populate_local_amount` command.
+- Add `refresh_period_total` command.
+- Implement USD conversion when uploading expenses.
 
 ## 2023-10-15
 ### New
-- Convertion object when it is created.
-- Script to call the convertion endpoint.
+- Create a conversion object when it is created.
+- Add a script to call the conversion endpoint.
 
 ## 2023-10-03
 ### New
-- Account list.
-- Currency convert list.
-- home.html
+- Add account list.
+- Add currency convert list.
+- Create home.html.
 
 ## 2023-09-24
 ### New
-- Close a period.
-- HTML templates for list periods and expenses.
-- HTML templates for uploading expenses CSV files.
+- Add the ability to close a period.
+- Create HTML templates for listing periods and expenses.
+- Create HTML templates for uploading expense CSV files.

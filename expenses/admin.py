@@ -12,7 +12,7 @@ from expenses.models import (
     Transaction,
 )
 
-from expenses.utils.tools import change_account_from_assoc
+from expenses.utils.tools import change_account_from_assoc, remove_invalid_transactions
 
 
 def disabled_periods(PeriodAdmin, request, queryset):
@@ -48,9 +48,7 @@ class AccountAdmin(admin.ModelAdmin):
 
 
 def remove_invalid_expenses(TransactionAdmin, request, queryset):
-    invalid_expenses = Transaction.objects.filter(account__name="Invalido")
-    deletes = invalid_expenses.count()
-    invalid_expenses.delete()
+    deletes = remove_invalid_transactions()
     messages.success(request=request, message=f"Removed {deletes} invalid expenses")
 
 

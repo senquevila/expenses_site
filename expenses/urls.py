@@ -94,6 +94,16 @@ urlpatterns = [
         views.UploadListView.as_view(),
         name="upload-list",
     ),
+    path(
+        "remove-invalid/",
+        views.TransactionRemoveInvalidView.as_view(),
+        name="remove-invalid",
+    ),
+    path(
+        "create-dollars/",
+        views.CreateDollarConversionView.as_view(),
+        name="create-dollars-convertion",
+    ),
 ]
 
 if settings.DEBUG:

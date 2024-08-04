@@ -1,9 +1,12 @@
+from bs4 import BeautifulSoup
 from decimal import Decimal
 from datetime import datetime
+from urllib.request import Request, urlopen
 
 from django.conf import settings
 from django.db.models import F, Sum
 from django.db.models.functions import Abs
+from rest_framework import status
 
 from expenses.models import AccountAsociation, Transaction, CurrencyConvert
 
@@ -58,3 +61,35 @@ def change_account_from_assoc() -> dict:
             expense.save()
 
     return data
+
+
+def remove_invalid_transactions() -> int:
+    invalid_expenses = Transaction.objects.filter(account__name="Invalido")
+    rows, _ = invalid_expenses.delete()
+    return rows
+
+
+def create_dollar_conversion() -> tuple:
+    def _get_exchange() -> float:
+        req = Request(settings.SCRAPING_URL, headers={"User-Agent": "Mozilla/5.0"})
+        page = urlopen(req)
+        soup = BeautifulSoup(page, "html.parser")
+        result = soup.find(id=settings.SCRAPING_TAG_ID)
+        result_text = result.text.strip()
+        tokens = result_text.split(settings.SCRAPING_TOKEN_SPLIT)
+        value = float(tokens[-1].strip().replace("L", ""))
+        return value
+
+    if not CurrencyConvert.objects.filter(date=datetime.today()).exists():
+        try:
+            exchange = _get_exchange()
+        except Exception:
+            return {"message": "Problem capturing exchange"}, status.HTTP_424_FAILED_DEPENDENCY
+
+        CurrencyConvert.objects.create(
+            currency_id=settings.DEFAULT_CURRENCY,
+            exchange=exchange
+        )
+        return {"message": "Exchange created"}, status.HTTP_201_CREATED
+
+    return {"message": "Exchange already exists"}, status.HTTP_204_NO_CONTENT

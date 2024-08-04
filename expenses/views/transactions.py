@@ -1,6 +1,7 @@
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from django.db.models import Q, Sum
 from django.db.models.query import QuerySet
+from django.http import HttpResponseRedirect
 from django.urls import reverse_lazy
 from django.views.generic import (
     CreateView,
@@ -8,6 +9,7 @@ from django.views.generic import (
     ListView,
     UpdateView,
 )
+from rest_framework.views import APIView
 
 from expenses.forms import TransactionForm
 from expenses.models import Transaction, Period
@@ -105,3 +107,10 @@ class TransactionDeleteView(DeleteView):
     model = Transaction
     template_name = "expenses/transaction_confirm_delete.html"
     success_url = reverse_lazy("transaction-list")
+
+
+class TransactionRemoveInvalidView(APIView):
+    def get(self, request):
+        invalid_expenses = Transaction.objects.filter(account__name="Invalido")
+        invalid_expenses.delete()
+        return HttpResponseRedirect(reverse_lazy("home"))
