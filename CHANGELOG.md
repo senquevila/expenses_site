@@ -1,4 +1,7 @@
 # Changelog
+## 2024-08-07
+### New
+- Add Subscription model and admin.
 ## 2024-08-04
 ### New
 - Save the upload configuration into local storage.

@@ -10,6 +10,7 @@ from expenses.models import (
     Period,
     ProgramTransaction,
     Upload,
+    Subscription,
     Transaction,
 )
 
@@ -159,6 +160,22 @@ class ProgramTransactionAdmin(admin.ModelAdmin):
 
 @admin.register(Loan)
 class LoanAdmin(admin.ModelAdmin):
-    list_display = ("description", "amount", "currency", "start_date", "end_date", "is_active")
+    list_display = (
+        "description",
+        "start_date",
+        "end_date",
+        "months",
+        "monthly_payment",
+        "bank",
+        "percentage",
+        "is_active",
+    )
     list_filter = ("is_active", "bank")
-    ordering = ["-start_date", "-end_date"]
+    ordering = ["bank", "-months"]
+
+
+@admin.register(Subscription)
+class SubscriptionAdmin(admin.ModelAdmin):
+    list_display = ("name", "subscription_type", "monthly_payment", "is_active")
+    list_filter = ("is_active", "subscription_type")
+    ordering = ["subscription_type", "monthly_payment"]

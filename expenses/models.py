@@ -1,5 +1,6 @@
-from datetime import timedelta
+from datetime import datetime, timedelta
 from decimal import Decimal
+from dateutil.relativedelta import relativedelta
 
 from django.utils.translation import gettext_lazy as _
 from django.db import models
@@ -246,9 +247,6 @@ class Loan(models.Model):
     start_date = models.DateField(
         _("Fecha de inicio"), default=timezone.now, blank=True, null=True
     )
-    end_date = models.DateField(
-        _("Fecha de fin"), default=timezone.now, blank=True, null=True
-    )
     monthly_payment = models.DecimalField(
         _("Pago mensual"), max_digits=13, decimal_places=2
     )
@@ -261,4 +259,48 @@ class Loan(models.Model):
         verbose_name_plural = _("Préstamos")
 
     def __str__(self) -> str:
-        return f"{self.bank} - {self.description}"
+        return f"{self.bank} - {self.description} ({self.monthly_payment})"
+
+    @property
+    def end_date(self):
+        return self.start_date + relativedelta(months=self.months)
+
+    @property
+    def percentage(self):
+        start_date = self.start_date
+        end_date = self.end_date
+        if start_date > end_date:
+            start_date, end_date = (
+                end_date,
+                start_date,
+            )  # Ensure start_date is before end_date
+
+        total_months = (end_date - start_date).days
+        months_elapsed = (timezone.now().date() - start_date).days
+        return round(months_elapsed * 100.0 / total_months)
+
+
+class Subscription(models.Model):
+    MOVIES = "MOVIES"
+    MUSIC = "MUSIC"
+    BOOKS = "BOOKS"
+    SUBSCRIPTION_TYPE = (
+        (MOVIES, "Películas"),
+        (MUSIC, "Música"),
+        (BOOKS, "Libros"),
+    )
+    name = models.CharField(_("Nombre"), max_length=100)
+    subscription_type = models.CharField(
+        _("Tipo"), max_length=10, choices=SUBSCRIPTION_TYPE, default=MOVIES
+    )
+    is_active = models.BooleanField(_("Activo"), default=True)
+    monthly_payment = models.DecimalField(
+        _("Pago mensual"), max_digits=13, decimal_places=2
+    )
+
+    class Meta:
+        verbose_name = _("Suscripción")
+        verbose_name_plural = _("Suscripciones")
+
+    def __str__(self) -> str:
+        return f"{self.name} - {self.subscription_type}"
