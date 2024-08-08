@@ -243,7 +243,7 @@ class AccountAsociation(models.Model):
 class Loan(models.Model):
     description = models.CharField(_("Descripción"), max_length=255)
     amount = models.DecimalField(_("Monto"), max_digits=13, decimal_places=2)
-    currency = models.ForeignKey(Currency, on_delete=models.CASCADE)
+    currency = models.ForeignKey(Currency, on_delete=models.PROTECT)
     start_date = models.DateField(
         _("Fecha de inicio"), default=timezone.now, blank=True, null=True
     )
@@ -284,16 +284,19 @@ class Subscription(models.Model):
     MOVIES = "MOVIES"
     MUSIC = "MUSIC"
     BOOKS = "BOOKS"
+    OTHER = "OTHER"
     SUBSCRIPTION_TYPE = (
         (MOVIES, "Películas"),
         (MUSIC, "Música"),
         (BOOKS, "Libros"),
+        (OTHER, "Otros"),
     )
     name = models.CharField(_("Nombre"), max_length=100)
     subscription_type = models.CharField(
         _("Tipo"), max_length=10, choices=SUBSCRIPTION_TYPE, default=MOVIES
     )
     is_active = models.BooleanField(_("Activo"), default=True)
+    currency = models.ForeignKey(Currency, on_delete=models.PROTECT)
     monthly_payment = models.DecimalField(
         _("Pago mensual"), max_digits=13, decimal_places=2
     )
