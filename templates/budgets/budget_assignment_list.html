@@ -27,7 +27,7 @@
       </td>
       <td class="text-end">{{ assignment.budget_amount|intcomma }}</td>
       <td class="text-end">{{ assignment.expense_amount|intcomma }}</td>
-      <td class="text-center"><span class="badge rounded-pill {% if assignment.difference <= 1 %}text-bg-success{% else %}text-bg-danger{% endif %}">{{ assignment.difference|round_to_n }}x</span></td>
+      <td class="text-center"><span class="badge rounded-pill {% if assignment.difference > 100 %}text-bg-success{% else %}text-bg-danger{% endif %}">{{ assignment.difference|round_to_n }}%</span></td>
     </tr>
     {% endfor %}
     <tr>

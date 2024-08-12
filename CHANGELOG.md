@@ -1,4 +1,8 @@
 # Changelog
+## 2024-08-11
+### Change
+- New way to get the difference between the budget and the expenses.
+- Fix the get the currency exchange.
 ## 2024-08-07
 ### New
 - Add Subscription model and admin.

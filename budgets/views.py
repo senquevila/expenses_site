@@ -83,7 +83,7 @@ class BudgetAssigmentListView(ListView):
             BudgetAssignment.objects.filter(budget=budget)
             .annotate(
                 difference=ExpressionWrapper(
-                    F("expense_amount") / F("budget_amount"), output_field=FloatField()
+                    (F("expense_amount") - F("budget_amount")) / F("budget_amount") * 100, output_field=FloatField()
                 )
             )
             .order_by("expense_amount")

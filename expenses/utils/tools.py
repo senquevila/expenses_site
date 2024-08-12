@@ -8,7 +8,7 @@ from django.db.models import F, Sum
 from django.db.models.functions import Abs
 from rest_framework import status
 
-from expenses.models import AccountAsociation, Transaction, CurrencyConvert
+from expenses.models import AccountAsociation, Currency, CurrencyConvert, Transaction
 
 
 def get_real_amount(expense: Transaction) -> float:
@@ -88,9 +88,12 @@ def create_dollar_conversion() -> tuple:
                 "message": "Problem capturing exchange"
             }, status.HTTP_424_FAILED_DEPENDENCY
 
+        currency = Currency.objects.filter(alpha3=settings.DEFAULT_CURRENCY).first()
+
         CurrencyConvert.objects.create(
-            currency_id=settings.DEFAULT_CURRENCY, exchange=exchange
+            currency=currency, exchange=exchange
         )
+
         return {"message": "Exchange created"}, status.HTTP_201_CREATED
 
     return {"message": "Exchange already exists"}, status.HTTP_204_NO_CONTENT
