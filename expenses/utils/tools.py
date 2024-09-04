@@ -10,6 +10,8 @@ from rest_framework import status
 
 from expenses.models import AccountAsociation, Currency, CurrencyConvert, Transaction
 
+DOLAR_CODE = "USD"
+
 
 def get_real_amount(expense: Transaction) -> float:
     data = (
@@ -88,11 +90,9 @@ def create_dollar_conversion() -> tuple:
                 "message": "Problem capturing exchange"
             }, status.HTTP_424_FAILED_DEPENDENCY
 
-        currency = Currency.objects.filter(alpha3=settings.DEFAULT_CURRENCY).first()
+        currency = Currency.objects.filter(alpha3=DOLAR_CODE).first()
 
-        CurrencyConvert.objects.create(
-            currency=currency, exchange=exchange
-        )
+        CurrencyConvert.objects.create(currency=currency, exchange=exchange)
 
         return {"message": "Exchange created"}, status.HTTP_201_CREATED
 

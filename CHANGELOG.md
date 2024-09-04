@@ -1,4 +1,7 @@
 # Changelog
+## 2024-09-04
+### Change
+- Fix the currency in the programmed tasks.
 ## 2024-08-11
 ### Change
 - New way to get the difference between the budget and the expenses.
