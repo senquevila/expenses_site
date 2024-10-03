@@ -41,7 +41,9 @@ class CurrencyAdmin(admin.ModelAdmin):
 
 @admin.register(CurrencyConvert)
 class CurrencyConvertAdmin(admin.ModelAdmin):
-    pass
+    list_display = ("currency", "exchange", "date")
+    list_filter = ("date", "currency")
+    ordering = ["-date"]
 
 
 @admin.register(Account)
@@ -71,9 +73,9 @@ assoc_default_account.short_description = "Associate expenses from default accou
 def update_local_amount(TransactionAdmin, request, queryset):
     changes = 0
     for transaction in queryset.all():
-        print(transaction.__dict__)
+        print("Transaction info:", transaction.__dict__)
         _new_local_amount = transaction.get_local_amount
-        print(_new_local_amount)
+        print("New local amount:", _new_local_amount)
         if transaction.local_amount != _new_local_amount:
             changes += 1
             transaction.local_amount = _new_local_amount

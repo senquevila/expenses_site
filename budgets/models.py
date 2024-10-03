@@ -12,6 +12,7 @@ class Budget(models.Model):
         unique_together = ("user", "period")
         verbose_name = "Presupuesto"
         verbose_name_plural = "Presupuestos"
+        ordering = ["-period"]
 
     def __str__(self):
         return str(self.period)

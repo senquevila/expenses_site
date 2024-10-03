@@ -134,7 +134,6 @@ STATICFILES_LOCATION = "static"
 
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
-
 # Web Scraping
 load_dotenv()
 SCRAPING_URL = os.environ.get("SCRAPING_URL", "")
@@ -149,6 +148,7 @@ CORS_ALLOWED_ORIGINS = ["http://127.0.0.1:8000", "http://127.0.0.1:3000"]
 DEFAULT_CURRENCY = "HNL"
 DEFAULT_ACCOUNT = "Gasto"
 DEFAULT_DATE_FORMAT = "%d/%m/%y"
+CURRENCY_CONVERT_DAYS_RANGE = 90
 
 INTERNAL_IPS = [
     "127.0.0.1",

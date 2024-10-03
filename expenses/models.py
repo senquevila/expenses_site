@@ -1,12 +1,13 @@
-from datetime import datetime, timedelta
+from datetime import timedelta
 from decimal import Decimal
 from dateutil.relativedelta import relativedelta
 
-from django.utils.translation import gettext_lazy as _
 from django.db import models
 from django.db.models import F
 from django.db.models.functions import Abs
+from django.conf import settings
 from django.utils import timezone
+from django.utils.translation import gettext_lazy as _
 
 from expenses.mixins import CreationModificationDateMixin
 
@@ -192,8 +193,10 @@ class Transaction(Accountable):
         data = (
             CurrencyConvert.objects.filter(
                 currency=self.currency,
-                date__lte=self.payment_date + timedelta(days=30),
-                date__gte=self.payment_date - timedelta(days=30),
+                date__lte=self.payment_date
+                + timedelta(days=settings.CURRENCY_CONVERT_DAYS_RANGE),
+                date__gte=self.payment_date
+                - timedelta(days=settings.CURRENCY_CONVERT_DAYS_RANGE),
             )
             .annotate(date_difference=Abs(F("date") - self.payment_date))
             .order_by("date_difference")

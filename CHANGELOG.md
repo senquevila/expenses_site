@@ -1,4 +1,11 @@
 # Changelog
+## 2024-10-03
+### New
+- Set the currency conversion day range to 90 days.
+### Change
+- Fix the local amount calculation.
+- Correct the current conversion endpoint.
+- Ensure the amounts are absolute values.
 ## 2024-09-04
 ### Change
 - Fix the currency in the programmed tasks.

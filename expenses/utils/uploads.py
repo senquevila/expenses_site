@@ -160,6 +160,9 @@ def get_transaction_amount_and_currency(row, indexes, default_currency):
         )
 
     if amount_1 is not None and amount_2 is not None:
+        # get the absolute value of both amounts
+        amount_1 = abs(amount_1)
+        amount_2 = abs(amount_2)
         if amount_1 >= amount_2:
             return amount_1, currency_1
         else:
