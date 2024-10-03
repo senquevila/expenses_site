@@ -136,11 +136,14 @@ def get_field_indexes(cols):
 
 
 def skip_row(row: list, indexes: list) -> bool:
-    return (
-        not row
-        or not row[indexes["payment_date"]]
-        or (not row[indexes["amount"]] and not row[indexes["amount_currency"]])
-    )
+    try:
+        return (
+            not row
+            or not row[indexes["payment_date"]]
+            or (not row[indexes["amount"]] and not row[indexes["amount_currency"]])
+        )
+    except IndexError:
+        return True
 
 
 def get_payment_date_and_period(row, indexes):

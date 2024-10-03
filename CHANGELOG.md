@@ -6,6 +6,7 @@
 - Fix the local amount calculation.
 - Correct the current conversion endpoint.
 - Ensure the amounts are absolute values.
+- Skip any invalid rows during the upload process.
 ## 2024-09-04
 ### Change
 - Fix the currency in the programmed tasks.
