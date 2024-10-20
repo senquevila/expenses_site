@@ -116,6 +116,7 @@ class TransactionAdmin(admin.ModelAdmin):
         "description__icontains",
         "account__name__icontains",
         "amount",
+        "upload__file",
     )
     actions = [remove_invalid_expenses, assoc_default_account, update_local_amount]
 
