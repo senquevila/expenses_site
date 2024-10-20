@@ -50,7 +50,17 @@ def process_bank_csv(upload: Upload):
             set_message(**message)
             continue
 
-        payment_date, period = get_payment_date_and_period(row, indexes)
+        try:
+            payment_date, period = get_payment_date_and_period(row, indexes)
+        except ValueError as e:
+            set_message(
+                description=str(e),
+                line_number=row[0],
+                source=row,
+                data=context,
+            )
+            continue
+
         if not period or period.closed:
             set_message(
                 description="Period not found or closed",
@@ -147,33 +157,25 @@ def skip_row(row: list, indexes: list) -> bool:
 
 
 def get_payment_date_and_period(row, indexes):
-    payment_date = str_to_date(row[indexes["payment_date"]]) or timezone.now().date()
+    payment_date = str_to_date(row[indexes["payment_date"]])
     period = Period.get_period_from_date(payment_date)
     return payment_date, period
 
 
 def get_transaction_amount_and_currency(row, indexes, default_currency):
-    amount_1, currency_1 = get_amount(row, indexes["amount"], default_currency)
+    amounts = [
+        get_amount(row, indexes["amount"], default_currency),
+        get_amount_currency(row, indexes["amount_currency"], default_currency),
+    ]
 
-    if amount_1 is not None and currency_1 is not None:
-        amount_2, currency_2 = None, None
-    else:
-        amount_2, currency_2 = get_amount_currency(
-            row, indexes["amount_currency"], default_currency
-        )
+    # Filter out None values and calculate absolute values
+    valid_amounts = [
+        (abs(amount), currency) for amount, currency in amounts if amount is not None
+    ]
 
-    if amount_1 is not None and amount_2 is not None:
-        # get the absolute value of both amounts
-        amount_1 = abs(amount_1)
-        amount_2 = abs(amount_2)
-        if amount_1 >= amount_2:
-            return amount_1, currency_1
-        else:
-            return amount_2, currency_2
-    elif amount_1 is not None:
-        return amount_1, currency_1
-    elif amount_2 is not None:
-        return amount_2, currency_2
+    if valid_amounts:
+        # Return the tuple with the maximum amount
+        return max(valid_amounts, key=lambda x: x[0])
     else:
         return None, None
 

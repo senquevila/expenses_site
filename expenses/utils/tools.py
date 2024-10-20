@@ -29,9 +29,9 @@ def str_to_date(str_date) -> datetime.date:
         try:
             return datetime.strptime(str_date, format).date()
         except ValueError:
-            pass
+            continue
 
-    raise ValueError("Invalid date")
+    raise ValueError(f"Invalid date format: {str_date}")
 
 
 def get_total_local_amount(filtered) -> Decimal:
