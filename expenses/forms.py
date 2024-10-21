@@ -1,7 +1,7 @@
 from django import forms
 from django.core.validators import FileExtensionValidator
 
-from expenses.models import Account, Period, Transaction, Upload
+from expenses.models import Account, Loan, Period, Subscription, Transaction, Upload
 
 
 class AccountTransferForm(forms.Form):
@@ -118,3 +118,15 @@ class PeriodForm(forms.ModelForm):
     class Meta:
         model = Period
         fields = ["month", "year", "closed", "total", "active"]
+
+
+class LoanForm(forms.ModelForm):
+    class Meta:
+        model = Loan
+        fields = "__all__"
+
+
+class SubscriptionForm(forms.ModelForm):
+    class Meta:
+        model = Subscription
+        fields = "__all__"

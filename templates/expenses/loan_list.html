@@ -1,0 +1,44 @@
+{% extends 'base.html' %}
+{% load humanize %}
+{% block content %}
+<div>
+  <h1>Loans</h1>
+  <p><a href="{% url 'loan-add' %}">Add</a></p>
+  <div class="card" style="width: 18rem;">
+    <div class="card-body">
+        <h5 class="card-title">Monthly payment</h5>
+        <h4 class="card-text">{{ total|floatformat:"2"|intcomma }}</h4>
+    </div>
+  </div>
+  <br>
+  <table class="table table-striped">
+    <tr>
+        <th>Description</th>
+        <th class="text-end">Monthly payment</th>
+        <th class="text-center">Months</th>
+        <th>End date</th>
+        <th class="text-center">Progress</th>
+        <th class="text-center">Active</th>
+    </tr>
+    {% for loan in loans %}
+      <tr>
+        <td>{{ loan.description }}</td>
+        <td class="text-end">{{ loan.currency.alpha3 }} {{ loan.monthly_payment|floatformat:"2"|intcomma }}</td>
+        <td class="text-center">{{ loan.months }}</td>
+        <td>{{ loan.end_date }}</td>
+        <td class="text-center">
+          <div class="progress">
+            <div class="progress-bar" role="progressbar" style="width: {{ loan.percentage }}%" aria-valuenow="{{ loan.progress }}" aria-valuemin="0" aria-valuemax="100">{{ loan.percentage }}%</div>
+          </div>
+        </td>
+        <td class="text-center">
+          {% if loan.is_active %}
+            <i class="btn btn-success fa fa-check" aria-hidden="true"></i>
+          {% else %}
+            <i class="btn btn-danger fa fa-times" aria-hidden="true"></i>
+          {% endif %}
+        </td>
+      </tr>
+    {% endfor %}
+</div>
+{% endblock %}

@@ -12,7 +12,7 @@ class AccountListView(ListView):
     model = Account
     template_name = "expenses/account_list.html"
     context_object_name = "accounts"
-    ordering = ["name"]
+    ordering = ["-sign", "name"]
 
 
 class AccountTransferView(FormView):

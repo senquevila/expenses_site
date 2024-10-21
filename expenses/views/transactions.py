@@ -1,7 +1,7 @@
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from django.db.models import Q, Sum
 from django.db.models.query import QuerySet
-from django.http import HttpResponseRedirect
+from django.shortcuts import render, redirect
 from django.urls import reverse_lazy
 from django.views.generic import (
     CreateView,
@@ -9,10 +9,11 @@ from django.views.generic import (
     ListView,
     UpdateView,
 )
+
 from rest_framework.views import APIView
 
-from expenses.forms import TransactionForm
-from expenses.models import Transaction, Period
+from expenses.forms import TransactionForm, LoanForm, SubscriptionForm
+from expenses.models import Transaction, Period, Loan, Subscription
 from expenses.utils.tools import get_total_local_amount
 
 DATE_FIELD = 0
@@ -101,14 +102,14 @@ class TransactionListView(ListView):
 class TransactionCreateView(CreateView):
     model = Transaction
     form_class = TransactionForm
-    template_name = "expenses/transaction_form.html"
+    template_name = "expenses/transaction_add.html"
     success_url = reverse_lazy("transaction-list")
 
 
 class TransactionUpdateView(UpdateView):
     model = Transaction
     form_class = TransactionForm
-    template_name = "expenses/transaction_form.html"
+    template_name = "expenses/transaction_add.html"
     success_url = reverse_lazy("transaction-list")
 
 
@@ -122,4 +123,64 @@ class TransactionRemoveInvalidView(APIView):
     def get(self, request):
         invalid_expenses = Transaction.objects.filter(account__name="Invalido")
         invalid_expenses.delete()
-        return HttpResponseRedirect(reverse_lazy("home"))
+        return redirect("home")
+
+
+class LoanListView(ListView):
+    model = Loan
+    template_name = "loans/loan_list.html"
+    context_object_name = "loans"
+    ordering = ["-is_active", "-monthly_payment"]
+
+    def get_queryset(self):
+        return super().get_queryset().filter(is_active=True)
+
+    def get_context_data(self, **kwargs):
+        ctx = super().get_context_data(**kwargs)
+        ctx["total"] = Loan.objects.filter(is_active=True).aggregate(
+            Sum("monthly_payment")
+        )["monthly_payment__sum"]
+        return ctx
+
+
+class SubscriptionListView(ListView):
+    model = Subscription
+    template_name = "expenses/subscription_list.html"
+    context_object_name = "subscriptions"
+    ordering = ["-is_active", "-monthly_payment"]
+
+    def get_queryset(self):
+        return super().get_queryset().filter(is_active=True)
+
+    def get_context_data(self, **kwargs):
+        ctx = super().get_context_data(**kwargs)
+        ctx["total"] = Subscription.objects.filter(is_active=True).aggregate(
+            Sum("monthly_payment")
+        )["monthly_payment__sum"]
+        return ctx
+
+
+class LoanCreateView(CreateView):
+    def get(self, request):
+        form = LoanForm()
+        return render(request, "expenses/loan_add.html", {"form": form})
+
+    def post(self, request):
+        form = LoanForm(request.POST)
+        if form.is_valid():
+            form.save()
+            return redirect("loan-list")
+        return render(request, "expenses/loan_add.html", {"form": form})
+
+
+class SubscriptionCreateView(CreateView):
+    def get(self, request):
+        form = SubscriptionForm()
+        return render(request, "expenses/subscription_add.html", {"form": form})
+
+    def post(self, request):
+        form = SubscriptionForm(request.POST)
+        if form.is_valid():
+            form.save()
+            return redirect("subscription-list")
+        return render(request, "expenses/subscription_add.html", {"form": form})

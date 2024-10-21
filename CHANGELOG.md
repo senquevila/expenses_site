@@ -1,4 +1,11 @@
 # Changelog
+## 2024-10-20
+### New
+- Add search by upload file in transaction admin.
+- Loan and Subscription views to list and create items.
+### Change
+- Fallback for invalid dates in the upload process.
+- Use absolute values for the uploaded amounts.
 ## 2024-10-03
 ### New
 - Set the currency conversion day range to 90 days.

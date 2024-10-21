@@ -5,6 +5,7 @@ Expense List
 {%endblock %}
 {% block content %}
 <h1>Expense List</h1>
+<p><a href="{% url 'transaction-add' %}">Add</a> | <a href="{% url 'upload-add' %}">Upload</a></p>
 <table class="table table-striped">
     <tr>
         <th>Period</th>

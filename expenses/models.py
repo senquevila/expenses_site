@@ -280,7 +280,7 @@ class Loan(models.Model):
 
         total_months = (end_date - start_date).days
         months_elapsed = (timezone.now().date() - start_date).days
-        return round(months_elapsed * 100.0 / total_months)
+        return min(round(months_elapsed * 100.0 / total_months), 100)
 
 
 class Subscription(models.Model):

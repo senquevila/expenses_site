@@ -42,7 +42,7 @@ class UploadListView(ListView):
 
 
 class UploadView(FormView):
-    template_name = "expenses/upload.html"
+    template_name = "expenses/upload_add.html"
     form_class = UploadForm
 
     def form_invalid(self, form):

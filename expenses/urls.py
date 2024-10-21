@@ -45,9 +45,14 @@ urlpatterns = [
         name="transaction-delete",
     ),
     path(
-        "upload/",
+        "uploads/",
+        views.UploadListView.as_view(),
+        name="upload-list",
+    ),
+    path(
+        "upload/add/",
         views.UploadView.as_view(),
-        name="upload",
+        name="upload-add",
     ),
     path(
         "upload/transform/<int:pk>/",
@@ -90,11 +95,6 @@ urlpatterns = [
         name="period-open",
     ),
     path(
-        "uploads/",
-        views.UploadListView.as_view(),
-        name="upload-list",
-    ),
-    path(
         "remove-invalid/",
         views.TransactionRemoveInvalidView.as_view(),
         name="remove-invalid",
@@ -103,6 +103,16 @@ urlpatterns = [
         "create-dollars/",
         views.CreateDollarConversionView.as_view(),
         name="create-dollars-convertion",
+    ),
+    path("loans/", views.LoanListView.as_view(), name="loan-list"),
+    path("loans/add/", views.LoanCreateView.as_view(), name="loan-add"),
+    path(
+        "subscriptions/", views.SubscriptionListView.as_view(), name="subscription-list"
+    ),
+    path(
+        "subscriptions/add/",
+        views.SubscriptionCreateView.as_view(),
+        name="subscription-add",
     ),
 ]
 
