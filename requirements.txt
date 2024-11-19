@@ -4,12 +4,14 @@ certifi==2023.5.7
 charset-normalizer==3.1.0
 Django==4.2.14
 django-cors-headers==4.4.0
-django-debug-toolbar==4.4.6  # for development
+django-debug-toolbar==4.4.6  # development
 djangorestframework==3.14.0
 idna==3.4
+python-dateutil==2.9.0.post0
 python-dotenv==1.0.0
 pytz==2023.3
 requests==2.31.0
+six==1.16.0
 soupsieve==2.4.1
 sqlparse==0.4.4
 urllib3==2.0.2
