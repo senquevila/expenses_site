@@ -44,12 +44,10 @@ def change_account_from_assoc() -> dict:
     assocs = AccountAsociation.objects.only("token", "account")
     for assoc in assocs:
         expenses = Transaction.objects.filter(
-            description__icontains=assoc.token, account__name=settings.DEFAULT_ACCOUNT
-        )
-        for expense in expenses:
-            if assoc.account.name == expense.account.name:
-                continue
+            description__icontains=assoc.token, period__active=True
+        ).exclude(account=assoc.account)
 
+        for expense in expenses:
             data.append(
                 {
                     "id": expense.id,
