@@ -39,26 +39,33 @@ def get_total_local_amount(filtered) -> Decimal:
     return queryset["total"] or 0
 
 
-def change_account_from_assoc() -> dict:
+def change_account_from_assoc() -> list[dict]:
+    """
+    Update account associations in transactions based on matching tokens
+    and return a summary of changes.
+    """
     data = []
-    assocs = AccountAsociation.objects.only("token", "account")
-    for assoc in assocs:
-        expenses = Transaction.objects.filter(
-            description__icontains=assoc.token, period__active=True
-        ).exclude(account=assoc.account)
 
-        for expense in expenses:
+    # Retrieve only the necessary fields from AccountAsociation
+    associations = AccountAsociation.objects.only("token", "account")
+
+    for association in associations:
+        transactions = Transaction.objects.filter(
+            description__icontains=association.token, period__active=True
+        ).exclude(account=association.account)
+
+        # Prepare summary data and update transactions
+        for transaction in transactions:
             data.append(
                 {
-                    "id": expense.id,
-                    "expense": expense.description,
-                    "account_found": assoc.account.name,
-                    "account_original": expense.account.name,
-                    "date": expense.payment_date,
+                    "id": transaction.id,
+                    "account_found": association.account.name,
+                    "account_original": transaction.account.name,
                 }
             )
-            expense.account = assoc.account
-            expense.save()
+            # Update the transaction's account
+            transaction.account = association.account
+            transaction.save(update_fields=["account"])
 
     return data
 
