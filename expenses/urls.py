@@ -55,9 +55,14 @@ urlpatterns = [
         name="upload-add",
     ),
     path(
-        "upload/transform/<int:pk>/",
-        views.UploadTransformView.as_view(),
-        name="upload-transform",
+        "upload/transform_credit_card/<int:pk>/",
+        views.UploadTransformCreditCardView.as_view(),
+        name="upload-transform-credit-card",
+    ),
+    path(
+        "upload/transform_account/<int:pk>/",
+        views.UploadTransformAccountView.as_view(),
+        name="upload-transform-account",
     ),
     path(
         "upload/result/<int:pk>/",

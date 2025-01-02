@@ -16,6 +16,7 @@ from expenses.forms import (
     TransactionInspectionForm,
     UploadForm,
     UploadTransformForm,
+    UploadTransformAccountForm,
 )
 from expenses.models import (
     Account,
@@ -50,9 +51,14 @@ class UploadView(FormView):
 
     def form_valid(self, form):
         file = form.cleaned_data["file"]
+        file_type = form.cleaned_data["file_type"]
 
         if not file:
             form.add_error(None, "File empty")
+            return self.form_invalid(form)
+
+        if not file_type:
+            form.add_error(None, "File type not selected")
             return self.form_invalid(form)
 
         upload = form.save()
@@ -84,12 +90,54 @@ class UploadView(FormView):
         upload.data = data
         upload.save()
 
-        return HttpResponseRedirect(reverse("upload-transform", args=(upload.id,)))
+        if file_type == "credit_card":
+            page = "upload-transform-credit-card"
+        elif file_type == "account":
+            page = "upload-transform-account"
+        else:
+            page = "upload-add"
+
+        return HttpResponseRedirect(reverse(page, args=(upload.id,)))
 
 
-class UploadTransformView(FormView):
-    template_name = "expenses/upload_transform.html"
+class UploadTransformCreditCardView(FormView):
+    template_name = "expenses/upload_transform_credit_card.html"
     form_class = UploadTransformForm
+
+    def get_context_data(self, **kwargs: Any) -> dict[str, Any]:
+        context = super().get_context_data(**kwargs)
+        upload = Upload.objects.get(pk=self.kwargs.get("pk"))
+        context["file"] = upload.file
+        context["rows"] = upload.data
+        context["dimension"] = upload.dimension
+        return context
+
+    def post(self, request: HttpRequest, *args: str, **kwargs: Any) -> HttpResponse:
+        upload = Upload.objects.get(pk=self.kwargs.get("pk"))
+        form = self.get_form()
+
+        if form.is_valid():
+            upload.parameters["rows"]["start"] = form.cleaned_data["start_row"]
+            upload.parameters["rows"]["end"] = form.cleaned_data["end_row"]
+            upload.parameters["cols"] = [
+                {"payment_date": form.cleaned_data["payment_date"]},
+                {"description": form.cleaned_data["description"]},
+                {"amount": form.cleaned_data["amount"]},
+                {"amount_currency": form.cleaned_data["amount_currency"]},
+            ]
+            upload.save()
+
+            # process the csv content
+            process_bank_csv(upload)
+
+            return HttpResponseRedirect(reverse("upload-inspect", args=(upload.id,)))
+
+        return self.form_invalid(form)  # Handle invalid form submission
+
+
+class UploadTransformAccountView(FormView):
+    template_name = "expenses/upload_transform_account.html"
+    form_class = UploadTransformAccountForm
 
     def get_context_data(self, **kwargs: Any) -> dict[str, Any]:
         context = super().get_context_data(**kwargs)

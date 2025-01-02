@@ -1,7 +1,15 @@
 from django import forms
 from django.core.validators import FileExtensionValidator
 
-from expenses.models import Account, Loan, Period, Subscription, Transaction, Upload
+from expenses.models import (
+    Account,
+    Currency,
+    Loan,
+    Period,
+    Subscription,
+    Transaction,
+    Upload,
+)
 
 
 class AccountTransferForm(forms.Form):
@@ -66,10 +74,17 @@ class UploadForm(forms.ModelForm):
         help_text="Seleccione un archivo CSV para cargar",
         validators=[FileExtensionValidator(allowed_extensions=["csv"])],
     )
+    file_type = forms.ChoiceField(
+        label="Tipo de archivo",
+        choices=(
+            ("credit_card", "Tarjeta de crédito"),
+            ("account", "Cuenta bancaria"),
+        ),
+    )
 
     class Meta:
         model = Upload
-        fields = ("file",)
+        fields = ("file", "file_type")
 
 
 class UploadTransformForm(forms.ModelForm):
@@ -97,6 +112,50 @@ class UploadTransformForm(forms.ModelForm):
             "description",
             "amount",
             "amount_currency",
+        ]
+
+        for field in _fields[:2]:
+            self.fields[field].widget.attrs[
+                "class"
+            ] = "form-control repaint-row-trigger"
+
+        for field in _fields[2:]:
+            self.fields[field].widget.attrs[
+                "class"
+            ] = "form-control repaint-col-trigger"
+
+    class Meta:
+        model = Upload
+        fields = ("parameters",)
+
+
+class UploadTransformAccountForm(forms.ModelForm):
+    start_row = forms.IntegerField(
+        label="Start row",
+        help_text="File number where the data starts",
+        initial=0,
+    )
+    end_row = forms.IntegerField(
+        label="End row",
+        help_text="File number where the data ends",
+        initial=0,
+    )
+    payment_date = forms.IntegerField(label="Date", initial=1)
+    description = forms.IntegerField(label="Description", initial=2)
+    amount_debit = forms.IntegerField(label="Debit", initial=3)
+    amount_credit = forms.IntegerField(label="Credit", initial=4)
+    currency = forms.ModelChoiceField(Currency.objects.all())
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        _fields = [
+            "start_row",
+            "end_row",
+            "payment_date",
+            "description",
+            "currency",
+            "amount_debit",
+            "amount_credit",
         ]
 
         for field in _fields[:2]:

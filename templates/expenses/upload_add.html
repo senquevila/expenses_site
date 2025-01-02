@@ -23,6 +23,12 @@ File expense upload
                 {{ form.file }}
             </div>
         </div>
+        <div class="mb-3 row">
+            <label for="id_type" class="col-sm-4 col-form-label">Type:</label>
+            <div class="col-sm-8">
+                {{ form.file_type }}
+            </div>
+        </div>
         <button type="submit" class="btn btn-primary mb-3">Enviar</button>
     </form>
     {% if field.errors %}

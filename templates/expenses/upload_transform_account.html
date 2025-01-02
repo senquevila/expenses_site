@@ -1,0 +1,334 @@
+{% extends 'base.html' %}
+{% load humanize static %}
+
+{% block title %}Upload Transform (Account){% endblock %}
+{% block stylesheets %}
+<link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.11.3/css/jquery.dataTables.min.css">
+<link rel="stylesheet" href="{% static 'css/style.css' %}">
+<style>
+.color-bullet {
+    width: 10px;  /* Width of the square */
+    height: 10px; /* Height of the square */
+    background-color: #666; /* Default color, change as needed */
+    margin-left: 5px; /* Adds space between the label and the square */
+    vertical-align: middle; /* Aligns middle to the text in the label */
+}
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="row container">
+    <h1>Upload Transform (Account)</h1>
+    <p>File upload: <code>{{ file }}</code></p>
+    <hr>
+    <div class="col-md-3">
+        <p><span id="message" style="display: none"></span></p>
+        <form id="expenseForm" method="post">
+            {% csrf_token %}
+            <div class="container">
+                <fieldset>
+                    <legend>CSV row dimension</legend>
+                    <div class="row form-group">
+                        <div class="col-md-6">
+                            <label for="{{ form.start_row.id_for_label }}" class="form-label">
+                                {{ form.start_row.label }}
+                            </label>
+                            {{ form.start_row }}
+                            <div class="form-text">{{ form.start_row.help_text }}</div>
+                            {% if form.start_row.errors %}
+                            <div class="alert alert-danger">{{ form.start_row.errors }}</div>
+                            {% endif %}
+                        </div>
+                        <div class="col-md-6">
+                            <label for="{{ form.end_row.id_for_label }}" class="form-label">
+                                {{ form.end_row.label }}
+                            </label>
+                            {{ form.end_row }}
+                            <div class="form-text">{{ form.end_row.help_text }}</div>
+                            {% if form.end_row.errors %}
+                            <div class="alert alert-danger">{{ form.end_row.errors }}</div>
+                            {% endif %}
+                        </div>
+                    </div>
+                </fieldset>
+                <!-- Column mapping -->
+                <fieldset class="mt-3">
+                    <legend>Column mapping</legend>
+                    <div class="row form-group">
+                        <div class="col-md-12">
+                            <label for="{{ form.currency.id_for_label }}" class="form-label d-inline-block">
+                                {{ form.currency.label }}
+                            </label>
+                            {{ form.currency }}
+                            {% if form.currency.errors %}
+                            <div class="alert alert-danger">{{ form.currency.errors }}</div>
+                            {% endif %}
+                        </div>
+                    </div>
+                    <div class="row form-group">
+                        <div class="col-md-6">
+                            <label for="{{ form.payment_date.id_for_label }}" class="form-label d-inline-block">
+                                {{ form.payment_date.label }}
+                            </label>
+                            <div id="color-id_payment_date" class="color-bullet d-inline-block"></div>
+                            {{ form.payment_date }}
+                            {% if form.payment_date.errors %}
+                            <div class="alert alert-danger">
+                                {{ form.payment_date.errors }}
+                            </div>
+                            {% endif %}
+                        </div>
+                        <div class="col-md-6">
+                            <label for="{{ form.description.id_for_label }}" class="form-label d-inline-block">
+                                {{ form.description.label }}
+                            </label>
+                            <div id="color-id_description" class="color-bullet d-inline-block"></div>
+                            {{ form.description }}
+                            {% if form.description.errors %}
+                            <div class="alert alert-danger">{{ form.description.errors }}</div>
+                            {% endif %}
+                        </div>
+                    </div>
+                    <div class="row form-group mt-2">
+                        <div class="col-md-6">
+                            <label for="{{ form.amount_debit.id_for_label }}" class="form-label d-inline-block">
+                                {{ form.amount_debit.label }}
+                            </label>
+                            <div id="color-id_amount" class="color-bullet d-inline-block"></div>
+                            {{ form.amount_debit }} {% if form.amount_debit.errors %}
+                            <div class="alert alert-danger">{{ form.amount_debit.errors }}</div>
+                            {% endif %}
+                        </div>
+                        <div class="col-md-6">
+                            <label for="{{ form.amount_credit.id_for_label }}" class="form-label d-inline-block">
+                                {{ form.amount_credit.label }}
+                            </label>
+                            <div id="color-id_amount_currency" class="color-bullet d-inline-block"></div>
+                            {{ form.amount_credit }}
+                            {% if form.amount_credit.errors %}
+                            <div class="alert alert-danger">{{ form.amount_credit.errors }}</div>
+                            {% endif %}
+                        </div>
+                    </div>
+                </fieldset>
+                <!-- End of column mapping -->
+                <hr>
+                <div class="col-md-6 mt-3">
+                    <button type="submit" class="btn btn-primary">Submit</button>
+                </div>
+            </div>
+        </form>
+    </div>
+    <div class="col-md-9">
+        <!-- datagrid -->
+        <table id="example" class="display mt-5" style="width:100%">
+            <thead>
+                <tr>
+                    <!-- Columns will be inserted dynamically -->
+                </tr>
+            </thead>
+            <tbody>
+                <!-- Data will be populated by DataTables -->
+            </tbody>
+        </table>
+        <!-- end of datagrid -->
+    </div>
+</div>
+{% endblock %}
+
+{% block javascripts %}
+
+<script src="https://code.jquery.com/jquery-3.5.1.js"></script>
+<script src="https://cdn.datatables.net/1.11.3/js/jquery.dataTables.min.js"></script>
+<script>
+    var data = {{ rows|safe }};
+    var data_dimension = {{ dimension|safe }};
+
+    // Retrieve id_end_row from local storage or default to data.length - 1
+    var storedEndRow = localStorage.getItem('expenseFormData');
+    storedEndRow = storedEndRow ? JSON.parse(storedEndRow).end_row : null;
+    const num_row = storedEndRow !== null ? parseInt(storedEndRow, 10) : data.length - 1;
+
+    const num_col = data[0].length - 1;
+
+    const columns = [
+        {
+            id: 'id_payment_date',
+            color: '#7FFFD4' // Aquamarine
+        },
+        {
+            id: 'id_description',
+            color: '#E9967A' // Dark Salmon
+        },
+        {
+            id: 'id_amount',
+            color: '#F0E68C' // Khaki
+        },
+        {
+            id: 'id_amount_currency',
+            color: '#7B68EE' // Medium Slate Blue
+        }
+    ];
+
+    function set_input_min_max() {
+        const min_col = -1;
+        const max_col = num_col - 1;
+        const min_row = 0;
+        const max_row = num_row - 2;
+
+        columns.forEach(function(column) {
+            $('#' + column.id).attr({
+                'min': -1,
+                'max': num_col
+            });
+        });
+
+        $('#id_start_row').attr({
+            'min': min_row,
+            'max': max_row
+        });
+
+        $('#id_end_row').attr({
+            'min': min_row,
+            'max': max_row
+        });
+    }
+
+    function getAllKeys(data) {
+        let allKeys = new Set();
+        data.forEach(item => {
+            Object.keys(item).forEach(key => allKeys.add(key));
+        });
+        return Array.from(allKeys);
+    }
+
+    function normalizeData(data, keys) {
+        return data.map(item => {
+            let normalized = {};
+            keys.forEach(key => {
+                normalized[key] = item.hasOwnProperty(key) ? item[key] : "";  // Or `null` or some other default
+            });
+            return normalized;
+        });
+    }
+
+    function change_color_bullet(){
+        columns.forEach(column => {
+            $('#color-' + column.id).css('background-color', column.color);
+        });
+    }
+
+    function get_index(id) {
+        return parseInt($('#' + id).val());
+    }
+
+    function repaintColumnTable() {
+        $('#example tbody tr').each(function() {
+            // Reset all cells to white initially to clear previous colors
+            $(this).find('td').css('background-color', 'white');
+
+            // Apply specific colors from the columns configuration
+            $(this).find('td').each(function(cellIndex) {
+                columns.forEach(column => {
+                    if (cellIndex === get_index(column.id)) {
+                        $(this).css('background-color', column.color);
+                    }
+                });
+            });
+        });
+
+        repaintRowTable();
+    }
+
+    function repaintRowTable() {
+        const startRow = parseInt($('#id_start_row').val(), 10);
+        const endRow = parseInt($('#id_end_row').val(), 10);
+        const rows = $('#example tbody tr');
+
+        rows.each(function() {
+            const cells = $(this).find('td');
+            // Get the value of the first column of the current row, assuming it's an integer
+            const rowValue = parseInt(cells.eq(0).text(), 10);
+
+            // Check if the value of the first column is outside the specified range
+            if (rowValue < startRow || rowValue > endRow) {
+                cells.each(function() {
+                    const bgColor = $(this).css('background-color');
+                    $(this).css('color', bgColor); // Set the text color to match the background color
+                });
+            } else {
+                cells.each(function() {
+                    $(this).css('color', ''); // Reset text color to default
+                });
+            }
+        });
+    }
+
+    function saveFormData() {
+        const formData = {
+            start_row: $('#id_start_row').val(),
+            end_row: $('#id_end_row').val(),
+            payment_date: $('#id_payment_date').val(),
+            description: $('#id_description').val(),
+            amount: $('#id_amount').val(),
+            amount_currency: $('#id_amount_currency').val()
+        };
+        localStorage.setItem('expenseFormData', JSON.stringify(formData));
+    }
+
+    function loadFormData() {
+        const formData = JSON.parse(localStorage.getItem('expenseFormData'));
+        if (formData) {
+            $('#id_start_row').val(formData.start_row);
+            $('#id_end_row').val(formData.end_row);
+            $('#id_payment_date').val(formData.payment_date);
+            $('#id_description').val(formData.description);
+            $('#id_amount').val(formData.amount);
+            $('#id_amount_currency').val(formData.amount_currency);
+        }
+    }
+
+    $(document).ready(function() {
+        loadFormData();
+
+        if (data.length > 0) {
+            const allKeys = getAllKeys(data);
+            const normalizedData = normalizeData(data, allKeys);
+
+            var columns = allKeys.map(function(key) {
+                return { title: key.charAt(0).toUpperCase() + key.slice(1), data: key, defaultContent: "" };
+            });
+
+            var TheDataTable = $('#example').DataTable({
+                data: normalizedData,
+                columns: columns
+            });
+
+            TheDataTable.on('draw', function() {
+                repaintColumnTable();
+            });
+
+        }
+
+        $("#id_end_row").val(num_row);
+
+        $('.repaint-col-trigger').on('change', function() {
+            repaintColumnTable();
+        });
+
+        $('.repaint-row-trigger').on('change', function() {
+            repaintRowTable();
+        });
+
+        $('#expenseForm').on('submit', function(e) {
+            e.preventDefault();
+            saveFormData();
+            this.submit();
+        });
+
+        change_color_bullet();
+        set_input_min_max();
+        repaintColumnTable();
+    });
+</script>
+{% endblock %}
