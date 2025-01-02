@@ -1,4 +1,7 @@
 # Changelog
+## 2025-01-01
+### Change
+- Use local storage for number of rows in the upload process.
 ## 2024-10-20
 ### New
 - Add search by upload file in transaction admin.
