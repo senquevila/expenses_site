@@ -133,8 +133,13 @@
     var data = {{ rows|safe }};
     var data_dimension = {{ dimension|safe }};
 
-    const num_row = data_dimension["rows"];
-    const num_col = data_dimension["cols"];
+    // Retrieve id_end_row from local storage or default to data.length - 1
+    var storedEndRow = localStorage.getItem('expenseFormData');
+    storedEndRow = storedEndRow ? JSON.parse(storedEndRow).end_row : null;
+    const num_row = storedEndRow !== null ? parseInt(storedEndRow, 10) : data.length - 1;
+
+    const num_col = data[0].length - 1;
+
     const columns = [
         {
             id: 'id_payment_date',
