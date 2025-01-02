@@ -2,12 +2,16 @@
 {% load humanize %}
 
 {% block title %}
-Expense Upload Inspection
+Transaction Upload Inspection
 {% endblock %}
 
 {% block content %}
 <div class="col-md-8">
-    <h1>Expense Upload Inspection</h1>
+    <h1>Transaction Upload Inspection</h1>
+    <p>
+        <a href="{% url 'upload-add' %}">Add</a> | <a href="{% url 'upload-list' %}">List</a>
+    </p>
+    <hr>
     <p>File upload: <code>{{ upload.file }}</code></p>
     <table class="table table-striped">
         <tr>
