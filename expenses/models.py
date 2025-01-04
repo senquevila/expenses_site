@@ -282,6 +282,14 @@ class Loan(models.Model):
         months_elapsed = (timezone.now().date() - start_date).days
         return min(round(months_elapsed * 100.0 / total_months), 100)
 
+    @property
+    def get_local_monthly_payment(self):
+        currency_convert = CurrencyConvert.objects.filter(
+            currency=self.currency,
+        ).order_by("-date").only("exchange").first()
+        exchange = currency_convert.exchange if currency_convert else Decimal(1)
+        return self.monthly_payment * exchange
+
 
 class Subscription(models.Model):
     MOVIES = "MOVIES"
@@ -310,3 +318,11 @@ class Subscription(models.Model):
 
     def __str__(self) -> str:
         return f"{self.name} - {self.subscription_type}"
+    
+    @property
+    def get_local_monthly_payment(self):
+        currency_convert = CurrencyConvert.objects.filter(
+            currency=self.currency,
+        ).order_by("-date").only("exchange").first()
+        exchange = currency_convert.exchange if currency_convert else Decimal(1)
+        return self.monthly_payment * exchange

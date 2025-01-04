@@ -1,3 +1,6 @@
+from decimal import Decimal
+
+from django.conf import settings
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from django.db.models import Q, Sum
 from django.db.models.query import QuerySet
@@ -64,7 +67,7 @@ class TransactionListView(ListView):
     model = Transaction
     template_name = "expenses/transaction_list.html"
     context_object_name = "expenses"
-    paginate_by = 12
+    paginate_by = int(settings.DEFAULT_PAGINATION)
 
     def get_queryset(self) -> QuerySet:
         queryset = Transaction.objects.all().order_by("-payment_date")
@@ -130,16 +133,32 @@ class LoanListView(ListView):
     model = Loan
     template_name = "loans/loan_list.html"
     context_object_name = "loans"
-    ordering = ["-is_active", "-monthly_payment"]
+    ordering = ["months", "start_date",]
+    paginate_by = int(settings.DEFAULT_PAGINATION)
 
     def get_queryset(self):
         return super().get_queryset().filter(is_active=True)
 
     def get_context_data(self, **kwargs):
+        paginator = Paginator(self.get_queryset(), self.paginate_by)
+        page = self.request.GET.get("page")
+
+        total_loans = 0
+        loans = Loan.objects.filter(is_active=True)
+        for loan in loans:
+            total_loans += loan.get_local_monthly_payment
+
         ctx = super().get_context_data(**kwargs)
-        ctx["total"] = Loan.objects.filter(is_active=True).aggregate(
-            Sum("monthly_payment")
-        )["monthly_payment__sum"]
+        ctx["total"] = total_loans
+
+        try:
+            loans = paginator.page(page)
+        except PageNotAnInteger:
+            loans = paginator.page(1)
+        except EmptyPage:
+            loans = paginator.page(paginator.num_pages)
+
+        ctx["loans"] = loans
         return ctx
 
 
@@ -153,10 +172,13 @@ class SubscriptionListView(ListView):
         return super().get_queryset().filter(is_active=True)
 
     def get_context_data(self, **kwargs):
+        total_subscription = Decimal(0)
+        subscriptions = Subscription.objects.filter(is_active=True)
+        for subscription in subscriptions:
+            total_subscription += subscription.get_local_monthly_payment
+
         ctx = super().get_context_data(**kwargs)
-        ctx["total"] = Subscription.objects.filter(is_active=True).aggregate(
-            Sum("monthly_payment")
-        )["monthly_payment__sum"]
+        ctx["total"] = total_subscription
         return ctx
 
 

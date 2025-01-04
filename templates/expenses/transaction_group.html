@@ -11,8 +11,8 @@ Transactions
     <div class="card" style="width: 18rem;">
         <div class="card-body">
             <h2 class="card-title">{{ period }}</h2>
-            <h4 class="card-text">{{ total|floatformat:"2"|intcomma }}</h4>
-            <p class="card-text">{{ last_trx }}</p>
+            <h4 class="card-text">Total: {{ total|floatformat:"2"|intcomma }}</h4>
+            <p class="card-text">Last date: {{ last_trx }}</p>
         </div>
     </div>
     <table class="table table-striped" style="margin-top: 10px;">
