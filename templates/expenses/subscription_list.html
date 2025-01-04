@@ -1,4 +1,10 @@
-{% extends 'base.html' %} {% load humanize %} {% block content %}
+{% extends 'base.html' %} {% load humanize %}
+
+{% block title %}
+Subscriptions
+{%endblock %}
+
+{% block content %}
 <div class="col-md-8">
   <h1>Subscriptions</h1>
   <p><a href="{% url 'subscription-add' %}">Add</a></p>

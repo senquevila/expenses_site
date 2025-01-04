@@ -1,8 +1,10 @@
 {% extends 'base.html' %}
 {% load humanize query_params %}
+
 {% block title %}
-Transaction List
+Transactions
 {%endblock %}
+
 {% block content %}
 <h1>Transaction List</h1>
 <p><a href="{% url 'transaction-add' %}">Add</a> | <a href="{% url 'upload-add' %}">Upload</a></p>
