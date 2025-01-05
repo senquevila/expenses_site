@@ -27,41 +27,42 @@
             Expenses
           </a>
           <div class="dropdown-menu" aria-labelledby="navbarDropdown">
-            <a class="dropdown-item" href="{% url 'transaction-list' %}">Transactions</a>
-            <div class="dropdown-divider"></div>
             <a class="dropdown-item" href="{% url 'account-list' %}">Accounts</a>
             <a class="dropdown-item" href="{% url 'account-transfer' %}">Accounts transfer</a>
             <div class="dropdown-divider"></div>
+            <a class="dropdown-item" href="{% url 'period-list' %}">Periods</a>
+            <div class="dropdown-divider"></div>
             <a class="dropdown-item" href="{% url 'currency-convert-list' %}">Currency Conversions</a>
             <div class="dropdown-divider"></div>
+            <a class="dropdown-item" href="{% url 'transaction-list' %}">Transactions</a>
             <a class="dropdown-item" href="{% url 'upload-list' %}">Uploads</a>
-            <a class="dropdown-item" href="{% url 'period-list' %}">Periods</a>
+            <div class="dropdown-divider"></div>
             <a class="dropdown-item" href="{% url 'subscription-list' %}">Subscriptions</a>
             <a class="dropdown-item" href="{% url 'loan-list' %}">Loans</a>
-    </div>
-    </li>
-    <li class="nav-item dropdown">
-      <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown"
-        aria-haspopup="true" aria-expanded="false">
-        Budget
-      </a>
-      <div class="dropdown-menu" aria-labelledby="navbarDropdown">
-        <a class="dropdown-item" href="{% url 'budget-add' %}">Create budget</a>
-        <a class="dropdown-item" href="{% url 'budget-list' %}">List budgets</a>
-        <div class="dropdown-divider"></div>
-        <a class="dropdown-item" href="{% url 'assignment-add' %}">Create assignment</a>
-      </div>
-    </li>
-    <li class="nav-item dropdown">
-      <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown"
-        aria-haspopup="true" aria-expanded="false">
-        Commands
-      </a>
-      <div class="dropdown-menu" aria-labelledby="navbarDropdown">
-        <a class="dropdown-item" href="{% url 'remove-invalid' %}">Remove invalid accounts</a>
-        <a class="dropdown-item" href="{% url 'create-dollars-convertion' %}">Update dollar conversion</a>
-    </li>
-    </ul>
+          </div>
+        </li>
+        <li class="nav-item dropdown">
+          <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown"
+            aria-haspopup="true" aria-expanded="false">
+            Budget
+          </a>
+          <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+            <a class="dropdown-item" href="{% url 'budget-add' %}">Create budget</a>
+            <a class="dropdown-item" href="{% url 'budget-list' %}">List budgets</a>
+            <div class="dropdown-divider"></div>
+            <a class="dropdown-item" href="{% url 'assignment-add' %}">Create assignment</a>
+          </div>
+        </li>
+        <li class="nav-item dropdown">
+          <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown"
+            aria-haspopup="true" aria-expanded="false">
+            Commands
+          </a>
+          <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+            <a class="dropdown-item" href="{% url 'remove-invalid' %}">Remove invalid accounts</a>
+            <a class="dropdown-item" href="{% url 'create-dollars-convertion' %}">Update dollar conversion</a>
+        </li>
+      </ul>
     </div>
   </nav>
 
