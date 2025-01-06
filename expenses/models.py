@@ -290,6 +290,24 @@ class Loan(models.Model):
         exchange = currency_convert.exchange if currency_convert else Decimal(1)
         return self.monthly_payment * exchange
 
+    @staticmethod
+    def get_future_payments(date_after):
+        if date_after is None:
+            return 0
+
+        active_loans = Loan.objects.filter(is_active=True)
+        total_payment = Decimal(0)
+        for loan in active_loans:
+            if loan.end_date < date_after:
+                continue
+
+            currency_convert = CurrencyConvert.objects.filter(
+                currency=loan.currency,
+            ).order_by("-date").only("exchange").first()
+            exchange = currency_convert.exchange if currency_convert else Decimal(1)
+            total_payment += loan.monthly_payment * exchange
+        return total_payment
+
 
 class Subscription(models.Model):
     MOVIES = "MOVIES"
