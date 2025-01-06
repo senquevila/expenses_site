@@ -97,7 +97,7 @@ Upload Transform
                             <label for="{{ form.amount_debit.id_for_label }}" class="form-label d-inline-block">
                                 {{ form.amount_debit.label }}
                             </label>
-                            <div id="color-id_amount" class="color-bullet d-inline-block"></div>
+                            <div id="color-id_amount_debit" class="color-bullet d-inline-block"></div>
                             {{ form.amount_debit }} {% if form.amount_debit.errors %}
                             <div class="alert alert-danger">{{ form.amount_debit.errors }}</div>
                             {% endif %}
@@ -106,7 +106,7 @@ Upload Transform
                             <label for="{{ form.amount_credit.id_for_label }}" class="form-label d-inline-block">
                                 {{ form.amount_credit.label }}
                             </label>
-                            <div id="color-id_amount_currency" class="color-bullet d-inline-block"></div>
+                            <div id="color-id_amount_credit" class="color-bullet d-inline-block"></div>
                             {{ form.amount_credit }}
                             {% if form.amount_credit.errors %}
                             <div class="alert alert-danger">{{ form.amount_credit.errors }}</div>
@@ -164,11 +164,11 @@ Upload Transform
             color: '#E9967A' // Dark Salmon
         },
         {
-            id: 'id_amount',
+            id: 'id_amount_debit',
             color: '#F0E68C' // Khaki
         },
         {
-            id: 'id_amount_currency',
+            id: 'id_amount_credit',
             color: '#7B68EE' // Medium Slate Blue
         }
     ];
@@ -177,7 +177,7 @@ Upload Transform
         const min_col = -1;
         const max_col = num_col - 1;
         const min_row = 0;
-        const max_row = num_row - 2;
+        const max_row = num_row;
 
         columns.forEach(function(column) {
             $('#' + column.id).attr({
@@ -273,8 +273,9 @@ Upload Transform
             end_row: $('#id_end_row').val(),
             payment_date: $('#id_payment_date').val(),
             description: $('#id_description').val(),
-            amount: $('#id_amount').val(),
-            amount_currency: $('#id_amount_currency').val()
+            amount_debit: $('#id_amount_debit').val(),
+            amount_credit: $('#id_amount_credit').val(),
+            currency: $('#id_currency').val(),
         };
         localStorage.setItem('expenseFormData', JSON.stringify(formData));
     }
@@ -286,8 +287,8 @@ Upload Transform
             $('#id_end_row').val(formData.end_row);
             $('#id_payment_date').val(formData.payment_date);
             $('#id_description').val(formData.description);
-            $('#id_amount').val(formData.amount);
-            $('#id_amount_currency').val(formData.amount_currency);
+            $('#id_amount_debit').val(formData.amount_debit);
+            $('#id_amount_credit').val(formData.amount_credit);
         }
     }
 

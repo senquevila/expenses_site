@@ -3,22 +3,24 @@ import json
 import re
 
 from django.conf import settings
-from django.utils import timezone
 
 from expenses.models import Account, Transaction, Period, Currency, Upload
 from expenses.serializers import TransactionSerializer
-
 from expenses.utils.tools import change_account_from_assoc, str_to_date
 
 
 DATE_FIELD = 0
 DESCRIPTION_FIELD = 1
+# Credit card fields
 AMOUNT_FIELD = 2
 AMOUNT_CURRENCY_FIELD = 3
 ACCOUNT_FIELD = 3
+# Account fields
+AMOUNT_DEBIT_FIELD = 2
+AMOUNT_CREDIT_FIELD = 3
 
 
-def process_bank_csv(upload: Upload):
+def process_credit_card_csv(upload: Upload):
     context = {"result": {}}
     created = 0
 
@@ -27,12 +29,12 @@ def process_bank_csv(upload: Upload):
 
     # get the upload metadata
     row_range = upload.parameters["rows"]
-    indexes = get_field_indexes(upload.parameters["cols"])
+    indexes = get_field_indexes_credit_card(upload.parameters["cols"])
 
     for row in upload.data[row_range["start"] : row_range["end"] + 1]:
         row = [str(item).strip() for item in row]
 
-        if skip_row(row, indexes):
+        if skip_row_credit_card(row, indexes):
             continue
 
         message = {
@@ -71,8 +73,116 @@ def process_bank_csv(upload: Upload):
             continue
 
         # get the amount and local currency
-        amount, currency = get_transaction_amount_and_currency(
+        amount, currency = get_transaction_money_credit_card(
             row, indexes, default_currency
+        )
+
+        if not amount:
+            message["description"] = "Amount zero"
+            set_message(**message)
+            continue
+
+        description = row[indexes["description"]]
+
+        # TODO: temporal
+        if Transaction.objects.filter(
+            period=period,
+            currency=currency,
+            description=description,
+            amount=amount,
+            payment_date=payment_date,
+        ).exists():
+            message["description"] = "Transaction already exists"
+            set_message(**message)
+            continue
+
+        serializer = TransactionSerializer(
+            data={
+                "payment_date": payment_date,
+                "description": description,
+                "period": period.pk,
+                "account": default_account.pk,
+                "currency": currency.pk,
+                "amount": amount,
+                "upload": upload.pk,
+                "identifier": row_hash,
+            }
+        )
+        if serializer.is_valid():
+            serializer.save()
+            created += 1
+            message["description"] = "CREATED"
+        else:
+            message["description"] = str(serializer.errors)
+        set_message(**message)
+
+    context["summary"] = {
+        "created": created,
+        "total": upload.parameters["rows"]["end"] - upload.parameters["rows"]["start"],
+    }
+
+    # change the account from the association
+    change_account_from_assoc()
+
+    upload.result = json.dumps(context)
+    upload.save()
+
+
+def process_account_csv(upload: Upload, currency: Currency):
+    context = {"result": {}}
+    created = 0
+
+    # get default values
+    default_currency, default_account = get_defaults()
+
+    # get the upload metadata
+    row_range = upload.parameters["rows"]
+    indexes = get_field_indexes_account(upload.parameters["cols"])
+
+    for row in upload.data[row_range["start"] : row_range["end"] + 1]:
+        row = [str(item).strip() for item in row]
+
+        if skip_row_account(row, indexes):
+            continue
+
+        message = {
+            "data": context,
+            "line_number": row[0],
+            "source": row,
+        }
+
+        # create identifier
+        row_hash = hashlib.sha256("".join(row[1:]).encode()).hexdigest()
+
+        # check if the transaction already exists
+        if Transaction.objects.filter(identifier=row_hash).exists():
+            message["description"] = "Transaction already exists"
+            set_message(**message)
+            continue
+
+        try:
+            payment_date, period = get_payment_date_and_period(row, indexes)
+        except ValueError as e:
+            set_message(
+                description=str(e),
+                line_number=row[0],
+                source=row,
+                data=context,
+            )
+            continue
+
+        if not period or period.closed:
+            set_message(
+                description="Period not found or closed",
+                line_number=row[0],
+                source=row,
+                data=context,
+            )
+            continue
+
+        # get the amount and local currency
+        amount, currency = get_transaction_money_account(
+            row, indexes, currency, default_currency
         )
 
         if not amount:
@@ -136,7 +246,7 @@ def get_defaults():
     return default_currency, default_account
 
 
-def get_field_indexes(cols):
+def get_field_indexes_credit_card(cols):
     return {
         "payment_date": cols[DATE_FIELD]["payment_date"],
         "description": cols[DESCRIPTION_FIELD]["description"],
@@ -145,12 +255,32 @@ def get_field_indexes(cols):
     }
 
 
-def skip_row(row: list, indexes: list) -> bool:
+def get_field_indexes_account(cols):
+    return {
+        "payment_date": cols[DATE_FIELD]["payment_date"],
+        "description": cols[DESCRIPTION_FIELD]["description"],
+        "amount_debit": cols[AMOUNT_DEBIT_FIELD]["amount_debit"],
+        "amount_credit": cols[AMOUNT_CREDIT_FIELD]["amount_credit"],
+    }
+
+
+def skip_row_credit_card(row: list, indexes: list) -> bool:
     try:
         return (
             not row
             or not row[indexes["payment_date"]]
             or (not row[indexes["amount"]] and not row[indexes["amount_currency"]])
+        )
+    except IndexError:
+        return True
+
+
+def skip_row_account(row: list, indexes: list) -> bool:
+    try:
+        return (
+            not row
+            or not row[indexes["payment_date"]]
+            or (not row[indexes["amount_debit"]] and not row[indexes["amount_credit"]])
         )
     except IndexError:
         return True
@@ -162,11 +292,35 @@ def get_payment_date_and_period(row, indexes):
     return payment_date, period
 
 
-def get_transaction_amount_and_currency(row, indexes, default_currency):
+def get_transaction_money_credit_card(row, indexes, default_currency):
     amounts = [
         get_amount(row, indexes["amount"], default_currency),
         get_amount_currency(row, indexes["amount_currency"], default_currency),
     ]
+
+    # Filter out None values and calculate absolute values
+    valid_amounts = [
+        (abs(amount), currency) for amount, currency in amounts if amount is not None
+    ]
+
+    if valid_amounts:
+        # Return the tuple with the maximum amount
+        return max(valid_amounts, key=lambda x: x[0])
+    else:
+        return None, None
+
+
+def get_transaction_money_account(row, indexes, currency, default_currency):
+    if currency.pk == default_currency.pk:
+        amounts = [
+            get_amount(row, indexes["amount_debit"], default_currency),
+            get_amount(row, indexes["amount_credit"], default_currency),
+        ]
+    else:
+        amounts = [
+            get_amount_currency(row, indexes["amount_debit"], currency),
+            get_amount_currency(row, indexes["amount_credit"], currency),
+        ]
 
     # Filter out None values and calculate absolute values
     valid_amounts = [

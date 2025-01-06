@@ -1,4 +1,7 @@
 # Changelog
+## 2025-01-05
+### Change
+- Divide the upload process into steps to determine whether the file pertains to credit card or bank account transactions.
 ## 2025-01-01
 ### Change
 - Use local storage for number of rows in the upload process.

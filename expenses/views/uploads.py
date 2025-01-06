@@ -24,7 +24,7 @@ from expenses.models import (
     Upload,
 )
 from expenses.serializers import UploadSerializer
-from expenses.utils.uploads import process_bank_csv
+from expenses.utils.uploads import process_credit_card_csv, process_account_csv
 
 
 class UploadListView(ListView):
@@ -128,7 +128,7 @@ class UploadTransformCreditCardView(FormView):
             upload.save()
 
             # process the csv content
-            process_bank_csv(upload)
+            process_credit_card_csv(upload)
 
             return HttpResponseRedirect(reverse("upload-inspect", args=(upload.id,)))
 
@@ -157,13 +157,13 @@ class UploadTransformAccountView(FormView):
             upload.parameters["cols"] = [
                 {"payment_date": form.cleaned_data["payment_date"]},
                 {"description": form.cleaned_data["description"]},
-                {"amount": form.cleaned_data["amount"]},
-                {"amount_currency": form.cleaned_data["amount_currency"]},
+                {"amount_debit": form.cleaned_data["amount_debit"]},
+                {"amount_credit": form.cleaned_data["amount_credit"]},
             ]
             upload.save()
 
             # process the csv content
-            process_bank_csv(upload)
+            process_account_csv(upload, form.cleaned_data["currency"])
 
             return HttpResponseRedirect(reverse("upload-inspect", args=(upload.id,)))
 
