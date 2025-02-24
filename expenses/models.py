@@ -178,7 +178,7 @@ class Transaction(Accountable):
         Upload,
         blank=True,
         null=True,
-        on_delete=models.SET_NULL,
+        on_delete=models.CASCADE,
     )
 
     class Meta:
