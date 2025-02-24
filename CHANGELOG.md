@@ -1,4 +1,7 @@
 # Changelog
+## 2025-02-23
+### Change
+- Update the upload process to include a multiple choice of currencies for the account type.
 ## 2025-01-05
 ### Change
 - Divide the upload process into steps to determine whether the file pertains to credit card or bank account transactions.
