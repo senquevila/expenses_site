@@ -311,7 +311,7 @@ def get_transaction_money_credit_card(row, indexes, default_currency):
 
 
 def get_transaction_money_account(row, indexes, currency, default_currency):
-    if currency.pk == default_currency.pk:
+    if currency and currency.pk == default_currency.pk:
         amounts = [
             get_amount(row, indexes["amount_debit"], default_currency),
             get_amount(row, indexes["amount_credit"], default_currency),
