@@ -1,4 +1,7 @@
 # Changelog
+## 2025-03-23
+### New
+- Add action to inactive all the completed loans.
 ## 2025-02-23
 ### Change
 - Update the upload process to include a multiple choice of currencies for the account type.

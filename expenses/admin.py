@@ -1,5 +1,6 @@
 from django.contrib import admin, messages
 from django.db.models import Count
+from django.utils import timezone
 
 from expenses.models import (
     Account,
@@ -161,6 +162,19 @@ class ProgramTransactionAdmin(admin.ModelAdmin):
     list_display = ("name", "start_date", "end_date", "active")
 
 
+def disable_completed_loans(LoanAdmin, request, queryset):
+    loans = Loan.objects.filter(is_active=True)
+    now = timezone.now().date()
+    completed = []
+    for loan in loans:
+        if loan.end_date < now:
+            completed.append(loan.pk)
+    completed_loans = Loan.objects.filter(id__in=completed)
+    updates = completed_loans.count()
+    completed_loans.update(is_active=False)
+    messages.success(request=request, message=f"Disabled {updates} completed loans")
+
+
 @admin.register(Loan)
 class LoanAdmin(admin.ModelAdmin):
     list_display = (
@@ -175,6 +189,7 @@ class LoanAdmin(admin.ModelAdmin):
     )
     list_filter = ("is_active", "bank")
     ordering = ["bank", "-months"]
+    actions = [disable_completed_loans]
 
 
 @admin.register(Subscription)
