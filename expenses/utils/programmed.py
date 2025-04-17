@@ -1,6 +1,6 @@
 from django.utils import timezone
 
-from expenses.models import Transaction, Period, ProgramTransaction
+from expenses.models import Period, ProgramTransaction, Transaction
 
 
 def create_programmed_transactions(period: Period):

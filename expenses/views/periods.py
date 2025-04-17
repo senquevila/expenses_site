@@ -5,11 +5,10 @@ from django.db.models.query import QuerySet
 from django.shortcuts import redirect
 from django.urls import reverse_lazy
 from django.views.generic import ListView, edit
-
 from rest_framework.views import APIView
 
-from expenses.models import Transaction, Period
 from expenses.forms import PeriodForm
+from expenses.models import Period, Transaction
 
 
 class PeriodCreateView(edit.CreateView):

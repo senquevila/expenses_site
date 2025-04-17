@@ -6,12 +6,16 @@ from django.db import migrations
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('budgets', '0009_alter_budgetassignment_unique_together_and_more'),
+        ("budgets", "0009_alter_budgetassignment_unique_together_and_more"),
     ]
 
     operations = [
         migrations.AlterModelOptions(
-            name='budget',
-            options={'ordering': ['-period'], 'verbose_name': 'Presupuesto', 'verbose_name_plural': 'Presupuestos'},
+            name="budget",
+            options={
+                "ordering": ["-period"],
+                "verbose_name": "Presupuesto",
+                "verbose_name_plural": "Presupuestos",
+            },
         ),
     ]

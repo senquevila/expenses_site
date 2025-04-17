@@ -3,28 +3,19 @@ import json
 from io import StringIO
 from typing import Any
 
-
 from django.http import HttpRequest, HttpResponse, HttpResponseRedirect, JsonResponse
 from django.urls import reverse
-from django.views.generic import (
-    FormView,
-    ListView,
-    TemplateView,
-)
+from django.views.generic import FormView, ListView, TemplateView
 
 from expenses.forms import (
     TransactionInspectionForm,
     UploadForm,
-    UploadTransformForm,
     UploadTransformAccountForm,
+    UploadTransformForm,
 )
-from expenses.models import (
-    Account,
-    Transaction,
-    Upload,
-)
+from expenses.models import Account, Transaction, Upload
 from expenses.serializers import UploadSerializer
-from expenses.utils.uploads import process_credit_card_csv, process_account_csv
+from expenses.utils.uploads import process_account_csv, process_credit_card_csv
 
 
 class UploadListView(ListView):

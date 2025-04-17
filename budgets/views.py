@@ -3,13 +3,12 @@ from typing import Any
 from django.db.models import ExpressionWrapper, F, FloatField, Sum
 from django.shortcuts import get_object_or_404, redirect
 from django.urls import reverse_lazy
-from django.views.generic.list import ListView
 from django.views.generic.edit import CreateView, UpdateView
-
+from django.views.generic.list import ListView
 from rest_framework.views import APIView
 
+from budgets.forms import BudgetAssignmentForm, BudgetForm
 from budgets.models import Budget, BudgetAssignment
-from budgets.forms import BudgetForm, BudgetAssignmentForm
 from expenses.models import Transaction
 
 
@@ -83,7 +82,10 @@ class BudgetAssigmentListView(ListView):
             BudgetAssignment.objects.filter(budget=budget)
             .annotate(
                 difference=ExpressionWrapper(
-                    (F("expense_amount") - F("budget_amount")) / F("budget_amount") * 100, output_field=FloatField()
+                    (F("expense_amount") - F("budget_amount"))
+                    / F("budget_amount")
+                    * 100,
+                    output_field=FloatField(),
                 )
             )
             .order_by("expense_amount")

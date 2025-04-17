@@ -1,5 +1,6 @@
 from django.db.models.signals import post_save
 from django.dispatch import receiver
+
 from expenses.models import Period
 from expenses.utils.programmed import create_programmed_transactions
 

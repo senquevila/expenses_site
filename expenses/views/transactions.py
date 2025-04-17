@@ -1,22 +1,16 @@
 from decimal import Decimal
 
 from django.conf import settings
-from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
+from django.core.paginator import EmptyPage, PageNotAnInteger, Paginator
 from django.db.models import Q, Sum
 from django.db.models.query import QuerySet
-from django.shortcuts import render, redirect
+from django.shortcuts import redirect, render
 from django.urls import reverse_lazy
-from django.views.generic import (
-    CreateView,
-    DeleteView,
-    ListView,
-    UpdateView,
-)
-
+from django.views.generic import CreateView, DeleteView, ListView, UpdateView
 from rest_framework.views import APIView
 
-from expenses.forms import TransactionForm, LoanForm, SubscriptionForm
-from expenses.models import Transaction, Period, Loan, Subscription
+from expenses.forms import LoanForm, SubscriptionForm, TransactionForm
+from expenses.models import Loan, Period, Subscription, Transaction
 from expenses.utils.tools import get_total_local_amount
 
 DATE_FIELD = 0
@@ -133,7 +127,10 @@ class LoanListView(ListView):
     model = Loan
     template_name = "loans/loan_list.html"
     context_object_name = "loans"
-    ordering = ["months", "start_date",]
+    ordering = [
+        "months",
+        "start_date",
+    ]
     paginate_by = int(settings.DEFAULT_PAGINATION)
 
     def get_queryset(self):

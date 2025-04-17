@@ -1,4 +1,5 @@
 import pytest
+
 from expenses.models import Currency
 from expenses.utils.uploads import get_amount
 

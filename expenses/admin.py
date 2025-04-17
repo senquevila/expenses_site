@@ -10,11 +10,10 @@ from expenses.models import (
     Loan,
     Period,
     ProgramTransaction,
-    Upload,
     Subscription,
     Transaction,
+    Upload,
 )
-
 from expenses.utils.tools import change_account_from_assoc, remove_invalid_transactions
 
 

@@ -1,11 +1,11 @@
 from datetime import timedelta
 
+from django.db.models import Sum
 from django.db.models.signals import post_save
 from django.dispatch import receiver
-from django.db.models import Sum
 
 from budgets.models import Budget, BudgetAssignment
-from expenses.models import Transaction, Period
+from expenses.models import Period, Transaction
 
 
 @receiver(post_save, sender=Budget)

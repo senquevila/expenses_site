@@ -4,8 +4,8 @@ from expenses.models import (
     Account,
     AccountAsociation,
     CurrencyConvert,
-    Transaction,
     Period,
+    Transaction,
     Upload,
 )
 

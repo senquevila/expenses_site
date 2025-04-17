@@ -1,7 +1,7 @@
 # Django Imports
 from django.db import models
-from django.utils.translation import gettext_lazy as _
 from django.utils.timezone import now as timezone_now
+from django.utils.translation import gettext_lazy as _
 
 
 class CreationModificationDateMixin(models.Model):

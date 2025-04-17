@@ -6,7 +6,6 @@ from rest_framework.views import APIView
 # models import
 from expenses.models import CurrencyConvert
 from expenses.serializers import CurrencyConvertSerializer
-
 from expenses.utils.tools import create_dollar_conversion
 
 

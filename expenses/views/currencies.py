@@ -1,11 +1,9 @@
 from django.http import HttpResponseRedirect
 from django.urls import reverse_lazy
 from django.views.generic import ListView
-
 from rest_framework.views import APIView
 
 from expenses.models import CurrencyConvert
-from expenses.utils.tools import create_dollar_conversion
 
 
 class CurrencyConvertListView(ListView):

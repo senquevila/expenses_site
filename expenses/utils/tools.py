@@ -1,8 +1,8 @@
-from bs4 import BeautifulSoup
-from decimal import Decimal
 from datetime import datetime
+from decimal import Decimal
 from urllib.request import Request, urlopen
 
+from bs4 import BeautifulSoup
 from django.conf import settings
 from django.db.models import F, Sum
 from django.db.models.functions import Abs

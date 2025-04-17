@@ -1,11 +1,11 @@
 from datetime import timedelta
 from decimal import Decimal
-from dateutil.relativedelta import relativedelta
 
+from dateutil.relativedelta import relativedelta
+from django.conf import settings
 from django.db import models
 from django.db.models import F
 from django.db.models.functions import Abs
-from django.conf import settings
 from django.utils import timezone
 from django.utils.translation import gettext_lazy as _
 
@@ -149,6 +149,12 @@ class Upload(CreationModificationDateMixin):
     parameters = models.JSONField(
         _("Parámetros"), blank=True, null=True, default=upload_parameters_default
     )
+    start_date = models.DateField(
+        _("Fecha de inicio"), default=timezone.now, blank=True, null=True
+    )
+    end_date = models.DateField(
+        _("Fecha de fin"), default=timezone.now, blank=True, null=True
+    )
 
     class Meta:
         verbose_name = _("Subida de archivo")
@@ -284,9 +290,14 @@ class Loan(models.Model):
 
     @property
     def get_local_monthly_payment(self):
-        currency_convert = CurrencyConvert.objects.filter(
-            currency=self.currency,
-        ).order_by("-date").only("exchange").first()
+        currency_convert = (
+            CurrencyConvert.objects.filter(
+                currency=self.currency,
+            )
+            .order_by("-date")
+            .only("exchange")
+            .first()
+        )
         exchange = currency_convert.exchange if currency_convert else Decimal(1)
         return self.monthly_payment * exchange
 
@@ -301,9 +312,14 @@ class Loan(models.Model):
             if loan.end_date < date_after:
                 continue
 
-            currency_convert = CurrencyConvert.objects.filter(
-                currency=loan.currency,
-            ).order_by("-date").only("exchange").first()
+            currency_convert = (
+                CurrencyConvert.objects.filter(
+                    currency=loan.currency,
+                )
+                .order_by("-date")
+                .only("exchange")
+                .first()
+            )
             exchange = currency_convert.exchange if currency_convert else Decimal(1)
             total_payment += loan.monthly_payment * exchange
         return total_payment
@@ -336,11 +352,16 @@ class Subscription(models.Model):
 
     def __str__(self) -> str:
         return f"{self.name} - {self.subscription_type}"
-    
+
     @property
     def get_local_monthly_payment(self):
-        currency_convert = CurrencyConvert.objects.filter(
-            currency=self.currency,
-        ).order_by("-date").only("exchange").first()
+        currency_convert = (
+            CurrencyConvert.objects.filter(
+                currency=self.currency,
+            )
+            .order_by("-date")
+            .only("exchange")
+            .first()
+        )
         exchange = currency_convert.exchange if currency_convert else Decimal(1)
         return self.monthly_payment * exchange
