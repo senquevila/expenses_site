@@ -1,4 +1,8 @@
 # Changelog
+## 2025-04-17
+### New
+- Install black, isort, and flake8 for code formatting and linting.
+- Add start_date and end_date to the period model.
 ## 2025-03-23
 ### New
 - Add action to inactive all the completed loans.

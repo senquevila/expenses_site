@@ -3,11 +3,11 @@ import json
 import re
 
 from django.conf import settings
+from django.db.models import Max, Min
 
-from expenses.models import Account, Transaction, Period, Currency, Upload
+from expenses.models import Account, Currency, Period, Transaction, Upload
 from expenses.serializers import TransactionSerializer
 from expenses.utils.tools import change_account_from_assoc, str_to_date
-
 
 DATE_FIELD = 0
 DESCRIPTION_FIELD = 1
@@ -23,6 +23,8 @@ AMOUNT_CREDIT_FIELD = 3
 def process_credit_card_csv(upload: Upload):
     context = {"result": {}}
     created = 0
+    start_date = None
+    end_date = None
 
     # get default values
     default_currency, default_account = get_defaults()
@@ -126,6 +128,7 @@ def process_credit_card_csv(upload: Upload):
 
     upload.result = json.dumps(context)
     upload.save()
+    update_interval_date(upload)
 
 
 def process_account_csv(upload: Upload, currency: Currency):
@@ -234,6 +237,7 @@ def process_account_csv(upload: Upload, currency: Currency):
 
     upload.result = json.dumps(context)
     upload.save()
+    update_interval_date(upload)
 
 
 def get_defaults():
@@ -402,3 +406,21 @@ def extract_currency_and_value(input: str) -> tuple:
         return value, currency_map.get(currency, None)
     else:
         return None, None
+
+
+def update_interval_date(upload: Upload):
+    """
+    Update the upload start_date and end_date with the min and max payment_date
+    of transactions associated with the upload.
+    """
+    # Get min and max dates in a single query
+    date_range = Transaction.objects.filter(upload=upload).aggregate(
+        min_date=Min("payment_date"),
+        max_date=Max("payment_date"),
+    )
+
+    # Only update if transactions exist
+    if date_range["min_date"] and date_range["max_date"]:
+        upload.start_date = date_range["min_date"]
+        upload.end_date = date_range["max_date"]
+        upload.save()
