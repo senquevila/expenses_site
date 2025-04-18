@@ -15,9 +15,17 @@ const columns = [
         id: "id_amount_credit",
         color: "#7B68EE", // Medium Slate Blue
     },
+    {
+        id: "id_amount",
+        color: "#F0E68C", // Khaki
+    },
+    {
+        id: "id_amount_currency",
+        color: "#7B68EE", // Medium Slate Blue
+    },
 ];
 
-const rangeInputs = ["id_start_row", "id_end_row"];
+const rangeInputs = ["#id_start_row", "#id_end_row"];
 
 function get_range_object(data) {
     const storedEndRow = localStorage.getItem("expenseFormData");
@@ -48,8 +56,8 @@ function set_input_range(num_row, num_col) {
         });
     });
 
-    rangeInputs.forEach(function (input) {
-        $("#" + input).attr({
+    rangeInputs.forEach(function (id) {
+        $(id).attr({
             min: min_row,
             max: max_row,
         });
@@ -158,10 +166,12 @@ function initialize_page(data, load_form_data, save_form_data, normalize_data) {
     $("#id_end_row").val(num_row);
 
     $(".repaint-col-trigger").on("change", function () {
+        console.log("Repainting columns...");
         repaint_column();
     });
 
     $(".repaint-row-trigger").on("change", function () {
+        console.log("Repainting rows...");
         repaint_row();
     });
 
