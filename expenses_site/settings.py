@@ -159,3 +159,6 @@ INTERNAL_IPS = [
 # Media configuration
 MEDIA_ROOT = os.path.join(BASE_DIR, "media")
 MEDIA_URL = "/media/"
+
+# Default account for transactions
+INVALID_ACCOUNT = "Invalido"

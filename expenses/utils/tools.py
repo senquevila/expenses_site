@@ -35,7 +35,9 @@ def str_to_date(str_date) -> datetime.date:
 
 
 def get_total_local_amount(filtered) -> Decimal:
-    queryset = Transaction.objects.filter(filtered).aggregate(total=Sum("local_amount"))
+    queryset = Transaction.objects.filter(filtered) \
+        .exclude(account__name=settings.INVALID_ACCOUNT) \
+        .aggregate(total=Sum("local_amount"))
     return queryset["total"] or 0
 
 
@@ -71,7 +73,9 @@ def change_account_from_assoc() -> list[dict]:
 
 
 def remove_invalid_transactions() -> int:
-    invalid_expenses = Transaction.objects.filter(account__name="Invalido")
+    invalid_expenses = Transaction.objects.filter(
+        account__name=settings.INVALID_ACCOUNT
+    )
     rows, _ = invalid_expenses.delete()
     return rows
 

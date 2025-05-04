@@ -1,4 +1,7 @@
 # Changelog
+## 2025-05-04
+### New
+- Add INVALID_ACCOUNT in the settings.
 ## 2025-04-17
 ### New
 - Install black, isort, and flake8 for code formatting and linting.

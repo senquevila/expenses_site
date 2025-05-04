@@ -1,4 +1,5 @@
 # django imports
+from django.conf import settings
 from django.db.models import Count
 from rest_framework import status, viewsets
 from rest_framework.response import Response
@@ -28,7 +29,9 @@ class TransactionUploadFileCleanupView(APIView):
 
 class TransactionDeleteInvalidView(APIView):
     def delete(self, request, *args, **kwargs):
-        invalid_expenses = Transaction.objects.filter(account__name="Invalido")
+        invalid_expenses = Transaction.objects.filter(
+            account__name=settings.INVALID_ACCOUNT
+        )
         deletes = invalid_expenses.count()
         invalid_expenses.delete()
         return Response(
