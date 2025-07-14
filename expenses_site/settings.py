@@ -147,7 +147,8 @@ CORS_ALLOWED_ORIGINS = ["http://127.0.0.1:8000", "http://127.0.0.1:3000"]
 
 # Default Values
 DEFAULT_CURRENCY = "HNL"
-DEFAULT_ACCOUNT = "Gasto"
+DEFAULT_ACCOUNT = "__Gasto__"
+INVALID_ACCOUNT = "__Invalido__"
 DEFAULT_DATE_FORMAT = "%d/%m/%y"
 CURRENCY_CONVERT_DAYS_RANGE = 90
 DEFAULT_PAGINATION = 10
@@ -159,6 +160,3 @@ INTERNAL_IPS = [
 # Media configuration
 MEDIA_ROOT = os.path.join(BASE_DIR, "media")
 MEDIA_URL = "/media/"
-
-# Default account for transactions
-INVALID_ACCOUNT = "Invalido"
