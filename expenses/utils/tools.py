@@ -94,7 +94,8 @@ def create_dollar_conversion() -> tuple:
     if not CurrencyConvert.objects.filter(date=datetime.today()).exists():
         try:
             exchange = _get_exchange()
-        except Exception:
+        except Exception as e:
+            print(f"Error capturing exchange: {e}")
             return {
                 "message": "Problem capturing exchange"
             }, status.HTTP_424_FAILED_DEPENDENCY
