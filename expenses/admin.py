@@ -58,6 +58,20 @@ class AccountAdmin(admin.ModelAdmin):
     ordering = ["name", "account_type"]
 
 
+class Last10UploadsFilter(admin.SimpleListFilter):
+    title = "upload"
+    parameter_name = "upload"
+
+    def lookups(self, _request, _model_admin):
+        uploads = Upload.objects.order_by("-created")[:10]
+        return [(u.pk, str(u)) for u in uploads]
+
+    def queryset(self, _request, queryset):
+        if self.value():
+            return queryset.filter(upload__pk=self.value())
+        return queryset
+
+
 def remove_invalid_expenses(TransactionAdmin, request, queryset):
     deletes = remove_invalid_transactions()
     messages.success(request=request, message=f"Removed {deletes} invalid expenses")
@@ -111,7 +125,7 @@ class TransactionAdmin(admin.ModelAdmin):
         "created",
         "currency",
         "account",
-        "upload",
+        Last10UploadsFilter,
     )
     ordering = (
         "-payment_date",
