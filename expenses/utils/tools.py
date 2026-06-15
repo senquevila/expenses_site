@@ -23,7 +23,17 @@ def get_real_amount(expense: Transaction) -> float:
 
 
 def str_to_date(str_date) -> datetime.date:
-    valid_formats = ["%Y-%m-%d", "%d/%m/%y", "%d/%m/%Y", "%d-%m-%Y", "%d-%m-%y"]
+    valid_formats = [
+        "%Y-%m-%d",
+        "%d/%m/%y",
+        "%d/%m/%Y",
+        "%d-%m-%Y",
+        "%d-%m-%y",
+        "%d/%m/%Y %I:%M %p",
+        "%d/%m/%y %I:%M %p",
+        "%d/%m/%Y %H:%M",
+        "%d/%m/%y %H:%M",
+    ]
 
     for format in valid_formats:
         try:
