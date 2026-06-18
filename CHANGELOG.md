@@ -1,4 +1,11 @@
 # Changelog
+## 2026-06-18
+### Change
+- Update the page to extract the exchange rate to use a regex search instead of relying on the structure of the page.
+## 2026-06-15
+### Change
+- Show the last 10 uploads in the transaction admin.
+- Add timestamp as date supported by the upload process.
 ## 2026-03-15
 ### Change
 - Adjust api endpoints, restructuring file organization and renaming some endpoints for better clarity.

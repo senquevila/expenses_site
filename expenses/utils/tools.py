@@ -1,3 +1,4 @@
+import re
 from datetime import datetime
 from decimal import Decimal
 from urllib.request import Request, urlopen
@@ -92,15 +93,16 @@ def remove_invalid_transactions() -> int:
 
 
 def create_dollar_conversion() -> tuple:
+    def _get_amount_from_soap(soup) -> float:
+        print("---> Text from soup:", soup.get_text())
+        m = re.search(r"Venta:\s*LPS\.?([\d.]+)", soup.get_text())
+        return float(m.group(1))
+
     def _get_exchange() -> float:
         req = Request(settings.SCRAPING_URL, headers={"User-Agent": "Mozilla/5.0"})
         page = urlopen(req)
         soup = BeautifulSoup(page, "html.parser")
-        result = soup.find(id=settings.SCRAPING_TAG_ID)
-        result_text = result.text.strip()
-        tokens = result_text.split(settings.SCRAPING_TOKEN_SPLIT)
-        value = float(tokens[-1].strip().replace("L", ""))
-        return value
+        return _get_amount_from_soap(soup)
 
     if not CurrencyConvert.objects.filter(date=datetime.today()).exists():
         try:
