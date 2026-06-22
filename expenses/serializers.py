@@ -169,7 +169,7 @@ class UploadSerializer(serializers.ModelSerializer):
 class UploadStep1Serializer(serializers.ModelSerializer):
     class Meta:
         model = Upload
-        fields = ["id", "file"]
+        fields = ["id", "file", "identifier"]
 
 
 class UploadStep1InputSerializer(serializers.Serializer):

@@ -143,6 +143,7 @@ class Upload(CreationModificationDateMixin):
         FAILED = "FAILED", _("Fallida")
 
     file = models.FileField(_("Archivo"), blank=True, null=True, upload_to=expense_upload_path)
+    identifier = models.CharField(_("Identificador"), max_length=50, blank=True, null=True)
     result = models.JSONField(_("Resultado"), blank=True, null=True)
     start_date = models.DateField(_("Fecha de inicio"), default=timezone.now, blank=True, null=True)
     end_date = models.DateField(_("Fecha de fin"), default=timezone.now, blank=True, null=True)

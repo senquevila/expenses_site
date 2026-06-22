@@ -169,7 +169,7 @@ remove_empty_uploads.short_description = "Remove uploads with no transactions"
 
 @admin.register(Upload)
 class UploadAdmin(admin.ModelAdmin):
-    list_display = ("file", "start_date", "end_date")
+    list_display = ("file", "identifier", "start_date", "end_date")
     actions = [remove_empty_uploads]
     ordering = ("-created",)
 
